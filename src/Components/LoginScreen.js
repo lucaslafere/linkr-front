@@ -44,7 +44,7 @@ export default function LoginScreen() {
         setDisabled(false);
         setLoading(false);
         setErrorText(
-          "Não foi possível logar. Verifique seus dados e tente novamente, ou crie uma nova conta"
+          "Could not login. Please verify the input fields and try again, or create a new account."
         );
         setError(true);
       });
@@ -54,8 +54,8 @@ export default function LoginScreen() {
     if (error) {
       return (
         <ContainerModal onClick={() => setError(false)}>
-          <h5>Houve um erro: {errorText}</h5>
-          <h5>Clique em qualquer lugar da caixa para fechar esse pop-up</h5>
+          <h5>There was an error: {errorText}</h5>
+          <h5>Click anywhere on this box to close it</h5>
         </ContainerModal>
       );
     }
@@ -93,7 +93,7 @@ export default function LoginScreen() {
               {loading ? (
                 <ThreeDots color="#fff" height={80} width={80} />
               ) : (
-                "Login"
+                "Log In"
               )}
             </Button>
           </Form>
@@ -106,7 +106,20 @@ export default function LoginScreen() {
   );
 }
 
-const ContainerModal = styled.div``;
+const ContainerModal = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+width: 90%;
+height: 50%;
+background-color: #1877f2;
+border-radius: 12px;
+z-index: 1;
+position: fixed;
+top: 25vh;
+left: 5vw;
+`;
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -128,7 +141,7 @@ const LeftContainer = styled.div`
     font-family: "Passion One";
     font-style: normal;
     font-weight: 700;
-    font-size: 106px;
+    font-size: 6.6rem;
     letter-spacing: 0.05em;
     color: #ffffff;
   }
@@ -138,7 +151,7 @@ const LeftContainer = styled.div`
     font-style: normal;
     font-weight: 700;
     color: #ffffff;
-    font-size: 43px;
+    font-size: 2.6rem;
     width: 80%;
   }
 `;
@@ -177,7 +190,6 @@ const Input = styled.input`
   font-weight: 700;
   font-size: 1.4rem;
   line-height: 60px;
-  /* vertical-align: middle; */
   color: #000000;
 
   ::placeholder {
@@ -186,7 +198,6 @@ const Input = styled.input`
     font-style: normal;
     font-weight: 700;
     font-size: 1.4rem;
-    /* vertical-align: middle; */
   }
 `;
 const Button = styled.button`
@@ -195,15 +206,18 @@ const Button = styled.button`
   justify-content: center;
   width: 80%;
   height: 60px;
+
   border-radius: 6px;
   border: 1px solid #1877f2;
   background-color: #1877f2;
   padding: 1rem;
   opacity: ${(props) => (props.disabled ? 0.7 : 1)};
+
   font-family: "Oswald";
   font-style: normal;
   font-weight: 700;
   font-size: 1.4rem;
+  line-height: 60px;
 
   color: #ffffff;
 `;
@@ -216,3 +230,5 @@ const TextLink = styled.div`
 
   color: #ffffff;
 `;
+
+export {ContainerModal, Container, LeftContainer, RightContainer, Form, Input, Button, TextLink}
