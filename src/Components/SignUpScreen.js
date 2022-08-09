@@ -51,7 +51,22 @@ export default function SignUpScreen() {
       setErrorText("the field 'e-mail' must be filled");
       setError(true);
       return;
-    } else {
+    } 
+    if (password.length < 1) {
+      setDisabled(false);
+      setLoading(false);
+      setErrorText("the field 'password' must be filled");
+      setError(true);
+      return;
+    } 
+    if (profilePhoto.length < 1) {
+      setDisabled(false);
+      setLoading(false);
+      setErrorText("the field 'picture url' must be filled");
+      setError(true);
+      return;
+    } 
+    else {
       axios
         .post(URL, body)
         .then(() => {
