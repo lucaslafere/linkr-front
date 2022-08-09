@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Don't forget to run npm i to install dependencies after cloning repo
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
