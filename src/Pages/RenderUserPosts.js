@@ -6,7 +6,7 @@ export default function RenderOtherUserPosts() {
     return(
         <Post>
             <PictureAndLike>
-                <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" />
+                <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
                 {liked ? (
                 <ion-icon name="heart" id="heart" onClick={() => setLiked(!liked)}></ion-icon> ) : (
                 <ion-icon name="heart-outline" id="heart-outline" onClick={() => setLiked(!liked)}></ion-icon>
@@ -22,7 +22,7 @@ export default function RenderOtherUserPosts() {
                         <h4>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h4>
                         <h5>https://medium.com/@pshrmn/a-simple-react-router</h5>
                     </MainInfoDescription>
-                        <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" />
+                        <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
                 </MainInfo>
             </PostInfo>
         </Post>

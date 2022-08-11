@@ -5,12 +5,14 @@ import TokenContext from "../Contexts/TokenContext";
 import UserContext from "../Contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
 import RenderSearchUser from "../Pages/RenderSearchUser";
-import RenderOtherUserPosts from "../Pages/RenderOtherUserPosts";
+import RenderUserPosts from "../Pages/RenderUserPosts";
+import RenderHashtags from "../Pages/RenderHashtags";
 
 export default function SerchUserScreen() {
     const [search, setSearch] = useState(""); 
     //const [searchUsers, setSearchUsers] = useState([]); 
     //const [userPosts, setUserPosts] = useState([]);
+    //const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
     const navigate = useNavigate();
 
@@ -22,6 +24,15 @@ export default function SerchUserScreen() {
         {
             image: "https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg",
             username: "cr7"
+        }
+    ];
+
+    const hashtags = [
+        { 
+            name: "javascript" 
+        }, 
+        { 
+            name: "javascript" 
         }
     ];
 
@@ -41,6 +52,7 @@ export default function SerchUserScreen() {
                     onChange={(event) => setSearch(event.target.value)}
                     required
                 />
+                <ion-icon name="search-sharp"></ion-icon>
             </InputText> 
             <LoggedUser>
                 {clickedLogout ? (
@@ -48,7 +60,7 @@ export default function SerchUserScreen() {
                 ) : ( 
                 <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
                 )}
-                <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" />
+                <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
             </LoggedUser>
         </Header> 
 
@@ -70,19 +82,31 @@ export default function SerchUserScreen() {
         </Search> 
 
         <UserTitle>
-            <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" />
+            <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
             <a>Juvenal Juvêncio's posts</a>
         </UserTitle> 
 
         <Main>
             <Posts>
                 <ul>
-                    <RenderOtherUserPosts />
-                    <RenderOtherUserPosts /> 
-                    <RenderOtherUserPosts />
-                    <RenderOtherUserPosts />
+                    <RenderUserPosts />
+                    <RenderUserPosts /> 
+                    <RenderUserPosts />
+                    <RenderUserPosts />
                 </ul>
             </Posts>
+            <Treading>
+                <span>trending</span>
+                <div></div>
+                <ul> 
+                    {hashtags.map((hashtag,index) => (
+                        <RenderHashtags 
+                            index= {index}
+                            name={hashtag.name}
+                        /> 
+                    ))}
+                </ul>
+            </Treading>
         </Main>
 
         </>
@@ -113,18 +137,27 @@ export default function SerchUserScreen() {
  const InputText = styled.div`
     width: 30%; 
     height: 45px;   
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px; 
+    border: none; 
+    padding: 0px 13px 0px 19px;
+    color: rgba(198, 198, 198, 1); 
 
     input { 
         width: 95%; 
         height: 100%;
-        display: flex;  
         font-weight: 100;
-        color: rgba(198, 198, 198, 1); 
-        background-color: white;
-        border-radius: 8px; 
-        border: none; 
         font-size: 19px; 
-        padding: 0px 13px 0px 19px;
+        border: none;
+    } 
+
+    ion-icon { 
+        width: 21px; 
+        height: 21px;
+        color: rgba(198, 198, 198, 1); 
     }
  `
  const LoggedUser = styled.div`
@@ -208,6 +241,7 @@ export default function SerchUserScreen() {
         color: white;
         font-size: 43px;
         font-weight: bold; 
+        font-family: 'Oswald', sans-serif;
     }
  `
  const Main = styled.div`
@@ -225,6 +259,37 @@ export default function SerchUserScreen() {
     ul { 
         width: 65%; 
         height: 100%; 
+    }
+ `
+ const Treading = styled.div`
+    width: 301px; 
+    height: 406px;
+    margin-left: 25px;
+    background-color: rgba(23, 23, 23, 1);
+    border-radius: 16px; 
+    display: flex; 
+    flex-direction: column;
+    padding: 12px 30px 6px 20px;
+
+    span { 
+        color: white; 
+        font-size: 27px;
+        font-family: 'Oswald', sans-serif;
+        font-weight: 700;
+    }
+
+    div { 
+        width: 100%; 
+        height: 1px;
+        margin: 14px 0px 22px 0px;
+        border: 1px solid rgba(72, 72, 72, 1);
+    } 
+
+    ul { 
+        width: 100%; 
+        height: 100%;
+        display: flex; 
+        flex-direction: column;
     }
  `
  
