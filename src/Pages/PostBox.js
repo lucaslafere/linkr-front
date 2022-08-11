@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { IoMdHeartEmpty } from 'react-icons/io';
 import { useState } from 'react';
 export default function PostBox() {
     const [liked, setLiked] = useState(false); 
