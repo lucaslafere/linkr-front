@@ -21,14 +21,20 @@ export default function LoginScreen() {
 
 
   // Code to get and use the localStorage token:
-  
-  // useEffect(() => {
-  //   window.localStorage.getItem("MY_TOKEN");
-  // }, []);
+
+  useEffect(() => {
+    const data = window.localStorage.getItem("MY_TOKEN");
+    setToken(data);
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem("MY_TOKEN", token);
-  });
+  }, [token]);
+
+  if (token){
+    navigate("/timeline")
+  }
+
 
   const body = {
     email,
