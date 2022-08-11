@@ -44,16 +44,29 @@ export default function SerchUserScreen() {
         <>
         <Header>
             <a>linkr</a>
-            <InputText>
-                <input
-                    type="text"
-                    placeholder="Search for people"
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                    required
-                />
-                <ion-icon name="search-sharp"></ion-icon>
-            </InputText> 
+            <Container>
+                <InputText>
+                    <input
+                        type="text"
+                        placeholder="Search for people"
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        required
+                    />
+                    <ion-icon name="search-sharp"></ion-icon>
+                </InputText>
+                <Search>
+                    <ul>
+                        {searchUsers.map((users,index) => (
+                            <RenderSearchUser 
+                                index= {index}
+                                image= {users.image}
+                                username= {users.username}
+                            />
+                        ))}
+                        </ul>
+                </Search> 
+            </Container>
             <LoggedUser>
                 {clickedLogout ? (
                 <ion-icon name="chevron-up-outline" onClick={() => setClickedLogout(false)}></ion-icon>
@@ -68,18 +81,6 @@ export default function SerchUserScreen() {
         <Logout onClick={logout}> 
             <a>Logout</a>
         </Logout> ) : ("")}
-
-        <Search>
-            <ul>
-            {searchUsers.map((users,index) => (
-                <RenderSearchUser 
-                    index= {index}
-                    image= {users.image}
-                    username= {users.username}
-                />
-            ))}
-            </ul>
-        </Search> 
 
         <UserTitle>
             <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
@@ -134,14 +135,38 @@ export default function SerchUserScreen() {
         text-align: left;
     } 
  `
+ const Container = styled.div`
+    width: 30%;
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+ `
+ const Search = styled.div`
+    width: 100%;
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+    position: absolute;
+    top: 56px;
+    
+    ul { 
+        width: 100%; 
+        height: 100%;
+        background-color: rgba(231, 231, 231, 1); 
+        border-radius: 0px 0px 8px 8px; 
+        padding: 40px 17px;
+    }
+ `
  const InputText = styled.div`
-    width: 30%; 
+    width: 100%; 
     height: 45px;   
     display: flex; 
     justify-content: space-between;
     align-items: center;
     background-color: white;
-    border-radius: 8px; 
+    border-radius: 8px 8px 0px 0px;  
     border: none; 
     padding: 0px 13px 0px 19px;
     color: rgba(198, 198, 198, 1); 
@@ -204,27 +229,10 @@ export default function SerchUserScreen() {
         cursor: pointer;
     }
  `
- const Search = styled.div`
-    width: 28.4%;
-    height: 100%; 
-    display: flex; 
-    flex-direction: column;
-    position: relative;
-    top: 58px;
-    left: 665px;
-    z-index: 1;
-    
-    ul { 
-        width: 100%; 
-        height: 100%;
-        background-color: rgba(231, 231, 231, 1); 
-        border-radius: 8px; 
-    }
- `
  const UserTitle = styled.div`
-    width: 50%; 
+    width: 47%; 
     height: 100%;
-    margin-top: 53px;
+    margin-top: 153px;
     display: flex; 
     justify-content: flex-end;
     align-items: center;

@@ -11,10 +11,10 @@ export default function RenderSearchUser({index,image,username}) {
 
 const UserCard = styled.li`
     width: 100%;
-    height: 100%;
+    height: 0%;
     display: flex; 
     align-items: center;
-    padding: 14px 17px;
+    margin-bottom: 50px;
 
     img { 
         width: 39px;
