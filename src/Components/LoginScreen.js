@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext";
 import UserContext from "../Contexts/UserContext";
@@ -16,8 +16,16 @@ export default function LoginScreen() {
   const URL = "http://localhost:4000/login";
   const navigate = useNavigate();
 
-  const { setToken } = useContext(TokenContext);
+  const { setToken, token } = useContext(TokenContext);
   const { setUserData, userData } = useContext(UserContext);
+
+  useEffect(() => {
+    window.localStorage.getItem("MY_TOKEN")
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("MY_TOKEN", token);
+  })
 
   const body = {
     email,
@@ -54,6 +62,7 @@ export default function LoginScreen() {
         setError(true);
       });
   }
+
 
   function loginSchema () {
     if (email.length < 1) {
