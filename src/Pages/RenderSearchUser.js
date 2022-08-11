@@ -19,6 +19,7 @@ const UserCard = styled.li`
     img { 
         width: 39px;
         height: 39px; 
+        border-radius: 50%;
     }
 
     a { 

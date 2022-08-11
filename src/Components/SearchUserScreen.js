@@ -73,6 +73,18 @@ export default function SerchUserScreen() {
                             )}
                             <p>13 likes</p>
                         </PictureAndLike>
+                        <PostInfo>
+                            <p>Juvenal Juvêncio</p> 
+                            <a>Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material</a>
+                            <MainInfo>
+                                    <MainInfoDescription>
+                                        <h3>Como aplicar o Material UI em um projeto React</h3>
+                                        <h4>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h4>
+                                        <h5>https://medium.com/@pshrmn/a-simple-react-router</h5>
+                                    </MainInfoDescription>
+                                    <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" />
+                            </MainInfo>
+                        </PostInfo>
                     </Post>
                 </ul>
             </Posts>
@@ -228,8 +240,73 @@ export default function SerchUserScreen() {
         color: white;
     }     
 
-    p{
+    p {
+        margin-top: 4px;
         font-size: 11px; 
         color: white;
     }
  `
+ const PostInfo = styled.div`
+    width: 90% 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+    margin-left: 18px;
+
+    p { 
+        font-size: 19px; 
+        color: rgba(255, 255, 255, 1);
+        margin-bottom: 8px;
+    } 
+
+    a { 
+        font-size: 19px; 
+        color: rgba(183, 183, 183, 1); 
+        margin-bottom: 10px;
+        line-height: 20px;
+    }
+ `
+ const MainInfo = styled.div`
+    width: 100%; 
+    height: 155px; 
+    border: 1px solid rgba(77, 77, 77, 1);
+    border-radius: 12px; 
+    display: flex;
+
+    img { 
+        width: 30%;
+        height: 100%;
+        border-radius: 0px 12px 13px 0px;
+        object-fit: cover;
+    }
+ `
+ const MainInfoDescription = styled.div`
+    width: 85%; 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+    padding: 24px 28px 23px 20px; 
+
+    h3 { 
+        font-size: 16px;
+        color: rgba(206, 206, 206, 1);
+        text-align: left;
+        margin-bottom: 8px;
+    }
+
+    h4 { 
+        font-size: 16px;
+        color: rgba(155, 149, 149, 1);
+        text-align: left;
+        margin-bottom: 8px;
+    }
+
+    h5 { 
+        font-size: 16px;
+        color: rgba(206, 206, 206, 1);
+        text-align: left;
+        margin-bottom: 8px;
+    }
+ `
+
+ 
