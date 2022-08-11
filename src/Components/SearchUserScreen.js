@@ -39,6 +39,18 @@ export default function SerchUserScreen() {
         }
     ];
 
+    const posts = [ 
+        {
+            likes: 8
+        }, 
+        {
+            likes: 999
+        }, 
+        { 
+            likes: 0
+        }
+    ]
+
     async function logout() { 
         navigate("/");
     }
@@ -93,10 +105,12 @@ export default function SerchUserScreen() {
         <Main>
             <Posts>
                 <ul>
-                    <RenderUserPosts />
-                    <RenderUserPosts /> 
-                    <RenderUserPosts />
-                    <RenderUserPosts />
+                    {posts.map((post,index) => (
+                        <RenderUserPosts 
+                            index={index}
+                            likes= {post.likes}
+                        />
+                    ))}
                 </ul>
             </Posts>
             <Treading>

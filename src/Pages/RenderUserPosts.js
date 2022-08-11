@@ -1,17 +1,35 @@
 import styled from "styled-components"; 
 import { useState } from "react";
 
-export default function RenderOtherUserPosts() {
+export default function RenderOtherUserPosts({index,likes}) {
     const [liked, setLiked] = useState(false); 
+    let [amountLikes, setAmountLikes] = useState(likes);
+
+    async function likeDeslike(event) { 
+        try {
+            console.log(event); 
+            if(event==="like") { 
+                setLiked(true);
+                setAmountLikes(() => ++amountLikes);
+                console.log(amountLikes);
+            } else { 
+                setLiked(false);
+                setAmountLikes(() => --amountLikes);
+                console.log(amountLikes);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return(
-        <Post>
+        <Post value={index}>
             <PictureAndLike>
                 <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
                 {liked ? (
-                <ion-icon name="heart" id="heart" onClick={() => setLiked(!liked)}></ion-icon> ) : (
-                <ion-icon name="heart-outline" id="heart-outline" onClick={() => setLiked(!liked)}></ion-icon>
+                <ion-icon name="heart" id="heart" onClick={() => likeDeslike("deslike")}></ion-icon> ) : (
+                <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 )}
-                <p>13 likes</p>
+                <p>{amountLikes} likes</p>
             </PictureAndLike>
             <PostInfo>
                 <p>Juvenal Juvêncio</p> 
