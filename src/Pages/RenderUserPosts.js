@@ -1,7 +1,7 @@
 import styled from "styled-components"; 
 import { useState } from "react";
 
-export default function RenderOtherUserPosts({index,likes}) {
+export default function RenderUserPosts({index,likes}) {
     const [liked, setLiked] = useState(false); 
     let [amountLikes, setAmountLikes] = useState(likes);
 
