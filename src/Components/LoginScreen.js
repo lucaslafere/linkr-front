@@ -19,9 +19,12 @@ export default function LoginScreen() {
   const { setToken, token } = useContext(TokenContext);
   const { setUserData } = useContext(UserContext);
 
-  useEffect(() => {
-    window.localStorage.getItem("MY_TOKEN");
-  }, []);
+
+  // Code to get and use the localStorage token:
+  
+  // useEffect(() => {
+  //   window.localStorage.getItem("MY_TOKEN");
+  // }, []);
 
   useEffect(() => {
     window.localStorage.setItem("MY_TOKEN", token);
