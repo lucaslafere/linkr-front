@@ -17,15 +17,15 @@ export default function LoginScreen() {
   const navigate = useNavigate();
 
   const { setToken, token } = useContext(TokenContext);
-  const { setUserData, userData } = useContext(UserContext);
+  const { setUserData } = useContext(UserContext);
 
   useEffect(() => {
-    window.localStorage.getItem("MY_TOKEN")
+    window.localStorage.getItem("MY_TOKEN");
   }, []);
 
   useEffect(() => {
     window.localStorage.setItem("MY_TOKEN", token);
-  })
+  });
 
   const body = {
     email,
@@ -48,7 +48,7 @@ export default function LoginScreen() {
           id: res.data.user.id,
           username: res.data.user.username,
           email: res.data.user.email,
-          profilePhoto: res.data.user.profilePhoto
+          profilePhoto: res.data.user.profilePhoto,
         });
         setLoading(false);
         navigate("/timeline");
@@ -63,23 +63,21 @@ export default function LoginScreen() {
       });
   }
 
-
-  function loginSchema () {
+  function loginSchema() {
     if (email.length < 1) {
       setDisabled(false);
       setLoading(false);
       setErrorText("the field 'e-mail' must be filled");
       setError(true);
       return;
-    } 
+    }
     if (password.length < 1) {
       setDisabled(false);
       setLoading(false);
       setErrorText("the field 'password' must be filled");
       setError(true);
       return;
-    } 
-    else {
+    } else {
       requestLogin();
     }
   }
@@ -103,8 +101,8 @@ export default function LoginScreen() {
       <Container error={error}>
         <LeftContainer error={error}>
           <TextContainer>
-          <h1>linkr</h1>
-          <h2>save, share and discover the best links on the web</h2>
+            <h1>linkr</h1>
+            <h2>save, share and discover the best links on the web</h2>
           </TextContainer>
         </LeftContainer>
         <RightContainer error={error}>
@@ -143,15 +141,13 @@ export default function LoginScreen() {
 }
 
 const TextContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 
-width: 100%;
-height: 100%;
-display: flex;
-justify-content: center;
-flex-direction: column;
-
-
-h1 {
+  h1 {
     font-family: "Passion One";
     font-style: normal;
     font-weight: 700;
@@ -167,68 +163,65 @@ h1 {
     color: #ffffff;
     font-size: 2.6rem;
 
-
     width: 80%;
   }
-
 
   @media (max-width: 614px) {
     width: 100%;
     height: 100%;
 
     h1 {
-    font-family: "Passion One";
-    font-style: normal;
-    font-weight: 700;
-    font-size: 4.75rem;
-    letter-spacing: 0.05em;
-    color: #ffffff;
+      font-family: "Passion One";
+      font-style: normal;
+      font-weight: 700;
+      font-size: 4.75rem;
+      letter-spacing: 0.05em;
+      color: #ffffff;
 
-    text-align: center;
-    width: 100%;
-  }
-  h2 {
-    font-family: "Oswald";
-    font-style: normal;
-    font-weight: 700;
-    color: #ffffff;
-    font-size: 1.4rem;
+      text-align: center;
+      width: 100%;
+    }
+    h2 {
+      font-family: "Oswald";
+      font-style: normal;
+      font-weight: 700;
+      color: #ffffff;
+      font-size: 1.4rem;
 
-
-    width: 100%;
-    height: 50%;
-    text-align: center;
+      width: 100%;
+      height: 50%;
+      text-align: center;
+    }
   }
-  }
-`
+`;
 
 const ContainerModal = styled.div`
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-width: 90%;
-height: 50%;
-background-color: #333333;
-color: #fff;
-border-radius: 12px;
-z-index: 1;
-position: fixed;
-top: 25vh;
-left: 5vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  height: 50%;
+  background-color: #333333;
+  color: #fff;
+  border-radius: 12px;
+  z-index: 1;
+  position: fixed;
+  top: 25vh;
+  left: 5vw;
 
-font-family: 'Lato';
-font-style: normal;
-font-weight: 700;
-font-size: 34px;
-line-height: 41px;
-text-align: center;
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 41px;
+  text-align: center;
 `;
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
-  opacity: ${props => props.error ? 0.3 : 1};
+  opacity: ${(props) => (props.error ? 0.3 : 1)};
 
   @media (max-width: 614px) {
     flex-direction: column;
@@ -251,9 +244,6 @@ const LeftContainer = styled.div`
     height: 30%;
     padding: 2rem;
   }
-
-
-
 `;
 
 const RightContainer = styled.div`
@@ -280,16 +270,13 @@ const Form = styled.form`
   gap: 0.7rem;
   margin-bottom: 2rem;
 
- 
-
   @media (max-width: 614px) {
     margin-top: -4rem;
   }
 
-  @media (max-height: 940px) and (min-height: 668px){
+  @media (max-height: 940px) and (min-height: 668px) {
     margin-top: 3rem;
   }
-
 `;
 const Input = styled.input`
   width: 80%;
@@ -348,7 +335,6 @@ const Button = styled.button`
     height: 50px;
     line-height: 50px;
   }
-
 `;
 const TextLink = styled.div`
   font-family: "Lato";
@@ -360,4 +346,14 @@ const TextLink = styled.div`
   color: #ffffff;
 `;
 
-export {ContainerModal, Container, LeftContainer, RightContainer, Form, Input, Button, TextLink, TextContainer}
+export {
+  ContainerModal,
+  Container,
+  LeftContainer,
+  RightContainer,
+  Form,
+  Input,
+  Button,
+  TextLink,
+  TextContainer,
+};
