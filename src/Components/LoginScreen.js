@@ -107,18 +107,18 @@ export default function LoginScreen() {
 }
 
 const ContainerModal = styled.div`
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-width: 90%;
-height: 50%;
-background-color: #1877f2;
-border-radius: 12px;
-z-index: 1;
-position: fixed;
-top: 25vh;
-left: 5vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  height: 50%;
+  background-color: #1877f2;
+  border-radius: 12px;
+  z-index: 1;
+  position: fixed;
+  top: 25vh;
+  left: 5vw;
 `;
 const Container = styled.div`
   width: 100vw;
@@ -231,4 +231,13 @@ const TextLink = styled.div`
   color: #ffffff;
 `;
 
-export {ContainerModal, Container, LeftContainer, RightContainer, Form, Input, Button, TextLink}
+export {
+  ContainerModal,
+  Container,
+  LeftContainer,
+  RightContainer,
+  Form,
+  Input,
+  Button,
+  TextLink,
+};
