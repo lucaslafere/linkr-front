@@ -1,6 +1,6 @@
 import styled from "styled-components"; 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext";
 import UserContext from "../Contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
@@ -9,12 +9,15 @@ import RenderUserPosts from "../Pages/RenderUserPosts";
 import RenderHashtags from "../Pages/RenderHashtags";
 
 export default function SerchUserScreen() {
+    const { id } = useParams();
     const [search, setSearch] = useState(""); 
     //const [searchUsers, setSearchUsers] = useState([]); 
     //const [userPosts, setUserPosts] = useState([]);
     //const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
     const navigate = useNavigate();
+
+    //axios.get("https://projeto17-linkrback.herokuapp.com/users/${id}");
 
     const searchUsers = [ 
         {
