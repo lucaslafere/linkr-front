@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ReactTagify } from "react-tagify";
+
 export default function FeedScreen() {
   const [userData, setUserData] = useState({
     id: "2",
@@ -12,6 +14,8 @@ export default function FeedScreen() {
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [feedMessage, setFeedMessage] = useState("Loading");
+
   const config = {
     headers: {
       Authorization: "Bearer caroline",
@@ -23,13 +27,18 @@ export default function FeedScreen() {
     promise
       .then((res) => {
         setPosts([...res.data]);
+        if (res.data.length === 0) setFeedMessage("There are no posts yet");
       })
-      .catch((error) => console.log(error.data));
+      .catch((error) =>
+        alert(
+          "An error occured while trying to fetch the posts, please refresh the page"
+        )
+      );
   }, [posts]);
 
   function publishPost() {
     if (!url) {
-      window.alert("url não pode estar vazia!");
+      return window.alert("url não pode estar vazia!");
     }
 
     setLoading(true);
@@ -63,6 +72,7 @@ export default function FeedScreen() {
           />
         </div>
       </TopBar>
+
       <Feed>
         <h3>timeline</h3>
         <NewPost>
@@ -89,18 +99,26 @@ export default function FeedScreen() {
             </Button>
           </Box>
         </NewPost>
-        {posts.map(({ profilePhoto, description, url, username }, index) => {
-          return (
-            <Post key={index}>
-              <img src={profilePhoto} alt="profile" />
-              <Box fontColor={"white"}>
-                <p>{username}</p>
-                <p>{description}</p>
-                <p>{url}</p>
-              </Box>
-            </Post>
-          );
-        })}
+        {posts.length === 0 ? (
+          <span>{feedMessage}</span>
+        ) : (
+          posts.map(({ profilePhoto, description, url, username }, index) => {
+            return (
+              <Post key={index}>
+                <img src={profilePhoto} alt="profile" />
+                <Box fontColor={"white"}>
+                  <h3>{username}</h3>
+                  <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
+                    <span>{description}</span>
+                  </ReactTagify>
+                  <a target={"_blank"} href={url}>
+                    {url}
+                  </a>
+                </Box>
+              </Post>
+            );
+          })
+        )}
       </Feed>
     </Container>
   );
@@ -155,12 +173,19 @@ const Feed = styled.div`
   align-items: center;
   gap: 40px;
 
-  h3 {
+  > h3 {
     width: 40vw;
     font-size: 50px;
     font-family: "Oswald";
     color: #ffffff;
     margin: 40px 0;
+  }
+  > span {
+    font-size: 60px;
+    font-family: "Oswald";
+    color: #ffffff;
+    margin-top: 50px;
+    text-decoration: none;
   }
 `;
 
@@ -182,13 +207,13 @@ const NewPost = styled.div`
 `;
 
 const Box = styled.div`
-  padding: 10px 0 50px 20px;
+  padding: 0 0 50px 20px;
   display: flex;
   flex-direction: column;
   width: 100%;
-  justify-content: space-around;
   position: relative;
-
+  height: 100%;
+  color: white;
   p {
     color: ${({ fontColor }) => fontColor};
   }
@@ -205,6 +230,16 @@ const Box = styled.div`
     ::placeholder {
       font-size: 16px;
     }
+  }
+  h3 {
+    font-size: 30px;
+    width: 30vw;
+    color: white;
+    font-weight: 600;
+    padding: 10px 0;
+  }
+  span {
+    color:#B7B7B7;
   }
 `;
 
