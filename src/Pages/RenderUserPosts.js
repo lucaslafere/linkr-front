@@ -7,15 +7,12 @@ export default function RenderUserPosts({index,likes}) {
 
     async function likeDeslike(event) { 
         try {
-            console.log(event); 
             if(event==="like") { 
                 setLiked(true);
                 setAmountLikes(() => ++amountLikes);
-                console.log(amountLikes);
             } else { 
                 setLiked(false);
                 setAmountLikes(() => --amountLikes);
-                console.log(amountLikes);
             }
         } catch (error) {
             console.log(error);
