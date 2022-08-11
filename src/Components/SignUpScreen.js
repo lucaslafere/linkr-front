@@ -11,6 +11,7 @@ import {
   Input,
   Button,
   TextLink,
+  TextContainer
 } from "./LoginScreen";
 
 export default function SignUpScreen() {
@@ -22,7 +23,7 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
-  const URL = "localhost:4000/sign-up";
+  const URL = "http://localhost:4000/sign-up";
   const navigate = useNavigate();
 
   const body = {
@@ -77,7 +78,7 @@ export default function SignUpScreen() {
           setLoading(false);
           setDisabled(false);
           setErrorText(
-            "Account could not be created, there was an error in the server"
+            `Account could not be created, there was an error in the server: ${err}`
           );
           setError(true);
         });
@@ -101,8 +102,10 @@ export default function SignUpScreen() {
       {error ? openError : null}
       <Container error={error}>
         <LeftContainer>
+          <TextContainer>
           <h1>linkr</h1>
           <h2>save, share and discover the best links on the web</h2>
+          </TextContainer>
         </LeftContainer>
         <RightContainer>
           <Form onSubmit={signUp}>
