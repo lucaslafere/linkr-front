@@ -6,10 +6,13 @@ import UserContext from "../Contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
 import { FaBeer } from 'react-icons/fa';
 import RenderSearchUser from "../Pages/RenderSearchUser";
+import { Container } from "./LoginScreen";
 
 export default function SerchUserScreen() {
     const [search, setSearch] = useState(""); 
+    const [liked, setLiked] = useState(false);
     //const [searchUsers, setSearchUsers] = useState([]);
+    console.log(liked);
 
     const searchUsers = [ 
         {
@@ -51,7 +54,29 @@ export default function SerchUserScreen() {
                 />
             ))}
             </ul>
-        </Search>
+        </Search> 
+
+        <UserTitle>
+            <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" />
+            <a>Juvenal Juvêncio's posts</a>
+        </UserTitle> 
+
+        <Main>
+            <Posts>
+                <ul>
+                    <Post>
+                        <PictureAndLike>
+                            <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" />
+                            {liked ? (
+                                <ion-icon name="heart" id="heart" onClick={() => setLiked(!liked)}></ion-icon> ) : (
+                                <ion-icon name="heart-outline" id="heart-outline" onClick={() => setLiked(!liked)}></ion-icon>
+                            )}
+                            <p>13 likes</p>
+                        </PictureAndLike>
+                    </Post>
+                </ul>
+            </Posts>
+        </Main>
 
         </>
     )
@@ -123,5 +148,88 @@ export default function SerchUserScreen() {
         height: 100%;
         background-color: rgba(231, 231, 231, 1); 
         border-radius: 8px; 
+    }
+ `
+ const UserTitle = styled.div`
+    width: 50%; 
+    height: 100%;
+    margin-top: 53px;
+    display: flex; 
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 43px;
+
+    img { 
+        width: 50px; 
+        height: 50px; 
+        border-radius: 50%;
+    }
+    
+    a { 
+        margin-left: 18px;
+        color: white;
+        font-size: 43px;
+        font-weight: bold; 
+    }
+ `
+ const Main = styled.div`
+    width: 100%; 
+    height: 100%; 
+    display: flex; 
+ `
+ const Posts = styled.div`
+    width: 55%; 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-end; 
+
+    ul { 
+        width: 65%; 
+        height: 100%; 
+    }
+ `
+ const Post = styled.li`
+    width: 100%; 
+    height: 276px; 
+    display: flex;
+    background-color: rgba(23, 23, 23, 1);
+    padding: 19px 23px 20px 20px;
+    border-radius: 16px;
+ `
+ const PictureAndLike = styled.div`
+    width: 10%; 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+
+    img { 
+        width: 50px; 
+        height: 50px;
+        border-radius: 50%;
+        margin-bottom: 20px;
+    }
+
+    ion-icon { 
+        width: 25px;
+        height: 25px; 
+
+        &:hover { 
+            cursor: pointer;
+        } 
+    }  
+
+    ion-icon#heart { 
+        color: rgba(172, 0, 0, 1);
+    }
+
+    ion-icon#heart-outline { 
+        color: white;
+    }     
+
+    p{
+        font-size: 11px; 
+        color: white;
     }
  `
