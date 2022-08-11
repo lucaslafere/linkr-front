@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { IoIosArrowDown } from 'react-icons/io';
+import PostBox from '../Pages/PostBox';
+
 
 export default function HashtagScreen() {
     return(
@@ -14,7 +16,18 @@ export default function HashtagScreen() {
         </Header>
         <Content>
             <span># react</span>
-            <Post />
+            <div>
+                <Posts>
+                    <PostBox />
+                    <PostBox />
+                    <PostBox />
+                    <PostBox />
+                </Posts>
+                <Trendings >
+
+                </Trendings>
+            </div>
+            
         </Content>
     </Container>
     );
@@ -22,7 +35,7 @@ export default function HashtagScreen() {
 
 const Container = styled.div`
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     background-color: #333333;
     display: flex;
     flex-direction: column;
@@ -56,8 +69,34 @@ const Header = styled.div`
             margin-left: 10px;
         }
     }
-
-    
 `
 const Content = styled.div`
+    margin-top: 150px;
+     > span {
+         display: inline-block;
+         margin-bottom: 55px;
+        color: #FFFFFF;
+        font-family: "Oswald";
+        font-size: 43px;
+        font-weight: bold;
+    }
+`;
+
+const Posts = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+const Trendings = styled.div`
+    width: 301px;
+    height: 406px;
+    background-color: #171717;
+    border-radius: 16px;
+    span {
+        color: #FFFFFF;
+        font-family: 'Lato';
+        font-size: 19px;
+        font-weight: bold;
+    }
+
+
 `;
