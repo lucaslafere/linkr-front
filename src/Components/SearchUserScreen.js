@@ -1,17 +1,17 @@
 import styled from "styled-components"; 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext";
 import UserContext from "../Contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
-import { FaBeer } from 'react-icons/fa';
 import RenderSearchUser from "../Pages/RenderSearchUser";
-import { Container } from "./LoginScreen";
 
 export default function SerchUserScreen() {
     const [search, setSearch] = useState(""); 
     const [liked, setLiked] = useState(false);
-    //const [searchUsers, setSearchUsers] = useState([]);
+    //const [searchUsers, setSearchUsers] = useState([]); 
+    const [clickedLogout, setClickedLogout] = useState(false);
+    const navigate = useNavigate();
     console.log(liked);
 
     const searchUsers = [ 
@@ -24,6 +24,10 @@ export default function SerchUserScreen() {
             username: "cr7"
         }
     ];
+
+    async function logout() { 
+        navigate("/");
+    }
 
     return( 
         <>
@@ -39,10 +43,19 @@ export default function SerchUserScreen() {
                 />
             </InputText> 
             <LoggedUser>
-                <FaBeer />
+                {clickedLogout ? (
+                <ion-icon name="chevron-up-outline" onClick={() => setClickedLogout(false)}></ion-icon>
+                ) : ( 
+                <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
+                )}
                 <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" />
             </LoggedUser>
         </Header> 
+
+        {clickedLogout ? (
+        <Logout onClick={logout}> 
+            <a>Logout</a>
+        </Logout> ) : ("")}
 
         <Search>
             <ul>
@@ -136,13 +149,44 @@ export default function SerchUserScreen() {
     display: flex; 
     justify-content: center; 
     align-items: center;
-    color: white;
+    color: white; 
+
+    ion-icon { 
+        width: 27px;
+        height: 27px; 
+
+        &:hover { 
+            cursor: pointer;
+        }
+    }
 
     img { 
         width: 53px;
         height: 53px;
         border-radius: 50%; 
         margin-left: 17px;
+    } 
+ `
+ const Logout = styled.div`
+    width: 150px; 
+    height: 47px; 
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    background-color: rgba(23, 23, 23, 1);
+    color: white; 
+    border-radius: 0px 0px 0px 20px; 
+    position: fixed; 
+    right: 0; 
+    top: 72px; 
+
+    a { 
+        font-size: 17px;
+        font-weight: bold; 
+    } 
+
+    &:hover { 
+        cursor: pointer;
     }
  `
  const Search = styled.div`
