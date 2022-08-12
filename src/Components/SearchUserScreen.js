@@ -1,6 +1,6 @@
 import styled from "styled-components"; 
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useContext } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext";
 import UserContext from "../Contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
@@ -11,12 +11,12 @@ import RenderHashtags from "../Pages/RenderHashtags";
 export default function SerchUserScreen() {
     const { id } = useParams();
     const [search, setSearch] = useState(""); 
+    const { token } = useContext(TokenContext);
     //const [searchUsers, setSearchUsers] = useState([]); 
     //const [userPosts, setUserPosts] = useState([]);
     //const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
     const navigate = useNavigate();
-
     //axios.get("https://projeto17-linkrback.herokuapp.com/users/${id}");
 
     const searchUsers = [ 
@@ -40,8 +40,11 @@ export default function SerchUserScreen() {
     ];
 
     async function logout() { 
+        axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
+        window.localStorage.setItem("MY_TOKEN", "");
+        setToken("");
         navigate("/");
-    }
+    };
 
     return( 
         <>
