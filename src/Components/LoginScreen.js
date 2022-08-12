@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext";
 import UserContext from "../Contexts/UserContext";
@@ -13,11 +13,28 @@ export default function LoginScreen() {
   const [errorText, setErrorText] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const URL = "http://localhost:4000/login";
+  const URL = "https://projeto17-linkrback.herokuapp.com/login";
   const navigate = useNavigate();
 
-  const { setToken } = useContext(TokenContext);
-  const { setUserData, userData } = useContext(UserContext);
+  const { setToken, token } = useContext(TokenContext);
+  const { setUserData } = useContext(UserContext);
+
+
+  // Code to get and use the localStorage token:
+
+  useEffect(() => {
+    const data = window.localStorage.getItem("MY_TOKEN");
+    setToken(data);
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("MY_TOKEN", token);
+  }, [token]);
+
+  if (token){
+    navigate("/timeline")
+  }
+
 
   const body = {
     email,
