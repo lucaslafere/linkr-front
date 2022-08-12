@@ -23,7 +23,7 @@ export default function SerchUserScreen() {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-        const promise = axios.get(`http://localhost:4100/users/${id}`,config);
+        const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/2`,config);
 
         promise.then(response => { 
             console.log(response.data);
@@ -32,7 +32,7 @@ export default function SerchUserScreen() {
         promise.catch(error => { 
             console.log(error);
         }) 
-    })
+    },[])
 
     const searchUsers = [ 
         {

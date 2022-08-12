@@ -23,7 +23,7 @@ export default function RenderUserPosts({index,likes}) {
             <PictureAndLike>
                 <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
                 {liked ? (
-                <ion-icon name="heart" id="heart" onClick={() => likeDeslike("deslike")}></ion-icon> ) : (
+                <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> ) : (
                 <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 )}
                 <p>{amountLikes} likes</p>
