@@ -13,6 +13,7 @@ export default function SerchUserScreen() {
     const { token } = useContext(TokenContext);
     const [search, setSearch] = useState(""); 
     const [userPosts, setUserPosts] = useState([]);
+    const [postss,setPostss] = useState([]);
     //const [searchUsers, setSearchUsers] = useState([]); 
     //const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
@@ -26,8 +27,9 @@ export default function SerchUserScreen() {
         const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/2`,config);
 
         promise.then(response => { 
-            console.log(response.data);
-            setUserPosts(response.data);
+            console.log(response.data[0]);
+            setUserPosts(response.data[0]);
+            setPostss(response.data[0].posts);
         });
         promise.catch(error => { 
             console.log(error);
@@ -113,17 +115,21 @@ export default function SerchUserScreen() {
         </Logout> ) : ("")}
 
         <UserTitle>
-            <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
-            <a>Juvenal Juvêncio's posts</a>
+            <img src={userPosts.profilePhoto} alt={userPosts.username}/>
+            <a>{userPosts.username}'s posts</a>
         </UserTitle> 
 
         <Main>
             <Posts>
                 <ul>
-                    {posts.map((post,index) => (
+                    {postss.map((post,index) => (
                         <RenderUserPosts 
                             index={index}
-                            likes= {post.likes}
+                            likes= {99}
+                            url={post.url}
+                            description={post.description}
+                            username={userPosts.username}
+                            profilePhoto={userPosts.profilePhoto}
                         />
                     ))}
                 </ul>

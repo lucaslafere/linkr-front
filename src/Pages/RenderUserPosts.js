@@ -1,7 +1,7 @@
 import styled from "styled-components"; 
 import { useState } from "react";
 
-export default function RenderUserPosts({index,likes}) {
+export default function RenderUserPosts({index,likes,url,description,username,profilePhoto}) {
     const [liked, setLiked] = useState(false); 
     let [amountLikes, setAmountLikes] = useState(likes);
 
@@ -21,7 +21,7 @@ export default function RenderUserPosts({index,likes}) {
     return(
         <Post value={index}>
             <PictureAndLike>
-                <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
+                <img src={profilePhoto} alt={username}/>
                 {liked ? (
                 <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> ) : (
                 <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
@@ -29,13 +29,13 @@ export default function RenderUserPosts({index,likes}) {
                 <p>{amountLikes} likes</p>
             </PictureAndLike>
             <PostInfo>
-                <p>Juvenal Juvêncio</p> 
-                <a>Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material</a>
+                <p>{username}</p> 
+                <a>{description}</a>
                 <MainInfo>
                     <MainInfoDescription>
                         <h3>Como aplicar o Material UI em um projeto React</h3>
                         <h4>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h4>
-                        <h5>https://medium.com/@pshrmn/a-simple-react-router</h5>
+                        <h5>{url}</h5>
                     </MainInfoDescription>
                         <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
                 </MainInfo>
