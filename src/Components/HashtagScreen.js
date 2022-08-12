@@ -8,23 +8,26 @@ import TokenContext from '../Contexts/TokenContext';
 
 
 export default function HashtagScreen() {
-    const trending = useParams();
     const [ trendingPosts, setTrendingPosts ] = useState(null);
+    const [ trendingsRank, setTrendingsRank ] = useState(null);
     const { token } = useContext(TokenContext);
+    const trending = useParams();
     const config = {
         headers: {
             "Authorization": "Bearer " + token
         }
     };
 
-useEffect(() => {
-    const request = axios.get(`http://localhost:4000/hashtag/${trending.hashtag}`, config);
-        request.then(response => {
-            setTrendingPosts(response.data);
-        })
+
+    useEffect(() => {
+        axios.get(`http://localhost:4000/hashtag/${trending.hashtag}`, config)
+        .then(response => setTrendingPosts(response.data))
         .catch(error => alert(error));
-        
-}, []);
+
+        axios.get(`http://localhost:4000/ranking`)
+        .then(response => setTrendingsRank(response.data))
+        .catch(error => alert(error));
+    }, []);
 
     return(
     <Container>
@@ -32,14 +35,16 @@ useEffect(() => {
             <span>linkr</span>
             <div>
                 <IoIosArrowDown color="#FFFFFF" fontSize="35"/>
-                <img src='https://st.depositphotos.com/1010338/2099/i/600/depositphotos_20999947-stock-photo-tropical-island-with-palms.jpg' alt="User" width="53" height="53" />
+                <img src='https://st.depositphotos.com/1010338/2099/i/600/depositphotos_20999947-stock-photo-tropical-island-with-palms.jpg' 
+                alt="User" width="53" height="53" />
             </div>
         </Header>
         <Content>
             <span># {trending.hashtag}</span>
             <div>
                 <Posts>
-                    {trendingPosts === null ? <></> : trendingPosts.map((object, index) => <PostBox 
+                    {trendingPosts === null ? <></> : 
+                    trendingPosts.map((object, index) => <PostBox 
                     key={index}
                     url={object.url} 
                     profilePhoto={object.profilePhoto} 
@@ -48,16 +53,19 @@ useEffect(() => {
                     }
                 </Posts>
                 <Trendings>
-                    <h3>trending</h3>
-                    <span># javascript</span>
-                    <span># react-native</span>
-                    <span># material</span>
-                    <span># web-dev</span>
-                    <span># mobile</span>
-                    <span># css</span>
-                    <span># html</span>
-                    <span># node</span>
-                    <span># sql</span>
+                    <div>
+                        <span>trending</span>
+                    </div>
+                    <div>
+                        {trendingsRank === null ? <></> : trendingsRank.map(object => <span># {object.name}</span>)}
+                        <span># javascript</span>
+                        <span># react-native</span>
+                        <span># material</span>
+                        <span># web-dev</span>
+                        <span># mobile</span>
+                        <span># css</span>
+                    </div>
+                    
                 </Trendings>
             </div>
             
@@ -130,33 +138,36 @@ const Trendings = styled.div`
     border-radius: 16px;
     display: flex;
     flex-direction: column;
-    padding: 0px 20px;
-    div {
-        display: flex;
-        flex-direction: column;
-        
-    }
-    span {
-        color: #FFFFFF;
-        font-family: 'Lato';
-        font-size: 19px;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-    h3 {
-        font-size: 27px;
-        font-weight: bold;
-        display: inline-block;
+
+    > div:nth-child(1) {
         display: flex;
         align-items: center;
         width: 100%;
         height: 61px;
         border-bottom: 1px solid #484848;
-        color: #FFFFFF;
-        margin-bottom: 20px;
-        font-family: 'Oswald'
+        padding: 0px 20px;
+        span {
+            font-size: 27px;
+            font-weight: bold;
+            color: #FFFFFF;
+            font-family: 'Oswald';
+        }
         
     }
-
-
+    > div:nth-child(2) {
+        display: flex;
+        flex-direction: column;
+        padding: 10px 20px;
+        
+        span {
+            display: inline-block;
+            color: #FFFFFF;
+            font-family: 'Lato';
+            font-size: 19px;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+    }
+    
+        
 `;
