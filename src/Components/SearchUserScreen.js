@@ -1,23 +1,38 @@
 import styled from "styled-components"; 
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext";
 import UserContext from "../Contexts/UserContext";
-import { ThreeDots } from "react-loader-spinner";
 import RenderSearchUser from "../Pages/RenderSearchUser";
 import RenderUserPosts from "../Pages/RenderUserPosts";
 import RenderHashtags from "../Pages/RenderHashtags";
+import axios from "axios";
 
 export default function SerchUserScreen() {
     const { id } = useParams();
+    const { token } = useContext(TokenContext);
     const [search, setSearch] = useState(""); 
+    const [userPosts, setUserPosts] = useState([]);
     //const [searchUsers, setSearchUsers] = useState([]); 
-    //const [userPosts, setUserPosts] = useState([]);
     //const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
     const navigate = useNavigate();
+    console.log(token);
 
-    //axios.get("https://projeto17-linkrback.herokuapp.com/users/${id}");
+    useEffect(() => {
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        const promise = axios.get(`http://localhost:4100/users/${id}`,config);
+
+        promise.then(response => { 
+            console.log(response.data);
+            setUserPosts(response.data);
+        });
+        promise.catch(error => { 
+            console.log(error);
+        }) 
+    })
 
     const searchUsers = [ 
         {

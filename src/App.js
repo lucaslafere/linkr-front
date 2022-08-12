@@ -25,7 +25,7 @@ export default function App() {
             {/* Need to refactor Login and SignUp screens to style.js */}
             <Route path="/" element={<LoginScreen />} />
             <Route path="/sign-up" element={<SignUpScreen />} /> 
-            <Route path="/search" element={<SerchUserScreen />} />
+            <Route path="/timeline/:id" element={<SerchUserScreen />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>
