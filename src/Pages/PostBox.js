@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 export default function PostBox({profilePhoto , username, description, url }) {
     const [liked, setLiked] = useState(false); 
-    console.log(profilePhoto);
+    
     return(
         <Post>
             <PictureAndLike>

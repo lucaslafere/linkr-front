@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from 'axios';
 import styled from 'styled-components';
 import { IoIosArrowDown } from 'react-icons/io';
@@ -8,28 +8,29 @@ import TokenContext from '../Contexts/TokenContext';
 
 
 export default function HashtagScreen() {
-    const [ trendingPosts, setTrendingPosts ] = useState(null);
-    const [ trendingsRank, setTrendingsRank ] = useState(null);
-    const { token } = useContext(TokenContext);
-    const trending = useParams();
-    const config = {
+  const [ trendingPosts, setTrendingPosts ] = useState(null);
+  const [ trendingsRank, setTrendingsRank ] = useState(null);
+  const { token } = useContext(TokenContext);
+  const trending = useParams();
+  const config = {
         headers: {
             "Authorization": "Bearer " + token
         }
     };
 
 
-    useEffect(() => {
-        axios.get(`http://localhost:4000/hashtag/${trending.hashtag}`, config)
-        .then(response => setTrendingPosts(response.data))
-        .catch(error => alert(error));
+  useEffect(() => {
+    axios.get(`http://localhost:4000/hashtag/${trending.hashtag}`, config)
+    .then(response => setTrendingPosts(response.data))
+    .catch(error => alert(error));
 
-        axios.get(`http://localhost:4000/ranking`)
-        .then(response => setTrendingsRank(response.data))
-        .catch(error => alert(error));
-    }, []);
+    axios.get(`http://localhost:4000/ranking`)
+    .then(response => setTrendingsRank(response.data))
+    .catch(error => alert(error));
 
-    return(
+  }, [trending]);
+
+  return(
     <Container>
         <Header>
             <span>linkr</span>
@@ -57,7 +58,7 @@ export default function HashtagScreen() {
                         <span>trending</span>
                     </div>
                     <div>
-                        {trendingsRank === null ? <></> : trendingsRank.map(object => <span># {object.name}</span>)}
+                        {trendingsRank === null ? <></> : trendingsRank.map(object => <Link to={`/hashtag/${object.name}`}> <span># {object.name}</span> </Link>)}
                         <span># javascript</span>
                         <span># react-native</span>
                         <span># material</span>
