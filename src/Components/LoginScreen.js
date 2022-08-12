@@ -13,7 +13,7 @@ export default function LoginScreen() {
   const [errorText, setErrorText] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const URL = "https://projeto17-linkrback.herokuapp.com/login";
+  const URL = "http://projeto17-linkrback.herokuapp.com/login";
   const navigate = useNavigate();
 
   const { setToken, token } = useContext(TokenContext);

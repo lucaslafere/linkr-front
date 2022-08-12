@@ -1,17 +1,18 @@
 import styled from "styled-components"; 
-import { useState } from "react";
-import { useNavigate, useParams, useContext } from "react-router-dom";
+import { useState, useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext";
 import UserContext from "../Contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
 import RenderSearchUser from "../Pages/RenderSearchUser";
 import RenderUserPosts from "../Pages/RenderUserPosts";
 import RenderHashtags from "../Pages/RenderHashtags";
+import axios from 'axios';
 
 export default function SerchUserScreen() {
     const { id } = useParams();
     const [search, setSearch] = useState(""); 
-    const { token } = useContext(TokenContext);
+    const { token, setToken } = useContext(TokenContext);
     //const [searchUsers, setSearchUsers] = useState([]); 
     //const [userPosts, setUserPosts] = useState([]);
     //const [hashtags,setHashtags] = useState([]);
