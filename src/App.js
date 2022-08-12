@@ -5,6 +5,8 @@ import UserContext from "./Contexts/UserContext";
 import LoginScreen from "./Components/LoginScreen";
 import SignUpScreen from "./Components/SignUpScreen";
 import HashtagScreen from "./Components/HashtagScreen";
+import SerchUserScreen from "./Components/SearchUserScreen";
+import GlobalStyle from "./Styles/globalStyles";
 
 export default function App() {
   const [token, setToken] = useState("");
@@ -18,12 +20,14 @@ export default function App() {
   return (
     <TokenContext.Provider value={{ token, setToken }}>
       <UserContext.Provider value={{ userData, setUserData }}>
+        <GlobalStyle />
         <BrowserRouter>
           <Routes>
             {/* Need to refactor Login and SignUp screens to style.js */}
             <Route path="/" element={<LoginScreen />} />
             <Route path="/sign-up" element={<SignUpScreen />} />
             <Route path="/hashtag/:hashtag" element={<HashtagScreen />} />
+            <Route path="/search" element={<SerchUserScreen />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>
