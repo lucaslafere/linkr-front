@@ -1,22 +1,23 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-export default function PostBox() {
+
+export default function PostBox({profilePhoto , username, description, url }) {
     const [liked, setLiked] = useState(false); 
+    console.log(profilePhoto);
     return(
         <Post>
             <PictureAndLike>
-                <img src="https://st.depositphotos.com/1010338/2099/i/600/depositphotos_20999947-stock-photo-tropical-island-with-palms.jpg" alt="link imagem"/>
-
-                {
-                liked ? ( <ion-icon  name="heart" id="heart" onClick={() => setLiked(!liked)}></ion-icon> )
-                 : ( <ion-icon name="heart-outline" id="heart-outline" onClick={() => setLiked(!liked)}></ion-icon>) 
+                <img src={profilePhoto} alt="User"/>
+                { liked ? 
+                  <ion-icon  name="heart" id="heart" onClick={() => setLiked(!liked)}></ion-icon> :
+                  <ion-icon name="heart-outline" id="heart-outline" onClick={() => setLiked(!liked)}></ion-icon>
                 }
                 <p>13 likes</p>
             </PictureAndLike>
             <PostInfo>
-                <p>Juvenal Juvêncio</p> 
-                <a>Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material</a>
-                <MainInfo>
+                <p>{username}</p> 
+                <span>{description}</span>
+                <MainInfo href={url} target="_blank">
                     <MainInfoDescription>
                         <h3>Como aplicar o Material UI em um projeto React</h3>
                         <h4>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h4>
@@ -81,14 +82,15 @@ const Post = styled.li`
         color: rgba(255, 255, 255, 1);
         margin-bottom: 8px;
     } 
-    a { 
+    span { 
         font-size: 19px; 
         color: rgba(183, 183, 183, 1); 
         margin-bottom: 10px;
         line-height: 20px;
     }
  `
- const MainInfo = styled.div`
+ const MainInfo = styled.a`
+    display: inline-block;
     width: 100%; 
     height: 155px; 
     border: 1px solid rgba(77, 77, 77, 1);

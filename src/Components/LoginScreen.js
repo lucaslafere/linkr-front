@@ -43,7 +43,7 @@ export default function LoginScreen() {
           profilePhoto: res.data.user.profilePhoto
         });
         setLoading(false);
-        navigate("/timeline");
+        navigate("/hashtag/hastag1");
       })
       .catch(() => {
         setDisabled(false);

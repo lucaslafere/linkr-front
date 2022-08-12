@@ -9,19 +9,22 @@ import TokenContext from '../Contexts/TokenContext';
 
 export default function HashtagScreen() {
     const trending = useParams();
-    const [ trendingPost, setTrendingPost ] = useState([]);
+    const [ trendingPosts, setTrendingPosts ] = useState(null);
     const { token } = useContext(TokenContext);
-    console.log(token);
+    const config = {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    };
+
 useEffect(() => {
-    const posts = axios
-        .get(`/hashtag/${trending.hashtag}`)
-        .then(() => setTrendingPost(posts))
+    const request = axios.get(`http://localhost:4000/hashtag/${trending.hashtag}`, config);
+        request.then(response => {
+            setTrendingPosts(response.data);
+        })
         .catch(error => alert(error));
+        
 }, []);
-    
-    
-
-
 
     return(
     <Container>
@@ -36,10 +39,13 @@ useEffect(() => {
             <span># {trending.hashtag}</span>
             <div>
                 <Posts>
-                    <PostBox />
-                    <PostBox />
-                    <PostBox />
-                    <PostBox />
+                    {trendingPosts === null ? <></> : trendingPosts.map((object, index) => <PostBox 
+                    key={index}
+                    url={object.url} 
+                    profilePhoto={object.profilePhoto} 
+                    username={object.username} 
+                    description={object.description}/>)
+                    }
                 </Posts>
                 <Trendings>
                     <h3>trending</h3>
