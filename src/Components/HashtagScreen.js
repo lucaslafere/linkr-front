@@ -58,7 +58,13 @@ export default function HashtagScreen() {
                         <span>trending</span>
                     </div>
                     <div>
-                        {trendingsRank === null ? <></> : trendingsRank.map(object => <Link to={`/hashtag/${object.name}`}> <span># {object.name}</span> </Link>)}
+                        {trendingsRank === null ? 
+                        <></> : 
+                        trendingsRank.map(object => 
+                            <Link to={`/hashtag/${object.name}`}> 
+                            <span># {object.name}</span> 
+                            </Link>)
+                        }
                         <span># javascript</span>
                         <span># react-native</span>
                         <span># material</span>
