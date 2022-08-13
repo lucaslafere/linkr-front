@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from "react-router-dom";
+import { IoIosArrowDown } from 'react-icons/io';
 import axios from 'axios';
 import styled from 'styled-components';
-import { IoIosArrowDown } from 'react-icons/io';
 import PostBox from '../Pages/PostBox';
 import TokenContext from '../Contexts/TokenContext';
 
@@ -50,7 +50,11 @@ export default function HashtagScreen() {
                     url={object.url} 
                     profilePhoto={object.profilePhoto} 
                     username={object.username} 
-                    description={object.description}/>)
+                    description={object.description}
+                    urlDescription={object.urlDescription}
+                    urlTitle={object.urlTitle}
+                    urlImage={object.urlImage}
+                    />)
                     }
                 </Posts>
                 <Trendings>
@@ -62,7 +66,7 @@ export default function HashtagScreen() {
                         <></> : 
                         trendingsRank.map(object => 
                             <Link to={`/hashtag/${object.name}`}> 
-                            <span># {object.name}</span> 
+                            <span>{object.name}</span> 
                             </Link>)
                         }
                         <span># javascript</span>
