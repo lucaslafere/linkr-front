@@ -6,7 +6,7 @@ import UserContext from "../Contexts/UserContext";
 import RenderSearchUser from "../Pages/RenderSearchUser";
 import RenderUserPosts from "../Pages/RenderUserPosts";
 import RenderHashtags from "../Pages/RenderHashtags";
-import axios from "axios";
+import axios from 'axios';
 
 export default function SerchUserScreen() {
     const { id } = useParams();
@@ -69,8 +69,11 @@ export default function SerchUserScreen() {
     ]
 
     async function logout() { 
+        axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
+        window.localStorage.setItem("MY_TOKEN", "");
+        setToken("");
         navigate("/");
-    }
+    };
 
     return( 
         <>
