@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 
-export default function PostBox({profilePhoto , username, description, url }) {
+export default function PostBox({profilePhoto , username, description, url, urlDescription, urlTitle, urlImage }) {
     const [liked, setLiked] = useState(false); 
     
     return(
@@ -19,11 +19,11 @@ export default function PostBox({profilePhoto , username, description, url }) {
                 <span>{description}</span>
                 <MainInfo href={url} target="_blank">
                     <MainInfoDescription>
-                        <h3>Como aplicar o Material UI em um projeto React</h3>
-                        <h4>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h4>
-                        <h5>https://medium.com/@pshrmn/a-simple-react-router</h5>
+                        <h3>{urlTitle}</h3>
+                        <h4>{urlDescription}</h4>
+                        <h5>{url}</h5>
                     </MainInfoDescription>
-                        <img src="https://st.depositphotos.com/1010338/2099/i/600/depositphotos_20999947-stock-photo-tropical-island-with-palms.jpg" alt="link imagem"/>
+                        <img src={urlImage}/>
                 </MainInfo>
             </PostInfo>
         </Post>
