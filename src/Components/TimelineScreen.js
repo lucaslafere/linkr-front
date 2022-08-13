@@ -27,6 +27,7 @@ const {userData, setUserData} = useContext(UserContext);
       .then((res) => {
         setPosts([...res.data]);
         if (res.data.length === 0) setFeedMessage("There are no posts yet");
+        // console.log(res.data);
       })
       .catch((error) =>
         alert(
@@ -66,7 +67,7 @@ const {userData, setUserData} = useContext(UserContext);
         <div>
           <ion-icon name="chevron-down-outline"></ion-icon>
           <img
-            src="https://buffer.com/library/content/images/2022/03/amina.png"
+            src={userData.profilePhoto}
             alt="profile"
           />
         </div>
@@ -76,7 +77,7 @@ const {userData, setUserData} = useContext(UserContext);
         <h3>timeline</h3>
         <NewPost>
           <img
-            src="https://buffer.com/library/content/images/2022/03/amina.png"
+            src={userData.profilePhoto}
             alt="profile"
           />
           <Box fontColor={"#9f9f9f"}>
@@ -137,6 +138,10 @@ const TopBar = styled.div`
   width: 100vw;
   display: flex;
   justify-content: space-between;
+  position:fixed;
+  left:0;
+  top:0;
+  z-index:1;
   h1 {
     color: white;
     font-family: "Passion One";
@@ -171,7 +176,7 @@ const Feed = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 40px;
-
+  margin-top: 90px;
   > h3 {
     width: 40vw;
     font-size: 50px;
