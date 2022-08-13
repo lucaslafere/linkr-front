@@ -130,6 +130,10 @@ export default function SerchUserScreen() {
                             description={post.description}
                             username={userPosts.username}
                             profilePhoto={userPosts.profilePhoto}
+                            urlDescription={post.urlDescription}
+                            urlImage={post.urlImage}
+                            urlTitle={post.urlTitle}
+                            id={post.id}
                         />
                     ))}
                 </ul>

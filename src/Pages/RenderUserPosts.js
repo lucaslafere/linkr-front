@@ -1,18 +1,27 @@
-import styled from "styled-components"; 
+import styled from "styled-components";  
+import axios from "axios";
 import { useState } from "react";
 
-export default function RenderUserPosts({index,likes,url,description,username,profilePhoto}) {
+export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id}) {
     const [liked, setLiked] = useState(false); 
     let [amountLikes, setAmountLikes] = useState(likes);
 
     async function likeDeslike(event) { 
+        const postLiked = { postLiked: event};
         try {
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+            };
             if(event==="like") { 
                 setLiked(true);
                 setAmountLikes(() => ++amountLikes);
+                const promise = await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config);
+                console.log(promise.data);
             } else { 
                 setLiked(false);
                 setAmountLikes(() => --amountLikes);
+                const promise = await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config);
+                console.log(promise.data);
             }
         } catch (error) {
             console.log(error);
@@ -33,11 +42,11 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 <a>{description}</a>
                 <MainInfo>
                     <MainInfoDescription>
-                        <h3>Como aplicar o Material UI em um projeto React</h3>
-                        <h4>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h4>
+                        <h3>{ulrTitle}</h3>
+                        <h4>{urlDescription}</h4>
                         <h5>{url}</h5>
                     </MainInfoDescription>
-                        <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
+                        <img src={urlImage} alt={ulrTitle}/>
                 </MainInfo>
             </PostInfo>
         </Post>
@@ -112,7 +121,7 @@ const Post = styled.li`
  `
  const MainInfo = styled.div`
     width: 100%; 
-    height: 155px; 
+    height: 90%; 
     border: 1px solid rgba(77, 77, 77, 1);
     border-radius: 12px; 
     display: flex;
