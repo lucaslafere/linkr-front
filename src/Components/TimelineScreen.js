@@ -1,29 +1,28 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ReactTagify } from "react-tagify";
+import UserContext from "../Contexts/UserContext.js";
 
 export default function FeedScreen() {
-  const [userData, setUserData] = useState({
-    id: "2",
-    username: "Caroline",
-    email: "caroline@gmail.com",
-    profilePhoto: "https://buffer.com/library/content/images/2022/03/amina.png",
-  });
+const {userData, setUserData} = useContext(UserContext);
+
+  const token = localStorage.getItem('MY_TOKEN');
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
-
+  const URL = "https://projeto17-linkrback.herokuapp.com/posts";
+  // const URL = "http://localhost:4000/posts";
   const config = {
     headers: {
-      Authorization: "Bearer caroline",
+      Authorization: `Bearer ${token}`,
     },
   };
 
   useEffect(() => {
-    const promise = axios.get("http://localhost:4000/posts");
+    const promise = axios.get(URL,config);
     promise
       .then((res) => {
         setPosts([...res.data]);
@@ -47,7 +46,7 @@ export default function FeedScreen() {
       description,
     };
 
-    const promise = axios.post("http://localhost:4000/posts", body, config);
+    const promise = axios.post(URL, body, config);
     promise
       .then((res) => {
         setLoading(false);
