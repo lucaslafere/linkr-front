@@ -29,7 +29,7 @@ export default function App() {
             <Route path="/sign-up" element={<SignUpScreen />} /> 
             <Route path="/timeline" element={<FeedScreen />} />
             <Route path="/timeline/:id" element={<SerchUserScreen />} />
-            <Route path="/hashtag/:hashtag" element={<HashtagScreen />} />
+            <Route path="/hashtag/:hashtag" element={<HashtagScreen />} /> 
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>

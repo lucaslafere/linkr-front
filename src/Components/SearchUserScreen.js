@@ -7,45 +7,18 @@ import RenderSearchUser from "../Pages/RenderSearchUser";
 import RenderUserPosts from "../Pages/RenderUserPosts";
 import RenderHashtags from "../Pages/RenderHashtags";
 import axios from 'axios';
+import { DebounceInput } from 'react-debounce-input';
 
 export default function SerchUserScreen() {
     const { id } = useParams();
-    const { token } = useContext(TokenContext);
-    const [search, setSearch] = useState(""); 
+    const { token, setToken } = useContext(TokenContext);
+    const [search, setSearch] = useState([]); 
     const [userPosts, setUserPosts] = useState([]);
-    const [postss,setPostss] = useState([]);
+    const [post,setPost] = useState([]);
     //const [searchUsers, setSearchUsers] = useState([]); 
     //const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
     const navigate = useNavigate();
-    console.log(token);
-
-    useEffect(() => {
-        const config = {
-            headers: { Authorization: `Bearer ${token}` },
-        };
-        const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/2`,config);
-
-        promise.then(response => { 
-            console.log(response.data[0]);
-            setUserPosts(response.data[0]);
-            setPostss(response.data[0].posts);
-        });
-        promise.catch(error => { 
-            console.log(error);
-        }) 
-    },[])
-
-    const searchUsers = [ 
-        {
-            image: "https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg",
-            username: "cr7"
-        }, 
-        {
-            image: "https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg",
-            username: "cr7"
-        }
-    ];
 
     const hashtags = [
         { 
@@ -56,17 +29,33 @@ export default function SerchUserScreen() {
         }
     ];
 
-    const posts = [ 
-        {
-            likes: 8
-        }, 
-        {
-            likes: 999
-        }, 
-        { 
-            likes: 0
+    useEffect(() => {
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/${id}`,config);
+
+        promise.then(response => { 
+            console.log(response.data[0]);
+            setUserPosts(response.data[0]);
+            setPost(response.data[0].posts);
+        });
+        promise.catch(error => { 
+            console.log(error);
+        }) 
+    },[]);
+
+    async function searchUser(event) { 
+        const username = { username: event };
+        console.log(username);
+        try {
+            const promise = await axios.post("http://localhost:4100/other-users",username); 
+            console.log(promise.data);
+            setSearch(promise.data);
+        } catch (error) {
+            console.log(error);
         }
-    ]
+    }
 
     async function logout() { 
         axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
@@ -81,21 +70,20 @@ export default function SerchUserScreen() {
             <a>linkr</a>
             <Container>
                 <InputText>
-                    <input
+                    <DebounceInput
                         type="text"
                         placeholder="Search for people"
-                        value={search}
-                        onChange={(event) => setSearch(event.target.value)}
-                        required
-                    />
+                        minLength={3}
+                        debounceTimeout={400}
+                        onChange={(event) => searchUser(event.target.value)} />
                     <ion-icon name="search-sharp"></ion-icon>
                 </InputText>
                 <Search>
                     <ul>
-                        {searchUsers.map((users,index) => (
+                        {search.map((users,index) => (
                             <RenderSearchUser 
                                 index= {index}
-                                image= {users.image}
+                                image= {users.profilePhoto}
                                 username= {users.username}
                             />
                         ))}
@@ -125,7 +113,7 @@ export default function SerchUserScreen() {
         <Main>
             <Posts>
                 <ul>
-                    {postss.map((post,index) => (
+                    {post.map((post,index) => (
                         <RenderUserPosts 
                             index={index}
                             likes= {99}

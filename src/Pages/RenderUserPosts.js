@@ -1,10 +1,12 @@
 import styled from "styled-components";  
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import TokenContext from "../Contexts/TokenContext";
 
 export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id}) {
     const [liked, setLiked] = useState(false); 
     let [amountLikes, setAmountLikes] = useState(likes);
+    const { token } = useContext(TokenContext);
 
     async function likeDeslike(event) { 
         const postLiked = { postLiked: event};
