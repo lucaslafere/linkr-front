@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ReactTagify } from "react-tagify";
 import UserContext from "../Contexts/UserContext.js";
-
 export default function FeedScreen() {
 const {userData, setUserData} = useContext(UserContext);
 
