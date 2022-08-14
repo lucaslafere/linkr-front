@@ -3,8 +3,11 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ReactTagify } from "react-tagify";
 import UserContext from "../Contexts/UserContext.js";
+import { useNavigate } from "react-router-dom";
+
 export default function FeedScreen() {
 const {userData, setUserData} = useContext(UserContext);
+const navigate = useNavigate();
 
   const token = localStorage.getItem('MY_TOKEN');
   const [posts, setPosts] = useState([]);
@@ -12,8 +15,9 @@ const {userData, setUserData} = useContext(UserContext);
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
-  const URL = "https://projeto17-linkrback.herokuapp.com/posts";
-  // const URL = "http://localhost:4000/posts";
+  //const URL = "https://projeto17-linkrback.herokuapp.com/posts";
+   const URL = "http://localhost:4100/posts";
+  console.log(posts);
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -101,10 +105,10 @@ const {userData, setUserData} = useContext(UserContext);
         {posts.length === 0 ? (
           <span>{feedMessage}</span>
         ) : (
-          posts.map(({ profilePhoto, description, url, username }, index) => {
+          posts.map(({ userId,profilePhoto, description, url, username }, index) => {
             return (
               <Post key={index}>
-                <img src={profilePhoto} alt="profile" />
+                <img src={profilePhoto} alt="profile" onClick={() => navigate(`/timeline/${userId}`)}/>
                 <Box fontColor={"white"}>
                   <h3>{username}</h3>
                   <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
