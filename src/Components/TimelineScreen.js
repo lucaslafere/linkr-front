@@ -15,8 +15,8 @@ const navigate = useNavigate();
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
-  //const URL = "https://projeto17-linkrback.herokuapp.com/posts";
-   const URL = "http://localhost:4100/posts";
+  const URL = "https://projeto17-linkrback.herokuapp.com/posts";
+  // const URL = "http://localhost:4100/posts";
   console.log(posts);
   const config = {
     headers: {
