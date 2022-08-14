@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { ReactTagify } from "react-tagify";
 import { useState } from 'react';
 
 export default function PostBox({profilePhoto , username, description, url, urlDescription, urlTitle, urlImage }) {
@@ -15,8 +16,10 @@ export default function PostBox({profilePhoto , username, description, url, urlD
                 <p>13 likes</p>
             </PictureAndLike>
             <PostInfo>
-                <p>{username}</p> 
-                <span>{description}</span>
+                <p>{username}</p>
+                <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
+                    <span>{description}</span>
+                </ReactTagify>
                 <MainInfo href={url} target="_blank">
                     <MainInfoDescription>
                         <h3>{urlTitle}</h3>
@@ -35,9 +38,10 @@ const Post = styled.li`
     height: 276px; 
     display: flex;
     background-color: rgba(23, 23, 23, 1);
-    padding: 19px 23px 20px 20px;
+    padding: 19px 22px 10px 20px;
     border-radius: 16px;
     margin-bottom: 18px;
+    
  `
  const PictureAndLike = styled.div`
     width: 10%; 
@@ -68,7 +72,8 @@ const Post = styled.li`
     p {
         margin-top: 4px;
         font-size: 11px; 
-        color: white;
+        color: #FFFFFF;
+        font-family: "Lato";
     }
  `
  const PostInfo = styled.div`
@@ -83,8 +88,9 @@ const Post = styled.li`
         margin-bottom: 8px;
     } 
     span { 
-        font-size: 19px; 
-        color: rgba(183, 183, 183, 1); 
+        font-size: 17px; 
+        color: #B7B7B7; 
+        font-family: 'Lato';
         margin-bottom: 10px;
         line-height: 20px;
     }
