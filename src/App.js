@@ -26,10 +26,10 @@ export default function App() {
           <Routes>
             {/* Need to refactor Login and SignUp screens to style.js */}
             <Route path="/" element={<LoginScreen />} />
-            <Route path="/sign-up" element={<SignUpScreen />} />
+            <Route path="/sign-up" element={<SignUpScreen />} /> 
             <Route path="/timeline" element={<FeedScreen />} />
-            <Route path="/hashtag/:hashtag" element={<HashtagScreen />} />
-            <Route path="/search" element={<SerchUserScreen />} />
+            <Route path="/timeline/:id" element={<SerchUserScreen />} />
+            <Route path="/hashtag/:hashtag" element={<HashtagScreen />} /> 
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>

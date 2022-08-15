@@ -1,62 +1,64 @@
-import styled from "styled-components";
-import { useState } from "react";
+import styled from "styled-components";  
+import axios from "axios";
+import { useState, useContext } from "react";
+import TokenContext from "../Contexts/TokenContext";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 
-export default function RenderOtherUserPosts() {
-  const [liked, setLiked] = useState(false);
-  const navigate = useNavigate();
-  return (
-    <Post>
-      <PictureAndLike>
-        <img
-          src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg"
-          alt="cr7"
-        />
-        {liked ? (
-          <ion-icon
-            name="heart"
-            id="heart"
-            onClick={() => setLiked(!liked)}
-          ></ion-icon>
-        ) : (
-          <ion-icon
-            name="heart-outline"
-            id="heart-outline"
-            onClick={() => setLiked(!liked)}
-          ></ion-icon>
-        )}
-        <p>13 likes</p>
-      </PictureAndLike>
-      <PostInfo>
-        <p>Juvenal Juvêncio</p>
-        <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag}`)}>
-          <a>
-            Muito maneiro esse tutorial de Material UI com React, deem uma
-            olhada! #react #material
-          </a>
-        </ReactTagify>
-        <MainInfo>
-          <MainInfoDescription>
-            <h3>Como aplicar o Material UI em um projeto React</h3>
+export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id}) {
+    const [liked, setLiked] = useState(false); 
+    let [amountLikes, setAmountLikes] = useState(likes);
+    const { token } = useContext(TokenContext);
+    const navigate = useNavigate();
 
-            <h4>
-              Hey! I have moved this tutorial to my personal blog. Same content,
-              new location. Sorry about making you click through to another
-              page.
-            </h4>
-
-            <h5>https://medium.com/@pshrmn/a-simple-react-router</h5>
-          </MainInfoDescription>
-          <img
-            src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg"
-            alt="cr7"
-          />
-        </MainInfo>
-      </PostInfo>
-    </Post>
-  );
-}
+    async function likeDeslike(event) { 
+        const postLiked = { postLiked: event};
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+            };
+            if(event==="like") { 
+                setLiked(true);
+                setAmountLikes(() => ++amountLikes);
+                const promise = await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config);
+                console.log(promise.data);
+            } else { 
+                setLiked(false);
+                setAmountLikes(() => --amountLikes);
+                const promise = await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config);
+                console.log(promise.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    return(
+        <Post value={index}>
+            <PictureAndLike>
+                <img src={profilePhoto} alt={username}/>
+                {liked ? (
+                <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> ) : (
+                <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
+                )}
+                <p>{amountLikes} likes</p>
+            </PictureAndLike>
+            <PostInfo>
+                <p>{username}</p> 
+                <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag}`)}>
+                <a>{description}</a>
+                </ReactTagify>
+                <MainInfo>
+                    <MainInfoDescription>
+                        <h3>{ulrTitle}</h3>
+                        <h4>{urlDescription}</h4>
+                        <h5>{url}</h5>
+                    </MainInfoDescription>
+                        <img src={urlImage} alt={ulrTitle}/>
+                </MainInfo>
+            </PostInfo>
+        </Post>
+    )
+} 
 
 const Post = styled.li`
   width: 100%;
@@ -90,54 +92,54 @@ const PictureAndLike = styled.div`
     }
   }
 
-  ion-icon#heart {
-    color: rgba(172, 0, 0, 1);
-  }
+    ion-icon#heart {
+        color: rgba(172, 0, 0, 1);
+    } 
 
-  ion-icon#heart-outline {
-    color: white;
-  }
+    ion-icon#heart-outline {
+        color: white;
+    }
 
-  p {
-    margin-top: 4px;
-    font-size: 11px;
-    color: white;
-  }
-`;
+    p {
+        margin-top: 4px;
+        font-size: 11px; 
+        color: white;
+    }
+ `
 const PostInfo = styled.div`
-  width: 90%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  margin-left: 18px;
+    width: 90% 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+    margin-left: 18px;
 
-  p {
-    font-size: 19px;
-    color: rgba(255, 255, 255, 1);
-    margin-bottom: 8px;
-  }
+    p { 
+        font-size: 19px; 
+        color: rgba(255, 255, 255, 1);
+        margin-bottom: 8px;
+    } 
 
-  a {
-    font-size: 19px;
-    color: rgba(183, 183, 183, 1);
-    margin-bottom: 10px;
-    line-height: 20px;
-  }
-`;
+    a { 
+        font-size: 19px; 
+        color: rgba(183, 183, 183, 1); 
+        margin-bottom: 10px;
+        line-height: 20px;
+    }
+ `
 const MainInfo = styled.div`
-  width: 100%;
-  height: 155px;
-  border: 1px solid rgba(77, 77, 77, 1);
-  border-radius: 12px;
-  display: flex;
+    width: 100%; 
+    height: 90%; 
+    border: 1px solid rgba(77, 77, 77, 1);
+    border-radius: 12px; 
+    display: flex;
 
-  img {
-    width: 30%;
-    height: 100%;
-    border-radius: 0px 12px 13px 0px;
-    object-fit: cover;
-  }
-`;
+    img { 
+        width: 30%;
+        height: 100%;
+        border-radius: 0px 12px 13px 0px;
+        object-fit: cover;
+    }
+ `
 const MainInfoDescription = styled.div`
   width: 85%;
   height: 100%;
