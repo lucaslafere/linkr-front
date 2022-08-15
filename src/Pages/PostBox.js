@@ -18,11 +18,13 @@ export default function PostBox({
   setDeleting,
   updatePosts,
   setUpdatePosts,
+  userId
 }) {
   const [liked, setLiked] = useState(false);
   const [editing, setEditing] = useState(false);
   const [descriptionInput, setDescriptionInput] = useState(description);
   const { userData, setUserData } = useContext(UserContext);
+  console.log(profilePhoto);
   const navigate = useNavigate();
   const token = localStorage.getItem("MY_TOKEN");
   const config = {
@@ -48,41 +50,32 @@ export default function PostBox({
           setUpdatePosts(!updatePosts);
         })
         .catch((erro) => alert("Não foi possível editar esse post"));
-    }
-  }
-  function deletingPost() {
-    setIdDeleting(id);
-    setDeleting(true);
-  }
+    } 
 
-  return (
-    <Post>
-      <PictureAndLike>
-        <img src={profilePhoto} alt="User" />
-        {liked ? (
-          <ion-icon
-            name="heart"
-            id="heart"
-            onClick={() => setLiked(!liked)}
-          ></ion-icon>
-        ) : (
-          <ion-icon
-            name="heart-outline"
-            id="heart-outline"
-            onClick={() => setLiked(!liked)}
-          ></ion-icon>
-        )}
-        <p>13 likes</p>
-      </PictureAndLike>
-      <PostInfo>
-        <div>
-          <p>{username}</p>
-          {/* {userData.username === username ?  */}
-          <div>
-            <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>
-            <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
-          </div>
-          {/* : <></>
+    function deletingPost() {
+        setIdDeleting(id)
+        setDeleting(true);
+    }
+    
+    return(
+        <Post>
+            <PictureAndLike>
+                <img src={profilePhoto} alt="User" onClick={() => navigate(`/timeline/${userId}`)}/>
+                { liked ? 
+                  <ion-icon  name="heart" id="heart" onClick={() => setLiked(!liked)}></ion-icon> :
+                  <ion-icon name="heart-outline" id="heart-outline" onClick={() => setLiked(!liked)}></ion-icon>
+                }
+                <p>13 likes</p>
+            </PictureAndLike>
+            <PostInfo>
+                <div>
+                    <p onClick={() => navigate(`/timeline/${userId}`)}>{username}</p>
+                    {/* {userData.username === username ?  */}
+                        <div>
+                            <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>
+                            <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
+                        </div>
+                    {/* : <></>
                     } */}
         </div>
         {editing ? (
@@ -101,9 +94,6 @@ export default function PostBox({
           </ReactTagify>
         )}
 
-        {/* <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
-                    <span>{description}</span>
-                </ReactTagify> */}
         <MainInfo href={url} target="_blank">
           <MainInfoDescription>
             <h3>{urlTitle}</h3>
@@ -115,6 +105,7 @@ export default function PostBox({
       </PostInfo>
     </Post>
   );
+} 
 }
 
 const Post = styled.li`
@@ -239,4 +230,4 @@ const MainInfoDescription = styled.div`
     text-align: left;
     margin-bottom: 8px;
   }
-`;
+`

@@ -21,10 +21,13 @@ export default function FeedScreen() {
   const [idDeleting, setIdDeleting] = useState(null);
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
+
   const [updatePosts, setUpdatePosts] = useState(false);
   const [userPosts, setUserPosts] = useState([]);
   const [clickedLogout, setClickedLogout] = useState(false);
   const navigate = useNavigate();
+
+
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
   //const backendURL = "http://localhost:4100/posts";
 
@@ -33,22 +36,21 @@ export default function FeedScreen() {
       Authorization: `Bearer ${token}`,
     },
   };
- function searchUser(event) {
+  function searchUser(event) {
     const username = { username: event };
     console.log(username);
     try {
-      const promise =  axios.post(
+      const promise = axios.post(
         "https://projeto17-linkrback.herokuapp.com/other-users",
         username
-      )
+      );
       promise.then((res) => {
         console.log(res.data);
         setSearch(res.data);
-      })
-     
+      });
     } catch (error) {
       console.log(error);
-      setSearch([])
+      setSearch([]);
     }
   }
 
@@ -100,6 +102,8 @@ export default function FeedScreen() {
         setLoading(false);
       });
   }
+
+  console.log(posts);
 
   return (
     <>
@@ -163,6 +167,7 @@ export default function FeedScreen() {
               debounceTimeout={400}
               onChange={(event) => searchUser(event.target.value)}
             />
+
             <ion-icon name="search-sharp"></ion-icon>
           </InputText2>
           <Search2>
@@ -186,7 +191,6 @@ export default function FeedScreen() {
           ""
         )}
 
-    
         <Content>
           <Feed>
             <h3>timeline</h3>
@@ -396,6 +400,10 @@ const Box = styled.div`
     color: white;
     font-weight: 600;
     padding: 10px 0;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
   span {
     color: #b7b7b7;
@@ -463,6 +471,19 @@ const Post = styled.div`
   flex-direction: column;
   align-items: center;
 
+
+  img {
+    height: 50px;
+    width: auto;
+    border-radius: 50%;
+    color: #ffffff;
+    padding-left: 10px;
+    margin-top: 10px;
+
+    &:hover{ 
+      cursor: pointer;
+    }
+  }
   ul {
     width: 100%;
     height: 100%;
@@ -474,6 +495,7 @@ const Post = styled.div`
 
     ul {
       width: 100%;
+
     }
   }
 `;
@@ -674,25 +696,25 @@ const Logout = styled.div`
 `;
 
 const UserTitle = styled.div`
-    width: 47%; 
-    height: 100%;
-    margin-top: 153px;
-    display: flex; 
-    justify-content: flex-end;
-    align-items: center;
-    margin-bottom: 43px;
+  width: 47%;
+  height: 100%;
+  margin-top: 153px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 43px;
 
-    img { 
-        width: 50px; 
-        height: 50px; 
-        border-radius: 50%;
-    }
-    
-    a { 
-        margin-left: 18px;
-        color: white;
-        font-size: 43px;
-        font-weight: bold; 
-        font-family: 'Oswald', sans-serif;
-    }
- `
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  a {
+    margin-left: 18px;
+    color: white;
+    font-size: 43px;
+    font-weight: bold;
+    font-family: "Oswald", sans-serif;
+  }
+`;

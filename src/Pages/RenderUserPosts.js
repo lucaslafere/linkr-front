@@ -47,7 +47,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
                 <a>{description}</a>
                 </ReactTagify>
-                <MainInfo>
+                <MainInfo onClick={() => window.open(url)}>
                     <MainInfoDescription>
                         <h3>{ulrTitle}</h3>
                         <h4>{urlDescription}</h4>
@@ -138,6 +138,10 @@ const MainInfo = styled.div`
         height: 100%;
         border-radius: 0px 12px 13px 0px;
         object-fit: cover;
+    }
+
+    &:hover { 
+        cursor: pointer;
     }
  `
 const MainInfoDescription = styled.div`
