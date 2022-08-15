@@ -8,7 +8,7 @@ export default function RenderHashtags({ index, name }) {
     <Hashtag value={index}>
       <ReactTagify
         colors={"#ffffff"}
-        tagClicked={(tag) => navigate(`/hashtag/${tag}`)}
+        tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}
       >
         <a>{hashtag}</a>
       </ReactTagify>
@@ -28,5 +28,9 @@ const Hashtag = styled.li`
     &:hover {
       cursor: pointer;
     }
+  }
+
+  @media (max-width: 1000px) {
+    display: none;
   }
 `;

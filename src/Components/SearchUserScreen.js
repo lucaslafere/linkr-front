@@ -60,7 +60,9 @@ export default function SerchUserScreen() {
     async function logout() { 
         axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
         window.localStorage.setItem("MY_TOKEN", "");
+        localStorage.setItem("userInfo","");
         setToken("");
+    
         navigate("/");
     };
 

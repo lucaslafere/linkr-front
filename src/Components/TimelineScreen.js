@@ -2,15 +2,19 @@ import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import UserContext from "../Contexts/UserContext.js";
+import RenderUserPosts from "../Pages/RenderUserPosts.js";
 import PostBox from "../Pages/PostBox.js";
 import DeleteBox from "../Pages/DeleteBox.js";
 import Trendings from "../Pages/Trending.js";
+
+
 
 
 export default function FeedScreen() {
   const {userData, setUserData} = useContext(UserContext);
   
   const token = localStorage.getItem('MY_TOKEN');
+
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
@@ -21,6 +25,12 @@ export default function FeedScreen() {
   const [ updatePosts, setUpdatePosts ] = useState(false);
   const URL = "https://projeto17-linkrback.herokuapp.com/posts";
   //const URL = "http://localhost:4000/posts"; 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  
+  
+  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
+  //const backendURL = "http://localhost:4100/posts";
+
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -28,16 +38,18 @@ export default function FeedScreen() {
   };
 
   useEffect(() => {
-    axios.get(URL,config)
-    .then((res) => {
-      setPosts([...res.data]);
-      if (res.data.length === 0) setFeedMessage("There are no posts yet");
-      console.log(res.data);
+
+    const promise = axios.get(backendURL, config);
+    promise
+      .then((res) => {
+        setPosts([...res.data]);
+        if (res.data.length === 0) setFeedMessage("There are no posts yet")
       })
     .catch((error) =>
       alert
       ("An error occured while trying to fetch the posts, please refresh the page")
       );
+
 
   }, [updatePosts]);
   
@@ -51,20 +63,22 @@ export default function FeedScreen() {
       url,
       description,
     };
-    console.log(config);
-    const promise = axios.post(URL, body, config);
+    const promise = axios.post(backendURL, body, config);
     promise
       .then((res) => {
         setLoading(false);
         setDescription("");
         setUrl("");
-        setUpdatePosts(updatePosts);
+        setUpdatePosts(!updatePosts);
+
       })
       .catch(() => {
         window.alert("Houve um erro ao publicar seu post, tente novamente.");
         setLoading(false);
       });
   }
+
+  console.log(posts);
 
   return (
   <>
@@ -81,22 +95,23 @@ export default function FeedScreen() {
         <h1>linkr</h1>
         <div>
           <ion-icon name="chevron-down-outline"></ion-icon>
-          <img
-            src={userData.profilePhoto}
-            alt="profile"
-          />
+          <img src={userInfo.profilePhoto} alt="profile" />
         </div>
       </TopBar>
       <Content>
       <Feed>
         <h3>timeline</h3>
         <NewPost>
+
+        
+
           <div>
             <img
-              src={userData.profilePhoto}
+              src={userInfo.profilePhoto}
               alt="profile"
             />
           </div>
+
           <Box fontColor={"#9f9f9f"}>
             <p>What are you going to share today?</p>
             <Input
@@ -138,6 +153,7 @@ export default function FeedScreen() {
               userId={object.userId}
               />)
         )}
+
        
       </Feed>
       <div>
@@ -146,7 +162,7 @@ export default function FeedScreen() {
         
       </Content>
     </Container>
-    </>
+  </>
   );
 }
 
@@ -167,10 +183,16 @@ const TopBar = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+
+  /* position: fixed;
+  left: 0;
+  top: 0; */
+
   align-items: center;
   position:fixed;
   left:0;
   top:0;
+
   z-index: 1;
   h1 {
     display: inline-block;
@@ -185,6 +207,7 @@ const TopBar = styled.div`
     align-items: center;
     height: 100%;
     margin-right: 18px;
+    
   }
   ion-icon {
     color: white;
@@ -201,6 +224,8 @@ const TopBar = styled.div`
 const Feed = styled.div`
   margin-top: 150px;
   margin-right: 50px;
+
+  
   > h3 {
     font-size: 50px;
     font-family: "Oswald";
@@ -213,6 +238,10 @@ const Feed = styled.div`
     color: #ffffff;
     margin-top: 50px;
     text-decoration: none;
+  }
+  @media (max-width:1000px) {
+    margin-right: 0;
+    width: 100vw;
   }
 `;
 
@@ -237,6 +266,9 @@ const NewPost = styled.div`
     flex-direction: column; 
     align-items: center;
     
+  }
+  @media (max-width:1000px) {
+    width: 100vw;
   }
 `;
 
@@ -278,7 +310,7 @@ const Box = styled.div`
     }
   }
   span {
-    color:#B7B7B7;
+    color: #b7b7b7;
   }
 `;
 
@@ -335,14 +367,16 @@ const Button = styled.button`
   color: #ffffff;
   font-size: 16px;
 `;
-// ${({color})};
-const Post = styled.div`
-  display: flex;
-  height: 20vh;
-  background-color: #171717;
-  width: 40vw;
-  border-radius: 14px;
 
+
+const Post = styled.div`
+  width: 611px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+<<<<<<< HEAD
   img {
     height: 50px;
     width: auto;
@@ -353,14 +387,60 @@ const Post = styled.div`
 
     &:hover{ 
       cursor: pointer;
+=======
+  ul {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 1000px) {
+    width: 100%;
+    height: 100%;
+    
+    ul {
+      width: 100%;
+>>>>>>> d137bf5c0efdbe521c4338b82b1e9f2ad535e503
     }
   }
 `;
 const Content = styled.div`
     display: flex;
-    > div:nth-child(2) {
-      margin-top: 278px;
-    }
+
 `;
+
+// const Trendings = styled.div`
+//     margin-top: 278px;
+//     width: 301px;
+//     height: 406px;
+//     background-color: #171717;
+//     border-radius: 16px;
+//     display: flex;
+//     flex-direction: column;
+
+//     > div:nth-child(1) {
+//         display: flex;
+//         align-items: center;
+//         width: 100%;
+//         height: 61px;
+//         border-bottom: 1px solid #484848;
+//         padding: 0px 20px;
+//         span {
+//             font-size: 27px;
+//             font-weight: bold;
+//             color: #FFFFFF;
+//             font-family: 'Oswald';
+//         }
+        
+//     };
+    
+
+//     > div:nth-child(2) {
+//       margin-top: 278px;
+//     }
+
+//     @media (max-width:1000px){
+//       display:none;
+//     }
+// `;
 
 

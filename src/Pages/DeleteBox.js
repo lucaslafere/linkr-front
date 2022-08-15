@@ -2,13 +2,14 @@ import styled from 'styled-components';
 import axios from 'axios';
 
 export default function DeleteBox({ id, setDeleting, setUpdatePosts, updatePosts }) {
-    
+    const backendURL = "https://projeto17-linkrback.herokuapp.com/";
+
     function cancel() {
         setDeleting(false);
     }
 
     function deletePost() {
-        axios.delete(`localhost:4000/posts/${id}`)
+        axios.delete(backendURL+id)
         .then(() => {
             alert("Post excluido com sucesso!");
             setDeleting(false);
