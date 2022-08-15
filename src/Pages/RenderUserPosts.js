@@ -107,7 +107,7 @@ const PictureAndLike = styled.div`
     }
  `
 const PostInfo = styled.div`
-    width: 90% ;
+    width: 90%;
     height: 100%; 
     display: flex; 
     flex-direction: column;

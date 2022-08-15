@@ -1,18 +1,18 @@
 import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import UserContext from "../Contexts/UserContext.js";
 import RenderUserPosts from "../Pages/RenderUserPosts.js";
 import PostBox from "../Pages/PostBox.js";
 import DeleteBox from "../Pages/DeleteBox.js";
+import Trendings from "../Pages/Trending.js";
 
 
 
 
 export default function FeedScreen() {
   const {userData, setUserData} = useContext(UserContext);
-  const [ trendingsRank, setTrendingsRank ] = useState(null);
+  
   const token = localStorage.getItem('MY_TOKEN');
 
   const [posts, setPosts] = useState([]);
@@ -47,9 +47,6 @@ export default function FeedScreen() {
       ("An error occured while trying to fetch the posts, please refresh the page")
       );
 
-    axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`)
-      .then(response => setTrendingsRank(response.data))
-      .catch(error => alert(error))
 
   }, [updatePosts]);
   
@@ -57,7 +54,7 @@ export default function FeedScreen() {
     if (!url) {
       return window.alert("url não pode estar vazia!");
     }
-
+    
     setLoading(true);
     const body = {
       url,
@@ -70,6 +67,7 @@ export default function FeedScreen() {
         setDescription("");
         setUrl("");
         setUpdatePosts(!updatePosts);
+
       })
       .catch(() => {
         window.alert("Houve um erro ao publicar seu post, tente novamente.");
@@ -154,21 +152,10 @@ export default function FeedScreen() {
         }
        
       </Feed>
-      <Trendings>
-            <div>
-              <span>trending</span>
-            </div>
-            <div>
-              {trendingsRank === null ? 
-                <></> : 
-                trendingsRank.map(object => 
-                <Link to={`/hashtag/${object.name}`}> 
-                  <span># {object.name}</span> 
-                </Link>)
-              }
-            </div>
-                    
-        </Trendings>
+      <div>
+        <Trendings />
+      </div>
+        
       </Content>
     </Container>
     </>
@@ -182,7 +169,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    opacity: ${props => props.deleting ? 0.2 : 1}
+    opacity: ${props => props.deleting ? 0.2 : 1};
 `;
 
 const TopBar = styled.div`
@@ -231,8 +218,8 @@ const TopBar = styled.div`
 
 const Feed = styled.div`
   margin-top: 150px;
+  margin-right: 50px;
   > h3 {
-    width: 40vw;
     font-size: 50px;
     font-family: "Oswald";
     color: #ffffff;
@@ -390,49 +377,42 @@ const Post = styled.div`
 `;
 const Content = styled.div`
     display: flex;
+
 `;
 
-const Trendings = styled.div`
-    margin-top: 278px;
-    width: 301px;
-    height: 406px;
-    background-color: #171717;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
+// const Trendings = styled.div`
+//     margin-top: 278px;
+//     width: 301px;
+//     height: 406px;
+//     background-color: #171717;
+//     border-radius: 16px;
+//     display: flex;
+//     flex-direction: column;
 
-    > div:nth-child(1) {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 61px;
-        border-bottom: 1px solid #484848;
-        padding: 0px 20px;
-        span {
-            font-size: 27px;
-            font-weight: bold;
-            color: #FFFFFF;
-            font-family: 'Oswald';
-        }
+//     > div:nth-child(1) {
+//         display: flex;
+//         align-items: center;
+//         width: 100%;
+//         height: 61px;
+//         border-bottom: 1px solid #484848;
+//         padding: 0px 20px;
+//         span {
+//             font-size: 27px;
+//             font-weight: bold;
+//             color: #FFFFFF;
+//             font-family: 'Oswald';
+//         }
         
-    };
+//     };
     
-    > div:nth-child(2) {
-        display: flex;
-        flex-direction: column;
-        padding: 10px 20px;
-        
-        span {
-            display: inline-block;
-            color: #FFFFFF;
-            font-family: 'Lato';
-            font-size: 19px;
-            font-weight: bold;
-            margin-top: 12px;
-        }
-    }
 
-    @media (max-width:1000px){
-      display:none;
-    }
-`;
+//     > div:nth-child(2) {
+//       margin-top: 278px;
+//     }
+
+//     @media (max-width:1000px){
+//       display:none;
+//     }
+// `;
+
+
