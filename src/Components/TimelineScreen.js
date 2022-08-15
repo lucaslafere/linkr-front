@@ -23,6 +23,8 @@ export default function FeedScreen() {
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
   const [ updatePosts, setUpdatePosts ] = useState(false);
+  const URL = "https://projeto17-linkrback.herokuapp.com/posts";
+  //const URL = "http://localhost:4000/posts"; 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   
   
@@ -75,6 +77,8 @@ export default function FeedScreen() {
         setLoading(false);
       });
   }
+
+  console.log(posts);
 
   return (
   <>
@@ -142,13 +146,22 @@ export default function FeedScreen() {
               urlDescription={object.urlDescription}
               urlTitle={object.urlTitle}
               urlImage={object.urlImage}
+
               likes={object.likes}
+
               setIdDeleting={setIdDeleting}
               setDeleting={setDeleting}
               setUpdatePosts={setUpdatePosts}
               updatePosts={updatePosts}
+
               />)
         )}
+
+              userId={object.userId}
+              />)
+        )}
+
+
        
       </Feed>
       <div>
@@ -298,7 +311,11 @@ const Box = styled.div`
     width: 30vw;
     color: white;
     font-weight: 600;
-    padding: 10px 0;
+    padding: 10px 0; 
+
+    &:hover { 
+      cursor: pointer;
+    }
   }
   span {
     color: #b7b7b7;
@@ -367,6 +384,18 @@ const Post = styled.div`
   flex-direction: column;
   align-items: center;
 
+
+  img {
+    height: 50px;
+    width: auto;
+    border-radius: 50%;
+    color: #ffffff;
+    padding-left: 10px;
+    margin-top: 10px;
+
+    &:hover{ 
+      cursor: pointer;
+
   ul {
     width: 100%;
     height: 100%;
@@ -378,6 +407,7 @@ const Post = styled.div`
     
     ul {
       width: 100%;
+
     }
   }
 `;

@@ -15,8 +15,7 @@ export default function SerchUserScreen() {
     const [search, setSearch] = useState([]); 
     const [userPosts, setUserPosts] = useState([]);
     const [post,setPost] = useState([]);
-    const { userData } = useContext(UserContext);
-    //const [searchUsers, setSearchUsers] = useState([]); 
+    const { userData } = useContext(UserContext); 
     const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
     const navigate = useNavigate();
@@ -26,7 +25,7 @@ export default function SerchUserScreen() {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-        const promise = axios.get(`http://localhost:4100/users/2`,config);
+        const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/${id}`,config);
         const promises = axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`);
 
         promise.then(response => { 
@@ -53,6 +52,7 @@ export default function SerchUserScreen() {
             console.log(promise.data);
             setSearch(promise.data);
         } catch (error) {
+            setSearch([]);
             console.log(error);
         }
     }
@@ -79,7 +79,8 @@ export default function SerchUserScreen() {
                         debounceTimeout={400}
                         onChange={(event) => searchUser(event.target.value)} />
                     <ion-icon name="search-sharp"></ion-icon>
-                </InputText>
+                </InputText> 
+                {search.length !== 0 ? (
                 <Search>
                     <ul>
                         {search.map((users,index) => (
@@ -91,6 +92,7 @@ export default function SerchUserScreen() {
                         ))}
                         </ul>
                 </Search> 
+                ) : ""}
             </Container>
             <LoggedUser>
                 {clickedLogout ? (
@@ -112,6 +114,7 @@ export default function SerchUserScreen() {
                         onChange={(event) => searchUser(event.target.value)} />
                     <ion-icon name="search-sharp"></ion-icon>
                 </InputText2>
+                {search.length !== 0 ? (
                 <Search2>
                     <ul>
                         {search.map((users,index) => (
@@ -119,10 +122,12 @@ export default function SerchUserScreen() {
                                 index= {index}
                                 image= {users.profilePhoto}
                                 username= {users.username}
+                                id= {users.id}
                             />
                         ))}
                         </ul>
                 </Search2> 
+                ) : "" }
             </Container2>
 
         {clickedLogout ? (
@@ -141,7 +146,7 @@ export default function SerchUserScreen() {
                     {post.map((post,index) => (
                         <RenderUserPosts 
                             index={index}
-                            likes= {99}
+                            likes= {post.likes}
                             url={post.url}
                             description={post.description}
                             username={userPosts.username}
@@ -264,7 +269,7 @@ export default function SerchUserScreen() {
         display: flex; 
         flex-direction: column;
         align-itens: center; 
-        position: fixed;
+        position: relative;
         left: 0; 
         top: 85px;
     }
@@ -287,7 +292,14 @@ export default function SerchUserScreen() {
     }
 
     @media (max-width: 1000px) {
-        display: none;
+        display: inline;
+        position: absolute;
+        top: 1;
+
+        ul { 
+            width: 94%; 
+            height: 100%;
+        }
     }
  `
  const InputText2 = styled.div`
@@ -319,6 +331,7 @@ export default function SerchUserScreen() {
 
     @media (max-width: 1000px) {
         display: inline;
+        border-radius: 8px;
     }
  `
  const LoggedUser = styled.div`

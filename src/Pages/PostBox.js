@@ -5,6 +5,7 @@ import UserContext from "../Contexts/UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
 export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts, likes }) {
     const [liked, setLiked] = useState(false); 
     const [ editing, setEditing ] = useState(false);
@@ -18,6 +19,7 @@ export default function PostBox({ id ,profilePhoto , username, description, url,
           Authorization: `Bearer ${token}`,
         },
       };
+
 
       async function likeDeslike(event) { 
         const postLiked = { postLiked: event};
@@ -60,11 +62,13 @@ function inputKeybord(e) {
     if(e.key === "Enter") {
         axios.put(`localhost:4000/posts/${id}`, descriptionInput, config)
         .then(() => {
+
             editPost();
             setUpdatePosts(!updatePosts)})
         .catch(erro => alert("Não foi possível editar esse post"))
         }
     }
+
 
     function deletingPost() {
         setIdDeleting(id)
@@ -74,6 +78,7 @@ function inputKeybord(e) {
     return(
         <Post>
             <PictureAndLike>
+
                 <img src={profilePhoto} alt="User"/>
                 { liked ? 
                   <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> 
@@ -85,25 +90,33 @@ function inputKeybord(e) {
                 <div>
                     <p>{username}</p>
                      {userData.username === username ?  
+
                         <div>
                             <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>
                             <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
                         </div>
-                    : <></>}
-                    
-                </div>
-                {editing ? 
-                    <input value={descriptionInput} 
-                    onChange={(e) => setDescriptionInput(e.target.value)}
-                    placeholder="http://"
-                    onKeyPress={inputKeybord}
-                    ></input>
-                    : <ReactTagify colors={"#ffffff"} tagClicked={navigateHashtagPage}>
-                        <span>{description}</span>
-                    </ReactTagify>
-                }
-                    
-                {/* <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
+
+                    {/* : <></>
+                    } */}
+        </div>
+        {editing ? (
+          <input
+            value={descriptionInput}
+            onChange={(e) => setDescriptionInput(e.target.value)}
+            placeholder="http://"
+            onKeyPress={inputKeybord}
+          ></input>
+        ) : (
+          <ReactTagify
+            colors={"#ffffff"}
+            tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}
+          >
+            <span>{description}</span>
+          </ReactTagify>
+        )}
+
+        {/* <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
+
                     <span>{description}</span>
                 </ReactTagify> */}
         <MainInfo href={url} target="_blank">
@@ -117,6 +130,7 @@ function inputKeybord(e) {
       </PostInfo>
     </Post>
   );
+} 
 }
 
 const Post = styled.li`
@@ -180,52 +194,66 @@ const PostInfo = styled.div`
   }
   > div:nth-child(1) {
     display: flex;
-    background-color: rgba(23, 23, 23, 1);
-    padding: 19px 22px 10px 20px;
-    border-radius: 16px;
-    margin-bottom: 18px;
-  }
- `
- const MainInfo = styled.a`
-    display: inline-block;
-    width: 100%; 
-    height: 155px; 
-    border: 1px solid rgba(77, 77, 77, 1);
-    border-radius: 12px; 
-    display: flex;
-    img { 
-        width: 30%;
-        height: 100%;
-        border-radius: 0px 12px 13px 0px;
-        object-fit: cover;
-    }
- `
- const MainInfoDescription = styled.div`
-    width: 85%; 
-    height: 100%; 
-    display: flex; 
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    padding: 20px 28px 15px 20px; 
-    h3 { 
-        font-size: 16px;
-        color: rgba(206, 206, 206, 1);
-        text-align: left;
-        margin-bottom: 8px;
-    }
-    h4 { 
-        font-size: 11px;
-        color: rgba(155, 149, 149, 1);
-        text-align: left;
-        margin-bottom: 8px;
-    }
-    h5 { 
-        font-size: 11px;
-        color: rgba(206, 206, 206, 1);
-        text-align: left;
-        margin-bottom: 8px;
-    }
- `;
 
- 
+    width: 100%;
+    justify-content: space-between;
+  }
+  ion-icon {
+    font-size: 20px;
+    color: #ffffff;
+    margin-left: 10px;
+  }
+  input {
+    padding-left: 5px;
+    height: 30px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 5px;
+    height: auto;
+    color: #4c4c4c;
+    font-family: "Lato";
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+`;
+const MainInfo = styled.a`
+  display: inline-block;
+  width: 100%;
+  height: 155px;
+  border: 1px solid rgba(77, 77, 77, 1);
+  border-radius: 12px;
+  display: flex;
+  img {é
+    width: 30%;
+    height: 100%;
+    border-radius: 0px 12px 13px 0px;
+    object-fit: cover;
+  }
+`;
+const MainInfoDescription = styled.div`
+  width: 85%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 20px 28px 15px 20px;
+  h3 {
+    font-size: 16px;
+    color: rgba(206, 206, 206, 1);
+    text-align: left;
+    margin-bottom: 8px;
+  }
+  h4 {
+    font-size: 11px;
+    color: rgba(155, 149, 149, 1);
+    text-align: left;
+    margin-bottom: 8px;
+  }
+  h5 {
+    font-size: 11px;
+    color: rgba(206, 206, 206, 1);
+    text-align: left;
+    margin-bottom: 8px;
+  }
+`
