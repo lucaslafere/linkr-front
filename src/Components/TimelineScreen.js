@@ -203,6 +203,7 @@ const TopBar = styled.div`
     align-items: center;
     height: 100%;
     margin-right: 18px;
+    
   }
   ion-icon {
     color: white;
@@ -219,6 +220,10 @@ const TopBar = styled.div`
 const Feed = styled.div`
   margin-top: 150px;
   margin-right: 50px;
+  @media (max-width:1000px) {
+    margin-right: 0;
+  }
+  width: 100vw;
   > h3 {
     font-size: 50px;
     font-family: "Oswald";
