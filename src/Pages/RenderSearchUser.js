@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components"; 
 
-export default function RenderSearchUser({index,image,username}) { 
+export default function RenderSearchUser({index,image,username,id}) {  
+    const navigate = useNavigate(); 
+
     return( 
-        <UserCard value={index}>
+        <UserCard value={index} onClick={() => navigate(`/timeline/${id}`)}>
             <img src={image} />
             <a>{username}</a>
         </UserCard> 

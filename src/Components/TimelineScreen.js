@@ -110,7 +110,7 @@ const navigate = useNavigate();
               <Post key={index}>
                 <img src={profilePhoto} alt="profile" onClick={() => navigate(`/timeline/${userId}`)}/>
                 <Box fontColor={"white"}>
-                  <h3>{username}</h3>
+                  <h3 onClick={() => navigate(`/timeline/${userId}`)}>{username}</h3>
                   <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
                     <span>{description}</span>
                   </ReactTagify>
@@ -243,7 +243,11 @@ const Box = styled.div`
     width: 30vw;
     color: white;
     font-weight: 600;
-    padding: 10px 0;
+    padding: 10px 0; 
+
+    &:hover { 
+      cursor: pointer;
+    }
   }
   span {
     color:#B7B7B7;
@@ -318,5 +322,9 @@ const Post = styled.div`
     color: #ffffff;
     padding-left: 10px;
     margin-top: 10px;
+
+    &:hover{ 
+      cursor: pointer;
+    }
   }
 `;
