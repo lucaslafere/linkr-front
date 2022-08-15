@@ -94,6 +94,10 @@ const PictureAndLike = styled.div`
 
     ion-icon#heart {
         color: rgba(172, 0, 0, 1);
+    } 
+
+    ion-icon#heart-outline {
+        color: white;
     }
 
     p {
