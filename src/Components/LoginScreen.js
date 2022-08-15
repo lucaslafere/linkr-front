@@ -20,6 +20,7 @@ export default function LoginScreen() {
   const { setToken, token } = useContext(TokenContext);
   const { setUserData } = useContext(UserContext);
 
+  
 
   // Code to get and use the localStorage token:
 
@@ -50,6 +51,7 @@ export default function LoginScreen() {
   }
 
   function requestLogin() {
+    console.log("veio");
     axios
       .post(URL, body)
       .then((res) => {

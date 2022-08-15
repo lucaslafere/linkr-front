@@ -11,12 +11,7 @@ import GlobalStyle from "./Styles/globalStyles";
 
 export default function App() {
   const [token, setToken] = useState("");
-  const [userData, setUserData] = useState({
-    id: "2",
-    username: "Caroline",
-    email: "caroline@gmail.com",
-    profilePhoto: "https://buffer.com/library/content/images/2022/03/amina.png",
-  });
+  const [userData, setUserData] = useState("");
 
   return (
     <TokenContext.Provider value={{ token, setToken }}>

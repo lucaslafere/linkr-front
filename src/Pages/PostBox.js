@@ -3,41 +3,69 @@ import { ReactTagify } from "react-tagify";
 import { useState, useContext, useRef, useEffect } from 'react';
 import UserContext from '../Contexts/UserContext';
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts }) {
+export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts, likes }) {
     const [liked, setLiked] = useState(false); 
     const [ editing, setEditing ] = useState(false);
+    let [amountLikes, setAmountLikes] = useState(likes);
     const [ descriptionInput, setDescriptionInput ] = useState(description);
     const { userData, setUserData } = useContext(UserContext);
     const token = localStorage.getItem('MY_TOKEN');
+    const navigate = useNavigate()
     const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       };
 
+      async function likeDeslike(event) { 
+        const postLiked = { postLiked: event};
 
-
-
-
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+            };
+            if(event==="like") {
+                await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
+                            .then(() => {
+                                setLiked(true);
+                                setAmountLikes(() => ++amountLikes);
+                            })
+                            .catch(() => alert("Não foi possível curtir esse post!"));                           
+            } else {
+                await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
+                            .then(() => {
+                                setLiked(false);
+                                setAmountLikes(() => --amountLikes);
+                            })
+                            .catch(() => alert("Não foi possível descurtir esse post!"));
+            
+    }
+}
+function navigateHashtagPage (tag) {
+    const newTag = tag.replace("#", "");
+    navigate(`/hashtag/${newTag}`)
+}
     
-    function editPost() {
-        setDescriptionInput(description);
-        setEditing(!editing);
+function editPost() {
+    setDescriptionInput(description);
+    setEditing(!editing);
+}
+
+function inputKeybord(e) {
+    console.log(e);
+    if(e.key === "Escape") {
+        return editPost();
     }
-    function inputKeybord(e) {
-        console.log(e);
-        if(e.key === "Escape") {
-           return editPost();
-        }
-        if(e.key === "Enter") {
-            axios.put(`localhost:4000/posts/${id}`, descriptionInput, config)
-            .then(() => {
-                editPost();
-                setUpdatePosts(!updatePosts)})
-            .catch(erro => alert("Não foi possível editar esse post"))
+    if(e.key === "Enter") {
+        axios.put(`localhost:4000/posts/${id}`, descriptionInput, config)
+        .then(() => {
+            editPost();
+            setUpdatePosts(!updatePosts)})
+        .catch(erro => alert("Não foi possível editar esse post"))
         }
     }
+
     function deletingPost() {
         setIdDeleting(id)
         setDeleting(true);
@@ -48,21 +76,21 @@ export default function PostBox({ id ,profilePhoto , username, description, url,
             <PictureAndLike>
                 <img src={profilePhoto} alt="User"/>
                 { liked ? 
-                  <ion-icon  name="heart" id="heart" onClick={() => setLiked(!liked)}></ion-icon> :
-                  <ion-icon name="heart-outline" id="heart-outline" onClick={() => setLiked(!liked)}></ion-icon>
+                  <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> 
+                : <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 }
-                <p>13 likes</p>
+                <p>{amountLikes} likes</p>
             </PictureAndLike>
             <PostInfo>
                 <div>
                     <p>{username}</p>
-                    {/* {userData.username === username ?  */}
+                     {userData.username === username ?  
                         <div>
                             <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>
                             <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
                         </div>
-                    {/* : <></>
-                    } */}
+                    : <></>}
+                    
                 </div>
                 {editing ? 
                     <input value={descriptionInput} 
@@ -70,7 +98,7 @@ export default function PostBox({ id ,profilePhoto , username, description, url,
                     placeholder="http://"
                     onKeyPress={inputKeybord}
                     ></input>
-                    : <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
+                    : <ReactTagify colors={"#ffffff"} tagClicked={navigateHashtagPage}>
                         <span>{description}</span>
                     </ReactTagify>
                 }
@@ -216,6 +244,6 @@ const Post = styled.li`
         text-align: left;
         margin-bottom: 8px;
     }
- `
+ `;
 
  

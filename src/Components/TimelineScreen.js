@@ -131,6 +131,7 @@ export default function FeedScreen() {
               urlDescription={object.urlDescription}
               urlTitle={object.urlTitle}
               urlImage={object.urlImage}
+              likes={object.likes}
               setIdDeleting={setIdDeleting}
               setDeleting={setDeleting}
               setUpdatePosts={setUpdatePosts}

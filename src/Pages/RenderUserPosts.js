@@ -11,6 +11,11 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
     const { token } = useContext(TokenContext);
     const navigate = useNavigate();
 
+    function navigateHashtagPage (tag) {
+        const newTag = tag.replace("#", "");
+        navigate(`/hashtag/${newTag}`)
+    }
+    
     async function likeDeslike(event) { 
         const postLiked = { postLiked: event};
         try {
@@ -44,7 +49,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
             </PictureAndLike>
             <PostInfo>
                 <p>{username}</p> 
-                <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag}`)}>
+                <ReactTagify colors={"#ffffff"} tagClicked={navigateHashtagPage}>
                 <a>{description}</a>
                 </ReactTagify>
                 <MainInfo>
