@@ -3,16 +3,9 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import UserContext from "../Contexts/UserContext.js";
-import { useNavigate } from "react-router-dom";
 import RenderUserPosts from "../Pages/RenderUserPosts.js";
 import PostBox from "../Pages/PostBox.js";
 import DeleteBox from "../Pages/DeleteBox.js";
-
-// export default function FeedScreen() {
-//   const { userData, setUserData } = useContext(UserContext);
-//   const navigate = useNavigate();
-
-//   const token = localStorage.getItem("MY_TOKEN");
 
 
 
