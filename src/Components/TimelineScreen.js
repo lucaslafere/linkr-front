@@ -23,10 +23,11 @@ export default function FeedScreen() {
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
   const [ updatePosts, setUpdatePosts ] = useState(false);
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  
   
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
   //const backendURL = "http://localhost:4100/posts";
- 
 
   const config = {
     headers: {
@@ -90,7 +91,7 @@ export default function FeedScreen() {
         <h1>linkr</h1>
         <div>
           <ion-icon name="chevron-down-outline"></ion-icon>
-          <img src={userData.profilePhoto} alt="profile" />
+          <img src={userInfo.profilePhoto} alt="profile" />
         </div>
       </TopBar>
       <Content>
@@ -98,11 +99,11 @@ export default function FeedScreen() {
         <h3>timeline</h3>
         <NewPost>
 
-          <img src={userData.profilePhoto} alt="profile" />
+        
 
           <div>
             <img
-              src={userData.profilePhoto}
+              src={userInfo.profilePhoto}
               alt="profile"
             />
           </div>
@@ -158,7 +159,7 @@ export default function FeedScreen() {
         
       </Content>
     </Container>
-    </>
+  </>
   );
 }
 
@@ -220,10 +221,8 @@ const TopBar = styled.div`
 const Feed = styled.div`
   margin-top: 150px;
   margin-right: 50px;
-  @media (max-width:1000px) {
-    margin-right: 0;
-  }
-  width: 100vw;
+
+  
   > h3 {
     font-size: 50px;
     font-family: "Oswald";
@@ -236,6 +235,10 @@ const Feed = styled.div`
     color: #ffffff;
     margin-top: 50px;
     text-decoration: none;
+  }
+  @media (max-width:1000px) {
+    margin-right: 0;
+    width: 100vw;
   }
 `;
 
@@ -360,7 +363,7 @@ const Button = styled.button`
 
 
 const Post = styled.div`
-  width: 40vw;
+  width: 611px;
   height: 100%;
   display: flex;
   flex-direction: column;
