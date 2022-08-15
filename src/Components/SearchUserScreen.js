@@ -54,6 +54,7 @@ export default function SerchUserScreen() {
             setSearch(promise.data);
         } catch (error) {
             console.log(error);
+            setSearch([]);
         }
     }
 
