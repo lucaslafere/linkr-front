@@ -1,23 +1,26 @@
 import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { ReactTagify } from "react-tagify";
 import UserContext from "../Contexts/UserContext.js";
-import { useNavigate } from "react-router-dom";
+import PostBox from "../Pages/PostBox.js";
+import DeleteBox from "../Pages/DeleteBox.js";
+
 
 export default function FeedScreen() {
-const {userData, setUserData} = useContext(UserContext);
-const navigate = useNavigate();
-
+  const {userData, setUserData} = useContext(UserContext);
+  const [ trendingsRank, setTrendingsRank ] = useState(null);
   const token = localStorage.getItem('MY_TOKEN');
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
+  const [ deleting, setDeleting ] = useState(false);
+  const [idDeleting, setIdDeleting ] = useState(null);
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
-  const URL = "https://projeto17-linkrback.herokuapp.com/posts";
-  //const URL = "http://localhost:4100/posts";
-  console.log(posts);
+  const [ updatePosts, setUpdatePosts ] = useState(false);
+  //const URL = "https://projeto17-linkrback.herokuapp.com/posts";
+  const URL = "http://localhost:4000/posts"; 
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -25,20 +28,23 @@ const navigate = useNavigate();
   };
 
   useEffect(() => {
-    const promise = axios.get(URL,config);
-    promise
-      .then((res) => {
-        setPosts([...res.data]);
-        if (res.data.length === 0) setFeedMessage("There are no posts yet");
-        // console.log(res.data);
+    axios.get(URL,config)
+    .then((res) => {
+      setPosts([...res.data]);
+      if (res.data.length === 0) setFeedMessage("There are no posts yet");
+      console.log(res.data);
       })
-      .catch((error) =>
-        alert(
-          "An error occured while trying to fetch the posts, please refresh the page"
-        )
+    .catch((error) =>
+      alert
+      ("An error occured while trying to fetch the posts, please refresh the page")
       );
-  }, [posts]);
 
+    axios.get(`http://localhost:4000/ranking`)
+    .then(response => setTrendingsRank(response.data))
+    .catch(error => alert(error))
+
+  }, [updatePosts]);
+  
   function publishPost() {
     if (!url) {
       return window.alert("url não pode estar vazia!");
@@ -49,7 +55,7 @@ const navigate = useNavigate();
       url,
       description,
     };
-
+    console.log(config);
     const promise = axios.post(URL, body, config);
     promise
       .then((res) => {
@@ -64,7 +70,16 @@ const navigate = useNavigate();
   }
 
   return (
-    <Container>
+  <>
+    {
+      deleting ? <DeleteBox 
+      id={idDeleting} 
+      setDeleting={setDeleting} 
+      setUpdatePosts={setUpdatePosts} 
+      updatePosts ={updatePosts} /> 
+      : <> </>
+    }
+    <Container deleting={deleting}>
       <TopBar>
         <h1>linkr</h1>
         <div>
@@ -75,14 +90,16 @@ const navigate = useNavigate();
           />
         </div>
       </TopBar>
-
+      <Content>
       <Feed>
         <h3>timeline</h3>
         <NewPost>
-          <img
-            src={userData.profilePhoto}
-            alt="profile"
-          />
+          <div>
+            <img
+              src={userData.profilePhoto}
+              alt="profile"
+            />
+          </div>
           <Box fontColor={"#9f9f9f"}>
             <p>What are you going to share today?</p>
             <Input
@@ -102,84 +119,100 @@ const navigate = useNavigate();
             </Button>
           </Box>
         </NewPost>
-        {posts.length === 0 ? (
-          <span>{feedMessage}</span>
-        ) : (
-          posts.map(({ userId,profilePhoto, description, url, username }, index) => {
-            return (
-              <Post key={index}>
-                <img src={profilePhoto} alt="profile" onClick={() => navigate(`/timeline/${userId}`)}/>
-                <Box fontColor={"white"}>
-                  <h3>{username}</h3>
-                  <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
-                    <span>{description}</span>
-                  </ReactTagify>
-                  <a target={"_blank"} href={url}>
-                    {url}
-                  </a>
-                </Box>
-              </Post>
-            );
-          })
+        {
+          posts.length === 0 ? (
+            <span>{feedMessage}</span>
+          ) : (
+            posts.map((object, index) => 
+              <PostBox
+              id={object.id}
+              key={index} 
+              url={object.url} 
+              profilePhoto={object.profilePhoto} 
+              username={object.username} 
+              description={object.description}
+              urlDescription={object.urlDescription}
+              urlTitle={object.urlTitle}
+              urlImage={object.urlImage}
+              setIdDeleting={setIdDeleting}
+              setDeleting={setDeleting}
+              setUpdatePosts={setUpdatePosts}
+              updatePosts={updatePosts}
+              />)
         )}
+       
       </Feed>
+      <Trendings>
+            <div>
+              <span>trending</span>
+            </div>
+            <div>
+              {trendingsRank === null ? 
+                <></> : 
+                trendingsRank.map(object => 
+                <Link to={`/hashtag/${object.name}`}> 
+                  <span># {object.name}</span> 
+                </Link>)
+              }
+            </div>
+                    
+        </Trendings>
+      </Content>
     </Container>
+    </>
   );
 }
 
 const Container = styled.div`
-  width: 100vw;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #333333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: ${props => props.deleting ? 0.2 : 1}
 `;
 
 const TopBar = styled.div`
-  height: 80px;
-  background: #151515;
+  height: 72px;
+  background-color: #151515;
   box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
-  width: 100vw;
+  width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   position:fixed;
   left:0;
   top:0;
-  z-index:1;
+  z-index: 1;
   h1 {
-    color: white;
-    font-family: "Passion One";
-    font-style: normal;
-    font-size: 60px;
-    padding-left: 20px;
-    display: flex;
-    align-items: center;
+    display: inline-block;
+    margin-left: 28px;
+    color: #FFFFFF;
+    font-size: 49px;
+    font-weight: bold;
+    font-family: "Passion One"
   }
   div {
     display: flex;
     align-items: center;
-    width: 100px;
+    height: 100%;
+    margin-right: 18px;
   }
   ion-icon {
     color: white;
     font-size: 36px;
   }
   img {
-    height: 60px;
-    width: auto;
-    border-radius: 50%;
+    width: 53px;
+    height: 53px;
+    border-radius: 26.5px;
+    margin-left: 10px;
   }
 `;
 
 const Feed = styled.div`
-  background-color: #333333;
-  min-height: 100vh;
-  height: 100%;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
-  margin-top: 90px;
+  margin-top: 150px;
   > h3 {
     width: 40vw;
     font-size: 50px;
@@ -198,42 +231,50 @@ const Feed = styled.div`
 
 const NewPost = styled.div`
   display: flex;
-  height: 20vh;
+  height: 209px;
   background-color: #ffffff;
-  width: 40vw;
-  border-radius: 14px;
-
+  width: 611px;
+  border-radius: 16px;
+  margin-bottom: 18px;
+  padding: 14px 22px 10px 0px;
   img {
     height: 50px;
-    width: auto;
-    border-radius: 50%;
+    width: 50px;
+    border-radius: 26.5px;
     color: #ffffff;
-    padding-left: 10px;
-    margin-top: 10px;
+  }
+  > div:nth-child(1) {
+    width: 15%; 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    
   }
 `;
 
 const Box = styled.div`
-  padding: 0 0 50px 20px;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 90%;
   position: relative;
   height: 100%;
   color: white;
   p {
     color: ${({ fontColor }) => fontColor};
+    display: inline-block;
+    margin-bottom: 5px;
   }
   input:nth-child(2) {
     height: 30px;
-    width: 90%;
+    width: 100%;
     ::placeholder {
       font-size: 14px;
     }
   }
   input:nth-child(3) {
     height: 70px;
-    width: 90%;
+    width: 100%;
     ::placeholder {
       font-size: 16px;
     }
@@ -285,7 +326,7 @@ const Button = styled.button`
   width: 120px;
   height: 30px;
   position: absolute;
-  right: 10%;
+  right: 0px;
   bottom: 10px;
 
   border-radius: 6px;
@@ -319,4 +360,47 @@ const Post = styled.div`
     padding-left: 10px;
     margin-top: 10px;
   }
+`;
+const Content = styled.div`
+    display: flex;
+`;
+
+const Trendings = styled.div`
+    margin-top: 278px;
+    width: 301px;
+    height: 406px;
+    background-color: #171717;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+
+    > div:nth-child(1) {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 61px;
+        border-bottom: 1px solid #484848;
+        padding: 0px 20px;
+        span {
+            font-size: 27px;
+            font-weight: bold;
+            color: #FFFFFF;
+            font-family: 'Oswald';
+        }
+        
+    }
+    > div:nth-child(2) {
+        display: flex;
+        flex-direction: column;
+        padding: 10px 20px;
+        
+        span {
+            display: inline-block;
+            color: #FFFFFF;
+            font-family: 'Lato';
+            font-size: 19px;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+    }
 `;

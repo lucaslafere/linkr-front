@@ -66,7 +66,7 @@ export default function HashtagScreen() {
                         <></> : 
                         trendingsRank.map(object => 
                             <Link to={`/hashtag/${object.name}`}> 
-                            <span>{object.name}</span> 
+                            <span># {object.name}</span> 
                             </Link>)
                         }
                         <span># javascript</span>
@@ -92,16 +92,20 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
+    
 `
 const Header = styled.div`
     width: 100%;
     height: 72px;
     background-color: #151515;
+    box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: absolute;
+    position: fixed;
+    left:0;
+    top:0;
+    z-index: 1;
     span {
         display: inline-block;
         margin-left: 28px;
@@ -114,6 +118,7 @@ const Header = styled.div`
         margin-right: 18px;
         display: flex;
         align-items: center;
+        height: 100%;
         img {
             width: 53px;
             height: 53px;
