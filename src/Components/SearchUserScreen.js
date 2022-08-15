@@ -317,6 +317,7 @@ export default function SerchUserScreen() {
 
     @media (max-width: 1000px) {
         display: inline;
+        border-radius: 8px;
     }
  `
  const LoggedUser = styled.div`
