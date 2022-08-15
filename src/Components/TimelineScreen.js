@@ -29,7 +29,7 @@ export default function FeedScreen() {
   
   
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
-  //const backendURL = "http://localhost:4100/posts";
+  
 
   const config = {
     headers: {
@@ -146,13 +146,21 @@ export default function FeedScreen() {
               urlDescription={object.urlDescription}
               urlTitle={object.urlTitle}
               urlImage={object.urlImage}
+
+              likes={object.likes}
+
               setIdDeleting={setIdDeleting}
               setDeleting={setDeleting}
               setUpdatePosts={setUpdatePosts}
               updatePosts={updatePosts}
+
+              />)
+        )}
+
               userId={object.userId}
               />)
         )}
+
 
        
       </Feed>
@@ -376,7 +384,7 @@ const Post = styled.div`
   flex-direction: column;
   align-items: center;
 
-<<<<<<< HEAD
+
   img {
     height: 50px;
     width: auto;
@@ -387,7 +395,7 @@ const Post = styled.div`
 
     &:hover{ 
       cursor: pointer;
-=======
+
   ul {
     width: 100%;
     height: 100%;
@@ -399,7 +407,7 @@ const Post = styled.div`
     
     ul {
       width: 100%;
->>>>>>> d137bf5c0efdbe521c4338b82b1e9f2ad535e503
+
     }
   }
 `;
