@@ -1,8 +1,47 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { ReactTagify } from "react-tagify";
+import { useState, useContext, useRef, useEffect } from 'react';
+import UserContext from '../Contexts/UserContext';
+import axios from "axios";
 
-export default function PostBox({profilePhoto , username, description, url, urlDescription, urlTitle, urlImage }) {
+export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts }) {
     const [liked, setLiked] = useState(false); 
+    const [ editing, setEditing ] = useState(false);
+    const [ descriptionInput, setDescriptionInput ] = useState(description);
+    const { userData, setUserData } = useContext(UserContext);
+    const token = localStorage.getItem('MY_TOKEN');
+    const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+
+
+
+
+    
+    function editPost() {
+        setDescriptionInput(description);
+        setEditing(!editing);
+    }
+    function inputKeybord(e) {
+        console.log(e);
+        if(e.key === "Escape") {
+           return editPost();
+        }
+        if(e.key === "Enter") {
+            axios.put(`localhost:4000/posts/${id}`, descriptionInput, config)
+            .then(() => {
+                editPost();
+                setUpdatePosts(!updatePosts)})
+            .catch(erro => alert("Não foi possível editar esse post"))
+        }
+    }
+    function deletingPost() {
+        setIdDeleting(id)
+        setDeleting(true);
+    }
     
     return(
         <Post>
@@ -15,8 +54,30 @@ export default function PostBox({profilePhoto , username, description, url, urlD
                 <p>13 likes</p>
             </PictureAndLike>
             <PostInfo>
-                <p>{username}</p> 
-                <span>{description}</span>
+                <div>
+                    <p>{username}</p>
+                    {/* {userData.username === username ?  */}
+                        <div>
+                            <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>
+                            <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
+                        </div>
+                    {/* : <></>
+                    } */}
+                </div>
+                {editing ? 
+                    <input value={descriptionInput} 
+                    onChange={(e) => setDescriptionInput(e.target.value)}
+                    placeholder="http://"
+                    onKeyPress={inputKeybord}
+                    ></input>
+                    : <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
+                        <span>{description}</span>
+                    </ReactTagify>
+                }
+                    
+                {/* <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
+                    <span>{description}</span>
+                </ReactTagify> */}
                 <MainInfo href={url} target="_blank">
                     <MainInfoDescription>
                         <h3>{urlTitle}</h3>
@@ -35,9 +96,10 @@ const Post = styled.li`
     height: 276px; 
     display: flex;
     background-color: rgba(23, 23, 23, 1);
-    padding: 19px 23px 20px 20px;
+    padding: 19px 22px 10px 20px;
     border-radius: 16px;
     margin-bottom: 18px;
+    
  `
  const PictureAndLike = styled.div`
     width: 10%; 
@@ -68,7 +130,8 @@ const Post = styled.li`
     p {
         margin-top: 4px;
         font-size: 11px; 
-        color: white;
+        color: #FFFFFF;
+        font-family: "Lato";
     }
  `
  const PostInfo = styled.div`
@@ -83,10 +146,34 @@ const Post = styled.li`
         margin-bottom: 8px;
     } 
     span { 
-        font-size: 19px; 
-        color: rgba(183, 183, 183, 1); 
+        font-size: 17px; 
+        color: #B7B7B7; 
+        font-family: 'Lato';
         margin-bottom: 10px;
         line-height: 20px;
+    }
+    > div:nth-child(1) {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+    ion-icon {
+        font-size: 20px;
+        color: #FFFFFF;
+        margin-left: 10px;
+    }
+    input {
+        padding-left: 5px;
+        height: 30px;
+        width: 100%;
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        height: auto;
+        color: #4C4C4C;
+        font-family: "Lato";
+        font-size: 14px;
+        margin-bottom: 10px;
+    
     }
  `
  const MainInfo = styled.a`

@@ -5,6 +5,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import PostBox from '../Pages/PostBox';
 import TokenContext from '../Contexts/TokenContext';
+import Trendings from '../Pages/Trending';
 
 
 export default function HashtagScreen() {
@@ -57,27 +58,7 @@ export default function HashtagScreen() {
                     />)
                     }
                 </Posts>
-                <Trendings>
-                    <div>
-                        <span>trending</span>
-                    </div>
-                    <div>
-                        {trendingsRank === null ? 
-                        <></> : 
-                        trendingsRank.map(object => 
-                            <Link to={`/hashtag/${object.name}`}> 
-                            <span>{object.name}</span> 
-                            </Link>)
-                        }
-                        <span># javascript</span>
-                        <span># react-native</span>
-                        <span># material</span>
-                        <span># web-dev</span>
-                        <span># mobile</span>
-                        <span># css</span>
-                    </div>
-                    
-                </Trendings>
+               <Trendings />
             </div>
             
         </Content>
@@ -92,16 +73,20 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
+    
 `
 const Header = styled.div`
     width: 100%;
     height: 72px;
     background-color: #151515;
+    box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: absolute;
+    position: fixed;
+    left:0;
+    top:0;
+    z-index: 1;
     span {
         display: inline-block;
         margin-left: 28px;
@@ -114,6 +99,7 @@ const Header = styled.div`
         margin-right: 18px;
         display: flex;
         align-items: center;
+        height: 100%;
         img {
             width: 53px;
             height: 53px;
@@ -140,45 +126,5 @@ const Content = styled.div`
 const Posts = styled.div`
     display: flex;
     flex-direction: column;
-`;
-const Trendings = styled.div`
-    margin-left: 20px;
-    width: 301px;
-    height: 406px;
-    background-color: #171717;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-
-    > div:nth-child(1) {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 61px;
-        border-bottom: 1px solid #484848;
-        padding: 0px 20px;
-        span {
-            font-size: 27px;
-            font-weight: bold;
-            color: #FFFFFF;
-            font-family: 'Oswald';
-        }
-        
-    }
-    > div:nth-child(2) {
-        display: flex;
-        flex-direction: column;
-        padding: 10px 20px;
-        
-        span {
-            display: inline-block;
-            color: #FFFFFF;
-            font-family: 'Lato';
-            font-size: 19px;
-            font-weight: bold;
-            margin-top: 12px;
-        }
-    }
-    
-        
+    margin-right: 50px;
 `;
