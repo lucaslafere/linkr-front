@@ -3,8 +3,9 @@ import { ReactTagify } from "react-tagify";
 import { useState, useContext, useRef, useEffect } from 'react';
 import UserContext from '../Contexts/UserContext';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
-export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts }) {
+export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts, userId }) {
     const [liked, setLiked] = useState(false); 
     const [ editing, setEditing ] = useState(false);
     const [ descriptionInput, setDescriptionInput ] = useState(description);
@@ -15,11 +16,7 @@ export default function PostBox({ id ,profilePhoto , username, description, url,
           Authorization: `Bearer ${token}`,
         },
       };
-
-
-
-
-
+    const navigate = useNavigate();
     
     function editPost() {
         setDescriptionInput(description);
@@ -46,7 +43,7 @@ export default function PostBox({ id ,profilePhoto , username, description, url,
     return(
         <Post>
             <PictureAndLike>
-                <img src={profilePhoto} alt="User"/>
+                <img src={profilePhoto} alt="User" onClick={() => navigate(`/timeline/${userId}`)}/>
                 { liked ? 
                   <ion-icon  name="heart" id="heart" onClick={() => setLiked(!liked)}></ion-icon> :
                   <ion-icon name="heart-outline" id="heart-outline" onClick={() => setLiked(!liked)}></ion-icon>
@@ -55,7 +52,7 @@ export default function PostBox({ id ,profilePhoto , username, description, url,
             </PictureAndLike>
             <PostInfo>
                 <div>
-                    <p>{username}</p>
+                    <p onClick={() => navigate(`/timeline/${userId}`)}>{username}</p>
                     {/* {userData.username === username ?  */}
                         <div>
                             <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>

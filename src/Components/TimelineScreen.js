@@ -19,8 +19,8 @@ export default function FeedScreen() {
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
   const [ updatePosts, setUpdatePosts ] = useState(false);
-  //const URL = "https://projeto17-linkrback.herokuapp.com/posts";
-  const URL = "http://localhost:4000/posts"; 
+  const URL = "https://projeto17-linkrback.herokuapp.com/posts";
+  //const URL = "http://localhost:4000/posts"; 
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -135,6 +135,7 @@ export default function FeedScreen() {
               setDeleting={setDeleting}
               setUpdatePosts={setUpdatePosts}
               updatePosts={updatePosts}
+              userId={object.userId}
               />)
         )}
        
