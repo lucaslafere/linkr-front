@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import UserContext from "../Contexts/UserContext.js";
 import PostBox from "../Pages/PostBox.js";
+import DeleteBox from "../Pages/DeleteBox.js";
+
 
 export default function FeedScreen() {
   const {userData, setUserData} = useContext(UserContext);
@@ -12,8 +14,11 @@ export default function FeedScreen() {
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
+  const [ deleting, setDeleting ] = useState(false);
+  const [idDeleting, setIdDeleting ] = useState(null);
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
+  const [ updatePosts, setUpdatePosts ] = useState(false);
   //const URL = "https://projeto17-linkrback.herokuapp.com/posts";
   const URL = "http://localhost:4000/posts";
   const config = {
@@ -27,6 +32,7 @@ export default function FeedScreen() {
     .then((res) => {
       setPosts([...res.data]);
       if (res.data.length === 0) setFeedMessage("There are no posts yet");
+      console.log(res.data);
       })
     .catch((error) =>
       alert
@@ -37,8 +43,8 @@ export default function FeedScreen() {
     .then(response => setTrendingsRank(response.data))
     .catch(error => alert(error))
 
-  }, [posts]);
-
+  }, [updatePosts]);
+  
   function publishPost() {
     if (!url) {
       return window.alert("url não pode estar vazia!");
@@ -64,7 +70,16 @@ export default function FeedScreen() {
   }
 
   return (
-    <Container>
+  <>
+    {
+      deleting ? <DeleteBox 
+      id={idDeleting} 
+      setDeleting={setDeleting} 
+      setUpdatePosts={setUpdatePosts} 
+      updatePosts ={updatePosts} /> 
+      : <> </>
+    }
+    <Container deleting={deleting}>
       <TopBar>
         <h1>linkr</h1>
         <div>
@@ -75,6 +90,7 @@ export default function FeedScreen() {
           />
         </div>
       </TopBar>
+     
       <Content>
 
       
@@ -111,7 +127,8 @@ export default function FeedScreen() {
             <span>{feedMessage}</span>
           ) : (
             posts.map((object, index) => 
-              <PostBox 
+              <PostBox
+              id={object.id}
               key={index} 
               url={object.url} 
               profilePhoto={object.profilePhoto} 
@@ -119,7 +136,9 @@ export default function FeedScreen() {
               description={object.description}
               urlDescription={object.urlDescription}
               urlTitle={object.urlTitle}
-              urlImage={object.urlImage}      
+              urlImage={object.urlImage}
+              setIdDeleting={setIdDeleting}
+              setDeleting={setDeleting}
               />)
         )}
        
@@ -136,17 +155,12 @@ export default function FeedScreen() {
                   <span># {object.name}</span> 
                 </Link>)
               }
-              <span># javascript</span>
-              <span># react-native</span>
-              <span># material</span>
-              <span># web-dev</span>
-              <span># mobile</span>
-              <span># css</span>
             </div>
                     
         </Trendings>
       </Content>
     </Container>
+    </>
   );
 }
 
@@ -157,6 +171,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    opacity: ${props => props.deleting ? 0.2 : 1}
 `;
 
 const TopBar = styled.div`

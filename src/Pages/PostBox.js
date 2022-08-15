@@ -1,9 +1,21 @@
 import styled from 'styled-components';
 import { ReactTagify } from "react-tagify";
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import UserContext from '../Contexts/UserContext';
 
-export default function PostBox({profilePhoto , username, description, url, urlDescription, urlTitle, urlImage }) {
+
+export default function PostBox({id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting}) {
     const [liked, setLiked] = useState(false); 
+    const [ editing, setEditing ] = useState(false);
+    
+    const { userData, setUserData } = useContext(UserContext);
+    
+    console.log(userData);
+
+    function deletingPost() {
+        setIdDeleting(id)
+        setDeleting(true);
+    }
     
     return(
         <Post>
@@ -16,7 +28,16 @@ export default function PostBox({profilePhoto , username, description, url, urlD
                 <p>13 likes</p>
             </PictureAndLike>
             <PostInfo>
-                <p>{username}</p>
+                <div>
+                    <p>{username}</p>
+                    {/* {userData.username === username ?  */}
+                        <div>
+                            <ion-icon name="pencil-outline" onClick={() => setEditing(!editing)}></ion-icon>
+                            <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
+                        </div>
+                    {/* : <></>
+                    } */}
+                </div>
                 <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
                     <span>{description}</span>
                 </ReactTagify>
@@ -93,6 +114,16 @@ const Post = styled.li`
         font-family: 'Lato';
         margin-bottom: 10px;
         line-height: 20px;
+    }
+    > div:nth-child(1) {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+    ion-icon {
+        font-size: 20px;
+        color: #FFFFFF;
+        margin-left: 10px;
     }
  `
  const MainInfo = styled.a`
