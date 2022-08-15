@@ -44,7 +44,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
             </PictureAndLike>
             <PostInfo>
                 <p>{username}</p> 
-                <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag}`)}>
+                <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
                 <a>{description}</a>
                 </ReactTagify>
                 <MainInfo>

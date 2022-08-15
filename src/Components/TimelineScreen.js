@@ -47,12 +47,7 @@ export default function FeedScreen() {
     promise
       .then((res) => {
         setPosts([...res.data]);
-        if (res.data.length === 0) setFeedMessage("There are no posts yet");
-    axios.get(backendURL,config)
-    .then((res) => {
-      setPosts([...res.data]);
-      if (res.data.length === 0) setFeedMessage("There are no posts yet");
-      console.log(res.data);
+        if (res.data.length === 0) setFeedMessage("There are no posts yet")
       })
     .catch((error) =>
       alert
@@ -60,10 +55,10 @@ export default function FeedScreen() {
       );
 
     axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`)
-    .then(response => setTrendingsRank(response.data))
-    .catch(error => alert(error))
+      .then(response => setTrendingsRank(response.data))
+      .catch(error => alert(error))
 
-  })}, [updatePosts]);
+  }, [updatePosts]);
   
   function publishPost() {
     if (!url) {
@@ -75,13 +70,13 @@ export default function FeedScreen() {
       url,
       description,
     };
-    console.log(config);
     const promise = axios.post(backendURL, body, config);
     promise
       .then((res) => {
         setLoading(false);
         setDescription("");
         setUrl("");
+        setUpdatePosts(!updatePosts);
       })
       .catch(() => {
         window.alert("Houve um erro ao publicar seu post, tente novamente.");
@@ -394,7 +389,7 @@ const Post = styled.div`
   @media (max-width: 1000px) {
     width: 100%;
     height: 100%;
-
+    
     ul {
       width: 100%;
     }
@@ -442,5 +437,9 @@ const Trendings = styled.div`
             font-weight: bold;
             margin-top: 12px;
         }
+    }
+
+    @media (max-width:1000px){
+      display:none;
     }
 `;
