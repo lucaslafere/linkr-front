@@ -1,7 +1,4 @@
 import styled from 'styled-components';
-import { ReactTagify } from "react-tagify";
-import { useState, useContext } from 'react';
-import UserContext from '../Contexts/UserContext';
 import axios from 'axios';
 
 export default function DeleteBox({ id, setDeleting, setUpdatePosts, updatePosts }) {
@@ -18,7 +15,7 @@ export default function DeleteBox({ id, setDeleting, setUpdatePosts, updatePosts
             setUpdatePosts(!updatePosts);
         })
         .catch(error => {
-            alert(error);
+            alert("Não foi possível excluir o post");
             setDeleting(false);
             setUpdatePosts(!updatePosts);
         });

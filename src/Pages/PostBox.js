@@ -1,17 +1,43 @@
 import styled from 'styled-components';
 import { ReactTagify } from "react-tagify";
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import UserContext from '../Contexts/UserContext';
+import axios from "axios";
 
-
-export default function PostBox({id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting}) {
+export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts }) {
     const [liked, setLiked] = useState(false); 
     const [ editing, setEditing ] = useState(false);
-    
+    const [ descriptionInput, setDescriptionInput ] = useState(description);
     const { userData, setUserData } = useContext(UserContext);
-    
-    console.log(userData);
+    const token = localStorage.getItem('MY_TOKEN');
+    const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
+
+
+
+
+    
+    function editPost() {
+        setDescriptionInput(description);
+        setEditing(!editing);
+    }
+    function inputKeybord(e) {
+        console.log(e);
+        if(e.key === "Escape") {
+           return editPost();
+        }
+        if(e.key === "Enter") {
+            axios.put(`localhost:4000/posts/${id}`, descriptionInput, config)
+            .then(() => {
+                editPost();
+                setUpdatePosts(!updatePosts)})
+            .catch(erro => alert("Não foi possível editar esse post"))
+        }
+    }
     function deletingPost() {
         setIdDeleting(id)
         setDeleting(true);
@@ -32,15 +58,26 @@ export default function PostBox({id ,profilePhoto , username, description, url, 
                     <p>{username}</p>
                     {/* {userData.username === username ?  */}
                         <div>
-                            <ion-icon name="pencil-outline" onClick={() => setEditing(!editing)}></ion-icon>
+                            <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>
                             <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
                         </div>
                     {/* : <></>
                     } */}
                 </div>
-                <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
+                {editing ? 
+                    <input value={descriptionInput} 
+                    onChange={(e) => setDescriptionInput(e.target.value)}
+                    placeholder="http://"
+                    onKeyPress={inputKeybord}
+                    ></input>
+                    : <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
+                        <span>{description}</span>
+                    </ReactTagify>
+                }
+                    
+                {/* <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
                     <span>{description}</span>
-                </ReactTagify>
+                </ReactTagify> */}
                 <MainInfo href={url} target="_blank">
                     <MainInfoDescription>
                         <h3>{urlTitle}</h3>
@@ -124,6 +161,19 @@ const Post = styled.li`
         font-size: 20px;
         color: #FFFFFF;
         margin-left: 10px;
+    }
+    input {
+        padding-left: 5px;
+        height: 30px;
+        width: 100%;
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        height: auto;
+        color: #4C4C4C;
+        font-family: "Lato";
+        font-size: 14px;
+        margin-bottom: 10px;
+    
     }
  `
  const MainInfo = styled.a`

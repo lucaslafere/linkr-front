@@ -90,10 +90,7 @@ export default function FeedScreen() {
           />
         </div>
       </TopBar>
-     
       <Content>
-
-      
       <Feed>
         <h3>timeline</h3>
         <NewPost>
@@ -139,6 +136,8 @@ export default function FeedScreen() {
               urlImage={object.urlImage}
               setIdDeleting={setIdDeleting}
               setDeleting={setDeleting}
+              setUpdatePosts={setUpdatePosts}
+              updatePosts={updatePosts}
               />)
         )}
        
