@@ -1,44 +1,61 @@
 import styled from "styled-components"; 
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext";
 import UserContext from "../Contexts/UserContext";
-import { ThreeDots } from "react-loader-spinner";
 import RenderSearchUser from "../Pages/RenderSearchUser";
 import RenderUserPosts from "../Pages/RenderUserPosts";
 import RenderHashtags from "../Pages/RenderHashtags";
 import axios from 'axios';
+import { DebounceInput } from 'react-debounce-input';
 
 export default function SerchUserScreen() {
     const { id } = useParams();
-    const [search, setSearch] = useState(""); 
     const { token, setToken } = useContext(TokenContext);
+    const [search, setSearch] = useState([]); 
+    const [userPosts, setUserPosts] = useState([]);
+    const [post,setPost] = useState([]);
+    const { userData } = useContext(UserContext);
     //const [searchUsers, setSearchUsers] = useState([]); 
-    //const [userPosts, setUserPosts] = useState([]);
-    //const [hashtags,setHashtags] = useState([]);
+    const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
     const navigate = useNavigate();
-    //axios.get("https://projeto17-linkrback.herokuapp.com/users/${id}");
+    console.log(userData);
 
-    const searchUsers = [ 
-        {
-            image: "https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg",
-            username: "cr7"
-        }, 
-        {
-            image: "https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg",
-            username: "cr7"
-        }
-    ];
+    useEffect(() => {
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        const promise = axios.get(`http://localhost:4100/users/2`,config);
+        const promises = axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`);
 
-    const hashtags = [
-        { 
-            name: "javascript" 
-        }, 
-        { 
-            name: "javascript" 
+        promise.then(response => { 
+            console.log(response.data[0]);
+            setUserPosts(response.data[0]);
+            setPost(response.data[0].posts);
+
+            promises.then(responses => { 
+                console.log(responses.data);
+                setHashtags(response.data);
+            });
+        });
+
+        promise.catch(error => { 
+            console.log(error);
+        });  
+    },[]);
+
+    async function searchUser(event) { 
+        const username = { username: event };
+        console.log(username);
+        try {
+            const promise = await axios.post("https://projeto17-linkrback.herokuapp.com/other-users",username); 
+            console.log(promise.data);
+            setSearch(promise.data);
+        } catch (error) {
+            console.log(error);
         }
-    ];
+    }
 
     async function logout() { 
         axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
@@ -53,21 +70,20 @@ export default function SerchUserScreen() {
             <a>linkr</a>
             <Container>
                 <InputText>
-                    <input
+                    <DebounceInput
                         type="text"
                         placeholder="Search for people"
-                        value={search}
-                        onChange={(event) => setSearch(event.target.value)}
-                        required
-                    />
+                        minLength={3}
+                        debounceTimeout={400}
+                        onChange={(event) => searchUser(event.target.value)} />
                     <ion-icon name="search-sharp"></ion-icon>
                 </InputText>
                 <Search>
                     <ul>
-                        {searchUsers.map((users,index) => (
+                        {search.map((users,index) => (
                             <RenderSearchUser 
                                 index= {index}
-                                image= {users.image}
+                                image= {users.profilePhoto}
                                 username= {users.username}
                             />
                         ))}
@@ -80,9 +96,32 @@ export default function SerchUserScreen() {
                 ) : ( 
                 <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
                 )}
-                <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
+                <img src={userData.profilePhoto} alt="profile"/>
             </LoggedUser>
-        </Header> 
+        </Header>  
+
+        <Container2>
+                <InputText2>
+                    <DebounceInput
+                        type="text"
+                        placeholder="Search for people"
+                        minLength={3}
+                        debounceTimeout={400}
+                        onChange={(event) => searchUser(event.target.value)} />
+                    <ion-icon name="search-sharp"></ion-icon>
+                </InputText2>
+                <Search2>
+                    <ul>
+                        {search.map((users,index) => (
+                            <RenderSearchUser 
+                                index= {index}
+                                image= {users.profilePhoto}
+                                username= {users.username}
+                            />
+                        ))}
+                        </ul>
+                </Search2> 
+            </Container2>
 
         {clickedLogout ? (
         <Logout onClick={logout}> 
@@ -90,17 +129,27 @@ export default function SerchUserScreen() {
         </Logout> ) : ("")}
 
         <UserTitle>
-            <img src="https://tntsports.com.br/__export/1650121510074/sites/esporteinterativo/img/2022/04/16/cristiano_ronaldo_vibrando_-_premier_league.jpg_1359985831.jpg" alt="cr7"/>
-            <a>Juvenal Juvêncio's posts</a>
+            <img src={userPosts.profilePhoto} alt={userPosts.username}/>
+            <a>{userPosts.username}'s posts</a>
         </UserTitle> 
 
         <Main>
             <Posts>
                 <ul>
-                    <RenderUserPosts />
-                    <RenderUserPosts /> 
-                    <RenderUserPosts />
-                    <RenderUserPosts />
+                    {post.map((post,index) => (
+                        <RenderUserPosts 
+                            index={index}
+                            likes= {99}
+                            url={post.url}
+                            description={post.description}
+                            username={userPosts.username}
+                            profilePhoto={userPosts.profilePhoto}
+                            urlDescription={post.urlDescription}
+                            urlImage={post.urlImage}
+                            urlTitle={post.urlTitle}
+                            id={post.id}
+                        />
+                    ))}
                 </ul>
             </Posts>
             <Treading>
@@ -140,7 +189,8 @@ export default function SerchUserScreen() {
         font-weight: 700;
         letter-spacing: 0.05em;
         text-align: left;
-    } 
+    }  
+
  `
  const Container = styled.div`
     width: 30%;
@@ -164,6 +214,10 @@ export default function SerchUserScreen() {
         background-color: rgba(231, 231, 231, 1); 
         border-radius: 0px 0px 8px 8px; 
         padding: 40px 17px;
+    }
+
+    @media (max-width: 1000px) {
+        display: none;
     }
  `
  const InputText = styled.div`
@@ -190,6 +244,79 @@ export default function SerchUserScreen() {
         width: 21px; 
         height: 21px;
         color: rgba(198, 198, 198, 1); 
+    } 
+
+    @media (max-width: 1000px) {
+        display: none;
+    }
+ ` 
+
+ const Container2 = styled.div`
+    display: none;
+
+    @media (max-width: 1000px) {
+        display: inline;
+        width: 100%;
+        height: 100%; 
+        padding: 0px 20px 0px 20px;
+        display: flex; 
+        flex-direction: column;
+        align-itens: center; 
+        position: fixed;
+        left: 0; 
+        top: 85px;
+    }
+ `
+ const Search2 = styled.div`
+    width: 100%;
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+    position: absolute;
+    top: 56px;
+    display: none;
+    
+    ul { 
+        width: 100%; 
+        height: 100%;
+        background-color: rgba(231, 231, 231, 1); 
+        border-radius: 0px 0px 8px 8px; 
+        padding: 40px 17px;
+    }
+
+    @media (max-width: 1000px) {
+        display: none;
+    }
+ `
+ const InputText2 = styled.div`
+    width: 100%; 
+    height: 45px;   
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px 8px 0px 0px;  
+    border: none; 
+    padding: 0px 13px 0px 19px;
+    color: rgba(198, 198, 198, 1); 
+    display: none;
+
+    input { 
+        width: 95%; 
+        height: 100%;
+        font-weight: 100;
+        font-size: 19px; 
+        border: none;
+    } 
+
+    ion-icon { 
+        width: 21px; 
+        height: 21px;
+        color: rgba(198, 198, 198, 1); 
+    } 
+
+    @media (max-width: 1000px) {
+        display: inline;
     }
  `
  const LoggedUser = styled.div`
@@ -275,6 +402,15 @@ export default function SerchUserScreen() {
         width: 65%; 
         height: 100%; 
     }
+
+    @media (max-width: 1000px) {
+        width: 100%; 
+        height: 100%; 
+
+        ul { 
+            width: 100%;
+        }
+    }
  `
  const Treading = styled.div`
     width: 301px; 
@@ -305,6 +441,10 @@ export default function SerchUserScreen() {
         height: 100%;
         display: flex; 
         flex-direction: column;
+    }
+
+    @media (max-width: 1000px) {
+        display: none;
     }
  `
  
