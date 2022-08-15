@@ -13,13 +13,12 @@ export default function LoginScreen() {
   const [errorText, setErrorText] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const URL = "http://projeto17-linkrback.herokuapp.com/login";
-  const URL = "http://localhost:4000/login";
+  const URL = "http://projeto17-linkrback.herokuapp.com/login";
+  // const URL = "http://localhost:4000/login";
   const navigate = useNavigate();
 
   const { setToken, token } = useContext(TokenContext);
   const { setUserData } = useContext(UserContext);
-
 
   // Code to get and use the localStorage token:
 
@@ -32,10 +31,9 @@ export default function LoginScreen() {
     window.localStorage.setItem("MY_TOKEN", token);
   }, [token]);
 
-  if (token){
-    navigate("/timeline")
+  if (token) {
+    navigate("/timeline");
   }
-
 
   const body = {
     email,
@@ -60,6 +58,15 @@ export default function LoginScreen() {
           email: res.data.user.email,
           profilePhoto: res.data.user.profilePhoto,
         });
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            id: res.data.user.id,
+            username: res.data.user.username,
+            email: res.data.user.email,
+            profilePhoto: res.data.user.profilePhoto,
+          })
+        );
         setLoading(false);
         navigate("/timeline");
       })
