@@ -20,7 +20,7 @@ export default function HashtagScreen() {
 
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/hashtag/${trending.hashtag}`, config)
+    axios.get(`https://projeto17-linkrback.herokuapp.com/hashtag/${trending.hashtag}`, config)
     .then(response => setTrendingPosts(response.data))
     .catch(error => alert(error));
 

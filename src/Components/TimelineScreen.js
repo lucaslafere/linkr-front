@@ -27,7 +27,7 @@ export default function FeedScreen() {
   
   
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
-  //const backendURL = "http://localhost:4100/posts";
+  
 
   const config = {
     headers: {
