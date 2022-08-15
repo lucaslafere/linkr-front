@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 
 export default function Trendings() {
     const [ trendingsRank, setTrendingsRank ] = useState(null);
-
+  
 useEffect(() => {
-    axios.get(`http://localhost:4000/ranking`)
+    axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`)
     .then(response => setTrendingsRank(response.data))
     .catch(error => alert(error))
 
@@ -21,8 +21,8 @@ useEffect(() => {
               {trendingsRank === null ? 
                 <></> : 
                 trendingsRank.map(object => 
-                <Link to={`/hashtag/${object.name}`}> 
-                  <span># {object.name}</span> 
+                <Link to={`/hashtag/${object.name.slice(1)}`}> 
+                  <span>{object.name}</span> 
                 </Link>)
               }
             </div>
@@ -31,7 +31,7 @@ useEffect(() => {
 } 
 
 const TrendingBox = styled.div`
-    
+    margin-top: 278px;
     width: 301px;
     height: 406px;
     background-color: #171717;
@@ -67,5 +67,9 @@ const TrendingBox = styled.div`
             font-weight: bold;
             margin-top: 12px;
         }
+    }
+
+    @media(max-width: 1000px){
+        display:none;
     }
 `;
