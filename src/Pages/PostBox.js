@@ -108,7 +108,11 @@ const Post = styled.li`
         width: 50px; 
         height: 50px;
         border-radius: 50%;
-        margin-bottom: 20px;
+        margin-bottom: 20px; 
+
+        &:hover { 
+            cursor: pointer;
+        }
     }
     ion-icon { 
         width: 25px;
@@ -141,6 +145,10 @@ const Post = styled.li`
         font-size: 19px; 
         color: rgba(255, 255, 255, 1);
         margin-bottom: 8px;
+
+        &:hover { 
+            cursor: pointer;
+        }
     } 
     span { 
         font-size: 17px; 

@@ -15,8 +15,7 @@ export default function SerchUserScreen() {
     const [search, setSearch] = useState([]); 
     const [userPosts, setUserPosts] = useState([]);
     const [post,setPost] = useState([]);
-    const { userData } = useContext(UserContext);
-    //const [searchUsers, setSearchUsers] = useState([]); 
+    const { userData } = useContext(UserContext); 
     const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
     const navigate = useNavigate();
