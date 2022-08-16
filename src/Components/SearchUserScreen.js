@@ -48,11 +48,11 @@ export default function SerchUserScreen() {
     promise.catch((error) => {
       console.log(error);
     });
-  }, []);
+  }, [isFollowed]);
 
   useEffect(() => {
     const body = {
-      friendId: id,
+      friendId: id
     };
     axios
       .post(
@@ -66,7 +66,7 @@ export default function SerchUserScreen() {
       .catch((err) => {
         console.log(err);
       });
-  });
+  }, []);
 
   async function searchUser(event) {
     const username = { username: event };
@@ -95,6 +95,21 @@ export default function SerchUserScreen() {
     setToken("");
 
     navigate("/");
+  }
+
+  async function followUser () {
+    const body = {
+        friendId: id
+    }
+    axios.post("https://projeto17-linkrback.herokuapp.com/follow", body, config)
+    .then((res) => {
+        console.log(res);
+        setIsFollowed(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
   }
 
   return (
@@ -186,7 +201,7 @@ export default function SerchUserScreen() {
         <img src={userPosts.profilePhoto} alt={userPosts.username} />
         <a>{userPosts.username}'s posts</a>
       </UserTitle>
-      <FollowButton>{isFollowed ? "Unfollow" : "Follow"}</FollowButton>
+      <FollowButton onClick={followUser}>{isFollowed ? "Unfollow" : "Follow"}</FollowButton>
       </UserContainer>
       <Main>
         <Posts>
