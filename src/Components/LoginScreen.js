@@ -48,7 +48,6 @@ export default function LoginScreen() {
   }
 
   function requestLogin() {
-    console.log("veio");
     axios
       .post(URL, body)
       .then((res) => {

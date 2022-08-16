@@ -11,7 +11,7 @@ import RenderSearchUser from "../Pages/RenderSearchUser.js";
 import { DebounceInput } from 'react-debounce-input';
 
 export default function FeedScreen() {
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
 
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
@@ -25,6 +25,7 @@ export default function FeedScreen() {
   const [search, setSearch] = useState([]); 
   const { token, setToken } = useContext(TokenContext);
   const navigate = useNavigate();
+  
   //const URL = "http://localhost:4000/posts"; 
   
   
@@ -114,7 +115,7 @@ export default function FeedScreen() {
     }
     <Container deleting={deleting}>
     <Header>
-            <a>linkr</a>
+            <a onClick={() => navigate("/timeline")}>linkr</a>
             <Containerr>
                 <InputText>
                     <DebounceInput
@@ -631,7 +632,8 @@ const Post = styled.div`
 
     &:hover{ 
       cursor: pointer;
-
+    }
+  }
   ul {
     width: 100%;
     height: 100%;
@@ -646,47 +648,12 @@ const Post = styled.div`
 
     }
   }
-}
-  }
+
 `;
 const Content = styled.div`
     display: flex;
 
 `;
 
-// const Trendings = styled.div`
-//     margin-top: 278px;
-//     width: 301px;
-//     height: 406px;
-//     background-color: #171717;
-//     border-radius: 16px;
-//     display: flex;
-//     flex-direction: column;
-
-//     > div:nth-child(1) {
-//         display: flex;
-//         align-items: center;
-//         width: 100%;
-//         height: 61px;
-//         border-bottom: 1px solid #484848;
-//         padding: 0px 20px;
-//         span {
-//             font-size: 27px;
-//             font-weight: bold;
-//             color: #FFFFFF;
-//             font-family: 'Oswald';
-//         }
-        
-//     };
-    
-
-//     > div:nth-child(2) {
-//       margin-top: 278px;
-//     }
-
-//     @media (max-width:1000px){
-//       display:none;
-//     }
-// `;
 
 

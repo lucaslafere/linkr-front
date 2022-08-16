@@ -35,7 +35,7 @@ export default function SerchUserScreen() {
 
             promises.then(responses => { 
                 console.log(responses.data);
-                setHashtags(response.data);
+                setHashtags([...response.data]);
             });
         });
 
@@ -70,7 +70,7 @@ export default function SerchUserScreen() {
     return( 
         <>
         <Header>
-            <a>linkr</a>
+            <a onClick={() => navigate("/timeline")}>linkr</a>
             <Container>
                 <InputText>
                     <DebounceInput
