@@ -630,7 +630,8 @@ const Post = styled.div`
 
     &:hover{ 
       cursor: pointer;
-
+    }
+  }
   ul {
     width: 100%;
     height: 100%;
