@@ -28,6 +28,8 @@ export default function FeedScreen() {
   //const URL = "http://localhost:4000/posts"; 
   
   
+  const data =  JSON.parse(userData);
+  
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
   
 
@@ -143,7 +145,7 @@ export default function FeedScreen() {
                 ) : ( 
                 <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
                 )}
-                <img src={userData.profilePhoto} alt="profile"/>
+                <img src={data.profilePhoto} alt="profile"/>
             </LoggedUser>
         </Header>  
       <Content>
@@ -187,7 +189,7 @@ export default function FeedScreen() {
 
           <div>
             <img
-              src={userData.profilePhoto}
+              src={data.profilePhoto}
               alt="profile"
             />
           </div>
@@ -643,6 +645,8 @@ const Post = styled.div`
       width: 100%;
 
     }
+  }
+}
   }
 `;
 const Content = styled.div`
