@@ -5,7 +5,6 @@ export default function RenderSearchUser({index,image,username,id}) {
     const navigate = useNavigate(); 
 
     function reload(id) { 
-
         navigate(`/timeline/${id}`); 
         window.location.reload();
     }

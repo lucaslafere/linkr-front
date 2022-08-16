@@ -1,17 +1,12 @@
 import styled from "styled-components";
-import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
+
 export default function RenderHashtags({ index, name }) {
   const navigate = useNavigate();
-  const hashtag = "#" + name;
+
   return (
     <Hashtag value={index}>
-      <ReactTagify
-        colors={"#ffffff"}
-        tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}
-      >
-        <a>{hashtag}</a>
-      </ReactTagify>
+        <a onClick={() => navigate(`/hashtag/${name}`)}>{name}</a>
     </Hashtag>
   );
 }
