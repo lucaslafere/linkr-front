@@ -59,16 +59,16 @@ export default function LoginScreen() {
           email: res.data.user.email,
           profilePhoto: res.data.user.profilePhoto,
         });
-        localStorage.setItem(
-          "userInfo",
-          JSON.stringify({
-            id: res.data.user.id,
-            username: res.data.user.username,
-            email: res.data.user.email,
-            profilePhoto: res.data.user.profilePhoto
-          })
-        );
+        const userInfo = JSON.stringify({
+          id: res.data.user.id,
+          username: res.data.user.username,
+          email: res.data.user.email,
+          profilePhoto: res.data.user.profilePhoto,
+        });
+
+        window.localStorage.setItem("userInfo", userInfo);
         setLoading(false);
+        
         navigate("/timeline");
       })
       .catch(() => {
