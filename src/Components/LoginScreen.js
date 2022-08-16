@@ -65,7 +65,7 @@ export default function LoginScreen() {
             id: res.data.user.id,
             username: res.data.user.username,
             email: res.data.user.email,
-            profilePhoto: res.data.user.profilePhoto,
+            profilePhoto: res.data.user.profilePhoto
           })
         );
         setLoading(false);

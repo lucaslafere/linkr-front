@@ -10,13 +10,8 @@ import SerchUserScreen from "./Components/SearchUserScreen";
 import GlobalStyle from "./Styles/globalStyles";
 
 export default function App() {
-  const [token, setToken] = useState("");
-  const [userData, setUserData] = useState({
-    id: "",
-    username: "",
-    email: "",
-    profilePhoto: "",
-  }); 
+  const [token, setToken] = useState(localStorage.getItem("MY_TOKEN"));
+  const [userData, setUserData] = useState(localStorage.getItem("userInfo"));
 
   return (
     <TokenContext.Provider value={{ token, setToken }}>

@@ -96,10 +96,14 @@ export default function FeedScreen() {
     <Container deleting={deleting}>
       <TopBar>
         <h1>linkr</h1>
-        <div>
-          <ion-icon name="chevron-down-outline"></ion-icon>
-          <img src={userData.profilePhoto} alt="profile" />
-        </div>
+        <LoggedUser>
+              {clickedLogout ? (
+                <ion-icon name="chevron-up-outline" onClick={() => setClickedLogout(false)}></ion-icon>
+                ) : ( 
+                <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
+                )}
+                <img src={userData.profilePhoto} alt="profile"/>
+       </LoggedUser>
       </TopBar>
       <Content>
       
@@ -232,6 +236,29 @@ const TopBar = styled.div`
     margin-left: 10px;
   }
 `;
+
+const LoggedUser = styled.div`
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    color: white; 
+
+    ion-icon { 
+        width: 27px;
+        height: 27px; 
+
+        &:hover { 
+            cursor: pointer;
+        }
+    }
+
+    img { 
+        width: 53px;
+        height: 53px;
+        border-radius: 50%; 
+        margin-left: 17px;
+    } 
+ `
 
 const Logout = styled.div`
     width: 150px; 

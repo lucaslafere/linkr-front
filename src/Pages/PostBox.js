@@ -79,7 +79,7 @@ function inputKeybord(e) {
         <Post>
             <PictureAndLike>
 
-                <img src={profilePhoto} alt="User" onClick={() => navigate(`timeline/${userId}`)}/>
+                <img src={profilePhoto} alt="User" onClick={() => navigate(`/timeline/${userId}`)}/>
                 { liked ? 
                   <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> 
                 : <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
@@ -88,7 +88,7 @@ function inputKeybord(e) {
             </PictureAndLike>
             <PostInfo>
                 <div>
-                    <p onClick={() => navigate(`timeline/${userId}`)}>{username}</p>
+                    <p onClick={() => navigate(`/timeline/${userId}`)}>{username}</p>
                      {userData.username === username ?  (
 
                         <div>
