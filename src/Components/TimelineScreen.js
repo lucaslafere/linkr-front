@@ -269,6 +269,7 @@ const Header = styled.div`
     top: 0; 
     left: 0;
     padding: 0px 12px 0px 20px; 
+    z-index: 1;
 
     a { 
         color: white; 
@@ -360,7 +361,6 @@ const LoggedUser = styled.div`
         margin-left: 17px;
     } 
  `
-
 const Logout = styled.div`
     width: 150px; 
     height: 47px; 
@@ -383,7 +383,6 @@ const Logout = styled.div`
         cursor: pointer;
     }
  ` 
-
  const Container2 = styled.div`
     display: none;
 
@@ -460,7 +459,6 @@ const Logout = styled.div`
         border-radius: 8px;
     }
  `
-
 const Feed = styled.div`
   margin-top: 150px;
   margin-right: 50px;
@@ -480,8 +478,8 @@ const Feed = styled.div`
     text-decoration: none;
   }
   @media (max-width:1000px) {
-    margin-right: 0;
-    width: 100vw;
+    margin-left: 0;
+    width: 100%;
   }
 `;
 
@@ -508,7 +506,7 @@ const NewPost = styled.div`
     
   }
   @media (max-width:1000px) {
-    width: 100vw;
+    width: 100%;
   }
 `;
 
@@ -551,6 +549,10 @@ const Box = styled.div`
   }
   span {
     color: #b7b7b7;
+  } 
+
+  @media (max-width:1000px) {
+    width: 100%;
   }
 `;
 
@@ -579,7 +581,7 @@ const Input = styled.input`
     font-style: normal;
     font-weight: 700;
     font-size: 1.4rem;
-  }
+  } 
 `;
 
 const Button = styled.button`

@@ -189,6 +189,7 @@ export default function SerchUserScreen() {
     top: 0; 
     left: 0;
     padding: 0px 12px 0px 20px; 
+    z-index: 1;
 
     a { 
         color: white; 
