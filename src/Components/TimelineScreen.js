@@ -11,7 +11,7 @@ import RenderSearchUser from "../Pages/RenderSearchUser.js";
 import { DebounceInput } from 'react-debounce-input';
 
 export default function FeedScreen() {
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
 
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
@@ -25,6 +25,7 @@ export default function FeedScreen() {
   const [search, setSearch] = useState([]); 
   const { token, setToken } = useContext(TokenContext);
   const navigate = useNavigate();
+  
   //const URL = "http://localhost:4000/posts"; 
   
   
@@ -112,7 +113,7 @@ export default function FeedScreen() {
     }
     <Container deleting={deleting}>
     <Header>
-            <a>linkr</a>
+            <a onClick={() => navigate("/timeline")}>linkr</a>
             <Containerr>
                 <InputText>
                     <DebounceInput
@@ -143,7 +144,7 @@ export default function FeedScreen() {
                 ) : ( 
                 <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
                 )}
-                <img src={userData.profilePhoto} alt="profile"/>
+                <img  alt="profile"/>
             </LoggedUser>
         </Header>  
       <Content>
@@ -187,7 +188,7 @@ export default function FeedScreen() {
 
           <div>
             <img
-              src={userData.profilePhoto}
+              
               alt="profile"
             />
           </div>
