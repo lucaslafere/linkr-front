@@ -225,7 +225,7 @@ const MainInfo = styled.a`
   border: 1px solid rgba(77, 77, 77, 1);
   border-radius: 12px;
   display: flex;
-  img {é
+  img {
     width: 30%;
     height: 100%;
     border-radius: 0px 12px 13px 0px;

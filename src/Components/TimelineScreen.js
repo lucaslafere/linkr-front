@@ -7,6 +7,8 @@ import DeleteBox from "../Pages/DeleteBox.js";
 import Trendings from "../Pages/Trending.js";
 import { useNavigate } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext.js";
+import RenderSearchUser from "../Pages/RenderSearchUser.js";
+import { DebounceInput } from 'react-debounce-input';
 
 export default function FeedScreen() {
   const { userData } = useContext(UserContext);
@@ -20,6 +22,7 @@ export default function FeedScreen() {
   const [feedMessage, setFeedMessage] = useState("Loading");
   const [ updatePosts, setUpdatePosts ] = useState(false);
   const [clickedLogout, setClickedLogout] = useState(false);
+  const [search, setSearch] = useState([]); 
   const { token, setToken } = useContext(TokenContext);
   const navigate = useNavigate();
   //const URL = "http://localhost:4000/posts"; 
@@ -72,7 +75,21 @@ export default function FeedScreen() {
         window.alert("Houve um erro ao publicar seu post, tente novamente.");
         setLoading(false);
       });
-  } 
+  }  
+
+  async function searchUser(event) { 
+    const username = { username: event };
+    console.log(username);
+    try {
+        const promise = await axios.post("https://projeto17-linkrback.herokuapp.com/other-users",username); 
+        console.log(promise.data);
+        setSearch(promise.data);
+    } catch (error) {
+        setSearch([]);
+        console.log(error);
+        setSearch([]);
+    }
+}
 
   async function logout() { 
     axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
@@ -94,23 +111,73 @@ export default function FeedScreen() {
       : <> </>
     }
     <Container deleting={deleting}>
-      <TopBar>
-        <h1>linkr</h1>
-        <LoggedUser>
-              {clickedLogout ? (
+    <Header>
+            <a>linkr</a>
+            <Containerr>
+                <InputText>
+                    <DebounceInput
+                        type="text"
+                        placeholder="Search for people"
+                        minLength={3}
+                        debounceTimeout={400}
+                        onChange={(event) => searchUser(event.target.value)} />
+                    <ion-icon name="search-sharp"></ion-icon>
+                </InputText> 
+                {search.length !== 0 ? (
+                <Search>
+                    <ul>
+                        {search.map((users,index) => (
+                            <RenderSearchUser 
+                                index= {index}
+                                image= {users.profilePhoto}
+                                username= {users.username}
+                            />
+                        ))}
+                        </ul>
+                </Search> 
+                ) : ""}
+            </Containerr>
+            <LoggedUser>
+                {clickedLogout ? (
                 <ion-icon name="chevron-up-outline" onClick={() => setClickedLogout(false)}></ion-icon>
                 ) : ( 
                 <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
                 )}
                 <img src={userData.profilePhoto} alt="profile"/>
-       </LoggedUser>
-      </TopBar>
+            </LoggedUser>
+        </Header>  
       <Content>
       
       {clickedLogout ? (
         <Logout onClick={logout}> 
             <a>Logout</a>
-        </Logout> ) : ("")}
+        </Logout> ) : ("")} 
+
+        <Container2>
+                <InputText2>
+                    <DebounceInput
+                        type="text"
+                        placeholder="Search for people"
+                        minLength={3}
+                        debounceTimeout={400}
+                        onChange={(event) => searchUser(event.target.value)} />
+                    <ion-icon name="search-sharp"></ion-icon>
+                </InputText2>
+                {search.length !== 0 ? (
+                <Search2>
+                    <ul>
+                        {search.map((users,index) => (
+                            <RenderSearchUser 
+                                index= {index}
+                                image= {users.profilePhoto}
+                                username= {users.username}
+                                id= {users.id}
+                            />
+                        ))}
+                        </ul>
+                </Search2> 
+                ) : "" }
+        </Container2>
 
       <Feed>
         <h3>timeline</h3>
@@ -190,53 +257,87 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     opacity: ${props => props.deleting ? 0.2 : 1};
-`;
+`; 
+const Header = styled.div`
+    width: 100%; 
+    height: 72px; 
+    background-color: rgba(21, 21, 21, 1);
+    display: flex; 
+    justify-content: space-between; 
+    align-items:center;
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    padding: 0px 12px 0px 20px; 
 
-const TopBar = styled.div`
-  height: 72px;
-  background-color: #151515;
-  box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+    a { 
+        color: white; 
+        font-family: Passion One;
+        font-size: 49px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-align: left;
+    }  
 
-  /* position: fixed;
-  left: 0;
-  top: 0; */
-
-  align-items: center;
-  position:fixed;
-  left:0;
-  top:0;
-
-  z-index: 1;
-  h1 {
-    display: inline-block;
-    margin-left: 28px;
-    color: #FFFFFF;
-    font-size: 49px;
-    font-weight: bold;
-    font-family: "Passion One"
-  }
-  div {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    margin-right: 18px;
+ `
+ const Containerr = styled.div`
+    width: 30%;
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+ `
+ const Search = styled.div`
+    width: 100%;
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+    position: absolute;
+    top: 56px;
     
-  }
-  ion-icon {
-    color: white;
-    font-size: 36px;
-  }
-  img {
-    width: 53px;
-    height: 53px;
-    border-radius: 26.5px;
-    margin-left: 10px;
-  }
-`;
+    ul { 
+        width: 100%; 
+        height: 100%;
+        background-color: rgba(231, 231, 231, 1); 
+        border-radius: 0px 0px 8px 8px; 
+        padding: 40px 17px;
+    }
 
+    @media (max-width: 1000px) {
+        display: none;
+    }
+ `
+ const InputText = styled.div`
+    width: 100%; 
+    height: 45px;   
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px 8px 0px 0px;  
+    border: none; 
+    padding: 0px 13px 0px 19px;
+    color: rgba(198, 198, 198, 1); 
+
+    input { 
+        width: 95%; 
+        height: 100%;
+        font-weight: 100;
+        font-size: 19px; 
+        border: none;
+    } 
+
+    ion-icon { 
+        width: 21px; 
+        height: 21px;
+        color: rgba(198, 198, 198, 1); 
+    } 
+
+    @media (max-width: 1000px) {
+        display: none;
+    }
+ ` 
 const LoggedUser = styled.div`
     display: flex; 
     justify-content: center; 
@@ -280,6 +381,83 @@ const Logout = styled.div`
 
     &:hover { 
         cursor: pointer;
+    }
+ ` 
+
+ const Container2 = styled.div`
+    display: none;
+
+    @media (max-width: 1000px) {
+        display: inline;
+        width: 100%;
+        height: 100%; 
+        padding: 0px 20px 0px 20px;
+        display: flex; 
+        flex-direction: column;
+        align-itens: center; 
+        position: relative;
+        left: 0; 
+        top: 85px;
+    }
+ `
+ const Search2 = styled.div`
+    width: 100%;
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+    position: absolute;
+    top: 56px;
+    display: none;
+    
+    ul { 
+        width: 100%; 
+        height: 100%;
+        background-color: rgba(231, 231, 231, 1); 
+        border-radius: 0px 0px 8px 8px; 
+        padding: 40px 17px;
+    }
+
+    @media (max-width: 1000px) {
+        display: inline;
+        position: absolute;
+        top: 1;
+
+        ul { 
+            width: 94%; 
+            height: 100%;
+        }
+    }
+ `
+ const InputText2 = styled.div`
+    width: 100%; 
+    height: 45px;   
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px 8px 0px 0px;  
+    border: none; 
+    padding: 0px 13px 0px 19px;
+    color: rgba(198, 198, 198, 1); 
+    display: none;
+
+    input { 
+        width: 95%; 
+        height: 100%;
+        font-weight: 100;
+        font-size: 19px; 
+        border: none;
+    } 
+
+    ion-icon { 
+        width: 21px; 
+        height: 21px;
+        color: rgba(198, 198, 198, 1); 
+    } 
+
+    @media (max-width: 1000px) {
+        display: inline;
+        border-radius: 8px;
     }
  `
 
