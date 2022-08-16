@@ -4,8 +4,14 @@ import styled from "styled-components";
 export default function RenderSearchUser({index,image,username,id}) {  
     const navigate = useNavigate(); 
 
+    function reload(id) { 
+
+        navigate(`/timeline/${id}`); 
+        window.location.reload();
+    }
+
     return( 
-        <UserCard value={index} onClick={() => navigate(`/timeline/${id}`)}>
+        <UserCard value={index} onClick={() => reload(id)}>
             <img src={image} />
             <a>{username}</a>
         </UserCard> 

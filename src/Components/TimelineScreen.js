@@ -10,9 +10,7 @@ import { useNavigate } from "react-router-dom";
 import RenderSearchUser from "../Pages/RenderSearchUser.js";
 
 export default function FeedScreen() {
-  const { userData, setUserData } = useContext(UserContext);
-  const token = localStorage.getItem("MY_TOKEN");
-  // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const { userData } = useContext(UserContext);
   const [search, setSearch] = useState([]);
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
@@ -21,13 +19,13 @@ export default function FeedScreen() {
   const [idDeleting, setIdDeleting] = useState(null);
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
-
-  const [updatePosts, setUpdatePosts] = useState(false);
-  const [userPosts, setUserPosts] = useState([]);
+  const [ updatePosts, setUpdatePosts ] = useState(false);
   const [clickedLogout, setClickedLogout] = useState(false);
+  const { token, setToken } = useContext(TokenContext);
   const navigate = useNavigate();
+  //const URL = "http://localhost:4000/posts";
 
-
+  const [userPosts, setUserPosts] = useState([]);
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
   
 
@@ -101,9 +99,16 @@ export default function FeedScreen() {
         window.alert("Houve um erro ao publicar seu post, tente novamente.");
         setLoading(false);
       });
-  }
+  } 
 
-  console.log(posts);
+  async function logout() { 
+    axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
+    window.localStorage.setItem("MY_TOKEN", "");
+    localStorage.setItem("userInfo","");
+    setToken("");
+
+    navigate("/");
+};
 
   return (
     <>
@@ -168,28 +173,47 @@ export default function FeedScreen() {
               onChange={(event) => searchUser(event.target.value)}
             />
 
-
-            <ion-icon name="search-sharp"></ion-icon>
-          </InputText2>
-          <Search2>
-            <ul>
-              {search.map((users, index) => (
-                <RenderSearchUser
-                  index={index}
-                  image={users.profilePhoto}
-                  username={users.username}
-                />
-              ))}
-            </ul>
-          </Search2>
-        </Container2>
-
-        {clickedLogout ? (
-          <Logout onClick={logout}>
-            <a>Logout</a>
-          </Logout>
-        ) : (
-          ""
+          <Box fontColor={"#9f9f9f"}>
+            <p>What are you going to share today?</p>
+            <Input
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="http://"
+              disabled={loading}
+            />
+            <Input
+              disabled={loading}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Awesome article about javascript"
+            />
+            <Button disabled={loading} onClick={publishPost}>
+              {loading ? "Publishing..." : "Publish"}
+            </Button>
+          </Box>
+        </NewPost>
+        {
+          posts.length === 0 ? (
+            <span>{feedMessage}</span>
+          ) : (
+            posts.map((object, index) => 
+              <PostBox
+              id={object.id}
+              key={index} 
+              url={object.url} 
+              profilePhoto={object.profilePhoto} 
+              username={object.username} 
+              description={object.description}
+              urlDescription={object.urlDescription}
+              urlTitle={object.urlTitle}
+              urlImage={object.urlImage}
+              likes={object.likes}
+              setIdDeleting={setIdDeleting}
+              setDeleting={setDeleting}
+              setUpdatePosts={setUpdatePosts}
+              updatePosts={updatePosts}
+              userId={object.userId}
+              />)
         )}
 
         <Content>
@@ -263,7 +287,6 @@ export default function FeedScreen() {
         </Content>
       </Container>
     </>
-
   );
 }
 
@@ -320,6 +343,52 @@ const TopBar = styled.div`
     margin-left: 10px;
   }
 `;
+
+const LoggedUser = styled.div`
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    color: white; 
+
+    ion-icon { 
+        width: 27px;
+        height: 27px; 
+
+        &:hover { 
+            cursor: pointer;
+        }
+    }
+
+    img { 
+        width: 53px;
+        height: 53px;
+        border-radius: 50%; 
+        margin-left: 17px;
+    } 
+ `
+
+const Logout = styled.div`
+    width: 150px; 
+    height: 47px; 
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    background-color: rgba(23, 23, 23, 1);
+    color: white; 
+    border-radius: 0px 0px 0px 20px; 
+    position: fixed; 
+    right: 0; 
+    top: 72px; 
+
+    a { 
+        font-size: 17px;
+        font-weight: bold; 
+    } 
+
+    &:hover { 
+        cursor: pointer;
+    }
+ `
 
 const Feed = styled.div`
   margin-top: 150px;
