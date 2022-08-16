@@ -29,6 +29,8 @@ export default function FeedScreen() {
   //const URL = "http://localhost:4000/posts"; 
   
   
+  const data =  JSON.parse(userData);
+  
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
   
 
@@ -144,7 +146,7 @@ export default function FeedScreen() {
                 ) : ( 
                 <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
                 )}
-                <img  alt="profile"/>
+                <img src={data.profilePhoto} alt="profile"/>
             </LoggedUser>
         </Header>  
       <Content>
@@ -188,7 +190,7 @@ export default function FeedScreen() {
 
           <div>
             <img
-              
+              src={data.profilePhoto}
               alt="profile"
             />
           </div>
@@ -630,7 +632,8 @@ const Post = styled.div`
 
     &:hover{ 
       cursor: pointer;
-
+    }
+  }
   ul {
     width: 100%;
     height: 100%;
@@ -645,45 +648,12 @@ const Post = styled.div`
 
     }
   }
+
 `;
 const Content = styled.div`
     display: flex;
 
 `;
 
-// const Trendings = styled.div`
-//     margin-top: 278px;
-//     width: 301px;
-//     height: 406px;
-//     background-color: #171717;
-//     border-radius: 16px;
-//     display: flex;
-//     flex-direction: column;
-
-//     > div:nth-child(1) {
-//         display: flex;
-//         align-items: center;
-//         width: 100%;
-//         height: 61px;
-//         border-bottom: 1px solid #484848;
-//         padding: 0px 20px;
-//         span {
-//             font-size: 27px;
-//             font-weight: bold;
-//             color: #FFFFFF;
-//             font-family: 'Oswald';
-//         }
-        
-//     };
-    
-
-//     > div:nth-child(2) {
-//       margin-top: 278px;
-//     }
-
-//     @media (max-width:1000px){
-//       display:none;
-//     }
-// `;
 
 

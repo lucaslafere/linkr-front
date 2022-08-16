@@ -6,7 +6,22 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 
-export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts, likes, userId }) {
+export default function PostBox({ 
+  id,
+  profilePhoto, 
+  username, 
+  description, 
+  url, 
+  urlDescription, 
+  urlTitle, 
+  urlImage, 
+  setIdDeleting, 
+  setDeleting, 
+  updatePosts, 
+  setUpdatePosts, 
+  likes, 
+  userId }) {
+
     const [liked, setLiked] = useState(false); 
     const [ editing, setEditing ] = useState(false);
     let [amountLikes, setAmountLikes] = useState(likes);
@@ -14,6 +29,7 @@ export default function PostBox({ id ,profilePhoto , username, description, url,
     const { userData } = useContext(UserContext);
     const token = localStorage.getItem('MY_TOKEN');
     const navigate = useNavigate();
+    const data = JSON.parse(userData);
     const config = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -89,14 +105,14 @@ function inputKeybord(e) {
             <PostInfo>
                 <div>
                     <p onClick={() => navigate(`/timeline/${userId}`)}>{username}</p>
-                     {userData.username === username ?  (
-
+                     
+                      {data.id === userId ? 
                         <div>
                             <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>
                             <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
                         </div>
-
-                    ): ""}
+                        : <></>}
+                    
         </div>
         {editing ? (
           <input
