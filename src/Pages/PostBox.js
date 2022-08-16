@@ -1,19 +1,19 @@
 import styled from "styled-components";
 import { ReactTagify } from "react-tagify";
-import { useState, useContext, useRef, useEffect } from "react";
+import { useState, useContext } from "react";
 import UserContext from "../Contexts/UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 
-export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts, likes }) {
+export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts, likes, userId }) {
     const [liked, setLiked] = useState(false); 
     const [ editing, setEditing ] = useState(false);
     let [amountLikes, setAmountLikes] = useState(likes);
     const [ descriptionInput, setDescriptionInput ] = useState(description);
-    const { userData, setUserData } = useContext(UserContext);
+    const { userData } = useContext(UserContext);
     const token = localStorage.getItem('MY_TOKEN');
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const config = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -79,7 +79,7 @@ function inputKeybord(e) {
         <Post>
             <PictureAndLike>
 
-                <img src={profilePhoto} alt="User"/>
+                <img src={profilePhoto} alt="User" onClick={() => navigate(`timeline/${userId}`)}/>
                 { liked ? 
                   <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> 
                 : <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
@@ -88,16 +88,15 @@ function inputKeybord(e) {
             </PictureAndLike>
             <PostInfo>
                 <div>
-                    <p>{username}</p>
-                     {userData.username === username ?  
+                    <p onClick={() => navigate(`timeline/${userId}`)}>{username}</p>
+                     {userData.username === username ?  (
 
                         <div>
                             <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>
                             <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
                         </div>
 
-                    {/* : <></>
-                    } */}
+                    ): ""}
         </div>
         {editing ? (
           <input
@@ -131,7 +130,6 @@ function inputKeybord(e) {
     </Post>
   );
 } 
-}
 
 const Post = styled.li`
   width: 611px;
@@ -153,6 +151,10 @@ const PictureAndLike = styled.div`
     height: 50px;
     border-radius: 50%;
     margin-bottom: 20px;
+
+    &:hover { 
+        cursor: pointer;
+    }
   }
   ion-icon {
     width: 25px;
@@ -184,6 +186,10 @@ const PostInfo = styled.div`
     font-size: 19px;
     color: rgba(255, 255, 255, 1);
     margin-bottom: 8px;
+
+    &:hover { 
+        cursor: pointer;
+    }
   }
   span {
     font-size: 17px;

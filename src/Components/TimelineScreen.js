@@ -2,18 +2,14 @@ import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import UserContext from "../Contexts/UserContext.js";
-import RenderUserPosts from "../Pages/RenderUserPosts.js";
 import PostBox from "../Pages/PostBox.js";
 import DeleteBox from "../Pages/DeleteBox.js";
 import Trendings from "../Pages/Trending.js";
-
-
-
+import { useNavigate } from "react-router-dom";
+import TokenContext from "../Contexts/TokenContext.js";
 
 export default function FeedScreen() {
-  const {userData, setUserData} = useContext(UserContext);
-  
-  const token = localStorage.getItem('MY_TOKEN');
+  const { userData } = useContext(UserContext);
 
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
@@ -23,9 +19,10 @@ export default function FeedScreen() {
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
   const [ updatePosts, setUpdatePosts ] = useState(false);
-  const URL = "https://projeto17-linkrback.herokuapp.com/posts";
+  const [clickedLogout, setClickedLogout] = useState(false);
+  const { token, setToken } = useContext(TokenContext);
+  const navigate = useNavigate();
   //const URL = "http://localhost:4000/posts"; 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   
   
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
@@ -38,17 +35,16 @@ export default function FeedScreen() {
   };
 
   useEffect(() => {
-
-    const promise = axios.get(backendURL, config);
-    promise
-      .then((res) => {
-        setPosts([...res.data]);
-        if (res.data.length === 0) setFeedMessage("There are no posts yet")
-      })
-    .catch((error) =>
+    const promise = axios.get("https://projeto17-linkrback.herokuapp.com/posts", config);
+    promise.then((response) => {
+        setPosts([...response.data]);
+        if (response.data.length === 0) setFeedMessage("There are no posts yet")
+      });
+    promise.catch((error) => {
       alert
       ("An error occured while trying to fetch the posts, please refresh the page")
-      );
+    }); 
+
 
 
   }, [updatePosts]);
@@ -76,9 +72,16 @@ export default function FeedScreen() {
         window.alert("Houve um erro ao publicar seu post, tente novamente.");
         setLoading(false);
       });
-  }
+  } 
 
-  console.log(posts);
+  async function logout() { 
+    axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
+    window.localStorage.setItem("MY_TOKEN", "");
+    localStorage.setItem("userInfo","");
+    setToken("");
+
+    navigate("/");
+};
 
   return (
   <>
@@ -95,10 +98,16 @@ export default function FeedScreen() {
         <h1>linkr</h1>
         <div>
           <ion-icon name="chevron-down-outline"></ion-icon>
-          <img src={userInfo.profilePhoto} alt="profile" />
+          <img src={userData.profilePhoto} alt="profile" />
         </div>
       </TopBar>
       <Content>
+      
+      {clickedLogout ? (
+        <Logout onClick={logout}> 
+            <a>Logout</a>
+        </Logout> ) : ("")}
+
       <Feed>
         <h3>timeline</h3>
         <NewPost>
@@ -107,7 +116,7 @@ export default function FeedScreen() {
 
           <div>
             <img
-              src={userInfo.profilePhoto}
+              src={userData.profilePhoto}
               alt="profile"
             />
           </div>
@@ -146,20 +155,15 @@ export default function FeedScreen() {
               urlDescription={object.urlDescription}
               urlTitle={object.urlTitle}
               urlImage={object.urlImage}
-
               likes={object.likes}
-
               setIdDeleting={setIdDeleting}
               setDeleting={setDeleting}
               setUpdatePosts={setUpdatePosts}
               updatePosts={updatePosts}
-
-              />)
-        )}
-
               userId={object.userId}
               />)
         )}
+
 
 
        
@@ -228,6 +232,29 @@ const TopBar = styled.div`
     margin-left: 10px;
   }
 `;
+
+const Logout = styled.div`
+    width: 150px; 
+    height: 47px; 
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    background-color: rgba(23, 23, 23, 1);
+    color: white; 
+    border-radius: 0px 0px 0px 20px; 
+    position: fixed; 
+    right: 0; 
+    top: 72px; 
+
+    a { 
+        font-size: 17px;
+        font-weight: bold; 
+    } 
+
+    &:hover { 
+        cursor: pointer;
+    }
+ `
 
 const Feed = styled.div`
   margin-top: 150px;
