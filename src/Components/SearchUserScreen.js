@@ -62,9 +62,10 @@ export default function SerchUserScreen() {
       )
       .then((res) => {
         setIsFollowed(res.data.friendId);
+        console.log("caiu no then")
       })
       .catch((err) => {
-        console.log(err);
+        console.log("caiu no erro");
       });
   }, []);
 
@@ -103,11 +104,11 @@ export default function SerchUserScreen() {
     }
     axios.post("https://projeto17-linkrback.herokuapp.com/follow", body, config)
     .then((res) => {
-        console.log(res);
+        console.log("seguiu");
         setIsFollowed(true);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("deu ruim na hora de seguir");
       });
 
   }
