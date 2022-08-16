@@ -10,7 +10,6 @@ import Trendings from '../Pages/Trending';
 
 export default function HashtagScreen() {
   const [ trendingPosts, setTrendingPosts ] = useState(null);
-  const [ trendingsRank, setTrendingsRank ] = useState(null);
   const { token } = useContext(TokenContext);
   const trending = useParams();
   const config = {
@@ -21,12 +20,8 @@ export default function HashtagScreen() {
 
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/hashtag/${trending.hashtag}`, config)
+    axios.get(`https://projeto17-linkrback.herokuapp.com/hashtag/${trending.hashtag}`, config)
     .then(response => setTrendingPosts(response.data))
-    .catch(error => alert(error));
-
-    axios.get(`http://localhost:4000/ranking`)
-    .then(response => setTrendingsRank(response.data))
     .catch(error => alert(error));
 
   }, [trending]);
@@ -55,6 +50,7 @@ export default function HashtagScreen() {
                     urlDescription={object.urlDescription}
                     urlTitle={object.urlTitle}
                     urlImage={object.urlImage}
+                    likes={object.likes}
                     />)
                     }
                 </Posts>

@@ -29,7 +29,7 @@ export default function FeedScreen() {
 
 
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
-  //const backendURL = "http://localhost:4100/posts";
+  
 
   const config = {
     headers: {
@@ -168,6 +168,7 @@ export default function FeedScreen() {
               onChange={(event) => searchUser(event.target.value)}
             />
 
+
             <ion-icon name="search-sharp"></ion-icon>
           </InputText2>
           <Search2>
@@ -262,6 +263,7 @@ export default function FeedScreen() {
         </Content>
       </Container>
     </>
+
   );
 }
 
@@ -482,8 +484,10 @@ const Post = styled.div`
 
     &:hover{ 
       cursor: pointer;
+
     }
   }
+
   ul {
     width: 100%;
     height: 100%;

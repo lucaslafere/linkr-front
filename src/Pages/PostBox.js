@@ -5,52 +5,70 @@ import UserContext from "../Contexts/UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function PostBox({
-  id,
-  profilePhoto,
-  username,
-  description,
-  url,
-  urlDescription,
-  urlTitle,
-  urlImage,
-  setIdDeleting,
-  setDeleting,
-  updatePosts,
-  setUpdatePosts,
-  userId
-}) {
-  const [liked, setLiked] = useState(false);
-  const [editing, setEditing] = useState(false);
-  const [descriptionInput, setDescriptionInput] = useState(description);
-  const { userData, setUserData } = useContext(UserContext);
-  console.log(profilePhoto);
-  const navigate = useNavigate();
-  const token = localStorage.getItem("MY_TOKEN");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
 
-  function editPost() {
+export default function PostBox({ id ,profilePhoto , username, description, url, urlDescription, urlTitle, urlImage, setIdDeleting, setDeleting, updatePosts, setUpdatePosts, likes }) {
+    const [liked, setLiked] = useState(false); 
+    const [ editing, setEditing ] = useState(false);
+    let [amountLikes, setAmountLikes] = useState(likes);
+    const [ descriptionInput, setDescriptionInput ] = useState(description);
+    const { userData, setUserData } = useContext(UserContext);
+    const token = localStorage.getItem('MY_TOKEN');
+    const navigate = useNavigate()
+    const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+
+      async function likeDeslike(event) { 
+        const postLiked = { postLiked: event};
+
+            const config = {
+                headers: { Authorization: `Bearer ${token}` },
+            };
+            if(event==="like") {
+                await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
+                            .then(() => {
+                                setLiked(true);
+                                setAmountLikes(() => ++amountLikes);
+                            })
+                            .catch(() => alert("Não foi possível curtir esse post!"));                           
+            } else {
+                await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
+                            .then(() => {
+                                setLiked(false);
+                                setAmountLikes(() => --amountLikes);
+                            })
+                            .catch(() => alert("Não foi possível descurtir esse post!"));
+            
+    }
+}
+function navigateHashtagPage (tag) {
+    const newTag = tag.replace("#", "");
+    navigate(`/hashtag/${newTag}`)
+}
+    
+function editPost() {
     setDescriptionInput(description);
     setEditing(!editing);
-  }
-  function inputKeybord(e) {
+}
+
+function inputKeybord(e) {
     console.log(e);
-    if (e.key === "Escape") {
-      return editPost();
+    if(e.key === "Escape") {
+        return editPost();
     }
-    if (e.key === "Enter") {
-      axios
-        .put(`localhost:4000/posts/${id}`, descriptionInput, config)
+    if(e.key === "Enter") {
+        axios.put(`localhost:4000/posts/${id}`, descriptionInput, config)
         .then(() => {
-          editPost();
-          setUpdatePosts(!updatePosts);
-        })
-        .catch((erro) => alert("Não foi possível editar esse post"));
-    } 
+
+            editPost();
+            setUpdatePosts(!updatePosts)})
+        .catch(erro => alert("Não foi possível editar esse post"))
+        }
+    }
+
 
     function deletingPost() {
         setIdDeleting(id)
@@ -60,21 +78,24 @@ export default function PostBox({
     return(
         <Post>
             <PictureAndLike>
-                <img src={profilePhoto} alt="User" onClick={() => navigate(`/timeline/${userId}`)}/>
+
+                <img src={profilePhoto} alt="User"/>
                 { liked ? 
-                  <ion-icon  name="heart" id="heart" onClick={() => setLiked(!liked)}></ion-icon> :
-                  <ion-icon name="heart-outline" id="heart-outline" onClick={() => setLiked(!liked)}></ion-icon>
+                  <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> 
+                : <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 }
-                <p>13 likes</p>
+                <p>{amountLikes} likes</p>
             </PictureAndLike>
             <PostInfo>
                 <div>
-                    <p onClick={() => navigate(`/timeline/${userId}`)}>{username}</p>
-                    {/* {userData.username === username ?  */}
+                    <p>{username}</p>
+                     {userData.username === username ?  
+
                         <div>
                             <ion-icon name="pencil-outline" onClick={editPost}></ion-icon>
                             <ion-icon name="trash-outline" onClick={deletingPost}></ion-icon>
                         </div>
+
                     {/* : <></>
                     } */}
         </div>
@@ -169,6 +190,7 @@ const PostInfo = styled.div`
   }
   > div:nth-child(1) {
     display: flex;
+
     width: 100%;
     justify-content: space-between;
   }
@@ -197,7 +219,7 @@ const MainInfo = styled.a`
   border: 1px solid rgba(77, 77, 77, 1);
   border-radius: 12px;
   display: flex;
-  img {
+  img {é
     width: 30%;
     height: 100%;
     border-radius: 0px 12px 13px 0px;

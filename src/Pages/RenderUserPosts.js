@@ -11,27 +11,31 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
     const { token } = useContext(TokenContext);
     const navigate = useNavigate();
 
+    
     async function likeDeslike(event) { 
         const postLiked = { postLiked: event};
-        try {
+
             const config = {
                 headers: { Authorization: `Bearer ${token}` },
             };
-            if(event==="like") { 
-                setLiked(true);
-                setAmountLikes(() => ++amountLikes);
-                const promise = await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config);
-                console.log(promise.data);
-            } else { 
-                setLiked(false);
-                setAmountLikes(() => --amountLikes);
-                const promise = await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config);
-                console.log(promise.data);
-            }
-        } catch (error) {
-            console.log(error);
-        }
+            if(event==="like") {
+                await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
+                            .then(() => {
+                                setLiked(true);
+                                setAmountLikes(() => ++amountLikes);
+                            })
+                            .catch(() => alert("Não foi possível curtir esse post!"));                           
+            } else {
+                await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
+                            .then(() => {
+                                setLiked(false);
+                                setAmountLikes(() => --amountLikes);
+                            })
+                            .catch(() => alert("Não foi possível descurtir esse post!"));
+            
+                }
     }
+    
     return(
         <Post value={index}>
             <PictureAndLike>
