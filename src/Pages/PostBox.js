@@ -115,10 +115,6 @@ function inputKeybord(e) {
           </ReactTagify>
         )}
 
-        {/* <ReactTagify colors={"#ffffff"} tagClicked={(tag) => alert(tag)}>
-
-                    <span>{description}</span>
-                </ReactTagify> */}
         <MainInfo href={url} target="_blank">
           <MainInfoDescription>
             <h3>{urlTitle}</h3>

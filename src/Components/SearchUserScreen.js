@@ -54,6 +54,7 @@ export default function SerchUserScreen() {
         } catch (error) {
             setSearch([]);
             console.log(error);
+            setSearch([]);
         }
     }
 
