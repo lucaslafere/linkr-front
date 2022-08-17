@@ -19,7 +19,7 @@ export default function LoginScreen() {
 
   const { setToken, token } = useContext(TokenContext);
   const { setUserData } = useContext(UserContext);
-  
+
   // Code to get and use the localStorage token:
 
   useEffect(() => {
@@ -51,7 +51,6 @@ export default function LoginScreen() {
     axios
       .post(URL, body)
       .then((res) => {
-        setToken(res.data.token);
         setUserData({
           id: res.data.user.id,
           username: res.data.user.username,
@@ -59,16 +58,19 @@ export default function LoginScreen() {
           profilePhoto: res.data.user.profilePhoto,
         });
         const userInfo = JSON.stringify({
-          id: res.data.user.id,
-          username: res.data.user.username,
-          email: res.data.user.email,
-          profilePhoto: res.data.user.profilePhoto,
+          "id": res.data.user.id,
+          "username": res.data.user.username,
+          "email": res.data.user.email,
+          "profilePhoto": res.data.user.profilePhoto,
         });
         console.log(userInfo);
         window.localStorage.setItem("userInfo", userInfo);
+        setToken(res.data.token);
         setLoading(false);
-        
-        navigate("/timeline");
+
+        setTimeout(() => {
+          navigate("/timeline");
+        }, 1000);
       })
       .catch(() => {
         setDisabled(false);

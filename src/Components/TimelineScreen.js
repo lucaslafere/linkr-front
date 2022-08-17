@@ -10,6 +10,7 @@ import TokenContext from "../Contexts/TokenContext.js";
 import RenderSearchUser from "../Pages/RenderSearchUser.js";
 import { DebounceInput } from 'react-debounce-input';
 import RepostBox from "../Pages/RepostBox.js";
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function FeedScreen() {
   const { userData } = useContext(UserContext);
@@ -17,25 +18,26 @@ export default function FeedScreen() {
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
-  const [ deleting, setDeleting ] = useState(false);
-  const [idDeleting, setIdDeleting ] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [idDeleting, setIdDeleting] = useState(null);
   const [loading, setLoading] = useState(false);
   const [feedMessage, setFeedMessage] = useState("Loading");
-  const [ updatePosts, setUpdatePosts ] = useState(false);
+  const [updatePosts, setUpdatePosts] = useState(false);
   const [clickedLogout, setClickedLogout] = useState(false);
-  const [search, setSearch] = useState([]); 
+  const [search, setSearch] = useState([]);
   const { token, setToken } = useContext(TokenContext);
   const [openModal, setOpenModal] = useState(false);
   const [repostId, setRepostId] = useState();
+  const itemsPerPage = 10;
+  const [hasMoreItems, setHasMoreItems] = useState(true);
+  const [records, setRecords] = useState(itemsPerPage);
   const navigate = useNavigate();
-  
-  //const URL = "http://localhost:4000/posts"; 
-  
-  
-  const data =  JSON.parse(userData);
-  
+
+  //const URL = "http://localhost:4000/posts";
+
+  const data = JSON.parse(localStorage.getItem("userInfo"));
+
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
-  
 
   const config = {
     headers: {
@@ -44,25 +46,26 @@ export default function FeedScreen() {
   };
 
   useEffect(() => {
-    const promise = axios.get("https://projeto17-linkrback.herokuapp.com/posts", config);
+    const promise = axios.get(
+      "https://projeto17-linkrback.herokuapp.com/posts",
+      config
+    );
     promise.then((response) => {
-        setPosts([...response.data]);
-        if (response.data.length === 0) setFeedMessage("There are no posts yet")
-      });
+      setPosts([...response.data]);
+      if (response.data.length === 0) setFeedMessage("There are no posts yet");
+    });
     promise.catch((error) => {
-      alert
-      ("An error occured while trying to fetch the posts, please refresh the page")
-    }); 
-
-
-
+      alert(
+        "An error occured while trying to fetch the posts, please refresh the page"
+      );
+    });
   }, [updatePosts]);
-  
+
   function publishPost() {
     if (!url) {
       return window.alert("url não pode estar vazia!");
     }
-    
+
     setLoading(true);
     const body = {
       url,
@@ -75,36 +78,81 @@ export default function FeedScreen() {
         setDescription("");
         setUrl("");
         setUpdatePosts(!updatePosts);
-
       })
       .catch(() => {
         window.alert("Houve um erro ao publicar seu post, tente novamente.");
         setLoading(false);
       });
-  }  
+  }
 
-  async function searchUser(event) { 
+  async function searchUser(event) {
     const username = { username: event };
-    console.log(username);
-    try {
-        const promise = await axios.post("https://projeto17-linkrback.herokuapp.com/other-users",username); 
-        console.log(promise.data);
-        setSearch(promise.data);
-    } catch (error) {
-        setSearch([]);
-        console.log(error);
-        setSearch([]);
-    }
-}
 
-  async function logout() { 
-    axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
+    try {
+      const promise = await axios.post(
+        "https://projeto17-linkrback.herokuapp.com/other-users",
+        username
+      );
+      console.log(promise.data);
+      setSearch(promise.data);
+    } catch (error) {
+      setSearch([]);
+      console.log(error);
+      setSearch([]);
+    }
+  }
+
+  async function logout() {
+    axios.delete("https://projeto17-linkrback.herokuapp.com/logout", {
+      data: {},
+      headers: { Authorization: `Bearer ${token}` },
+    });
     window.localStorage.setItem("MY_TOKEN", "");
-    localStorage.setItem("userInfo","");
+    localStorage.setItem("userInfo", "");
     setToken("");
 
     navigate("/");
-};
+  }
+
+  const loadMore = () => {
+    let limit = records;
+    if (records > posts.length) limit = posts.length;
+    if (limit === posts.length) {
+      setHasMoreItems(false);
+    } else {
+      setTimeout(() => {
+        setRecords(records + itemsPerPage);
+      }, 100);
+    }
+  };
+
+  const showItems = (posts) => {
+    let items = [];
+    let limit = records;
+    if (records > posts.length) limit = posts.length;
+    for (let i = 0; i < limit; i++) {
+      const object = posts[i];
+      items.push(
+        <PostBox
+          id={object.id}
+          key={i}
+          url={object.url}
+          profilePhoto={object.profilePhoto}
+          username={object.username}
+          description={object.description}
+          urlDescription={object.urlDescription}
+          urlTitle={object.urlTitle}
+          urlImage={object.urlImage}
+          likes={object.likes}
+          setIdDeleting={setIdDeleting}
+          setDeleting={setDeleting}
+          setUpdatePosts={setUpdatePosts}
+          updatePosts={updatePosts}
+          userId={object.userId}
+        />
+      );
+    }
+  };
 
   return (
   <>
@@ -193,293 +241,288 @@ export default function FeedScreen() {
                 ) : "" }
         </Container2>
 
-      <Feed>
-        <h3>timeline</h3>
-        <NewPost>
+          <Feed>
+            <h3>timeline</h3>
+            <NewPost>
+              <div>
+                <img src={data.profilePhoto} alt="profile" />
+              </div>
 
-        
-
+              <Box fontColor={"#9f9f9f"}>
+                <p>What are you going to share today?</p>
+                <Input
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="http://"
+                  disabled={loading}
+                />
+                <Input
+                  disabled={loading}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Awesome article about javascript"
+                />
+                <Button disabled={loading} onClick={publishPost}>
+                  {loading ? "Publishing..." : "Publish"}
+                </Button>
+              </Box>
+            </NewPost>
+            {posts.length === 0 ? (
+              <span>{feedMessage}</span>
+            ) : (
+              posts.map((object, index) => (
+                <PostBox
+                  id={object.id}
+                  key={index}
+                  url={object.url}
+                  profilePhoto={object.profilePhoto}
+                  username={object.username}
+                  description={object.description}
+                  urlDescription={object.urlDescription}
+                  urlTitle={object.urlTitle}
+                  urlImage={object.urlImage}
+                  likes={object.likes}
+                  setIdDeleting={setIdDeleting}
+                  setDeleting={setDeleting}
+                  setUpdatePosts={setUpdatePosts}
+                  updatePosts={updatePosts}
+                  userId={object.userId}
+                  setOpenModal={setOpenModal}
+                  setRepostId={setRepostId}
+                />
+              ))
+            )}
+            {/* <InfiniteScroll
+              loadMore={loadMore}
+              hasMore={hasMoreItems}
+              loader={<div className="loader"> Loading... </div>}
+              useWindow={false}
+            >
+              {showItems(posts)}
+            </InfiniteScroll> */}
+          </Feed>
           <div>
-            <img
-              src={data.profilePhoto}
-              alt="profile"
-            />
+            <Trendings />
           </div>
-
-          <Box fontColor={"#9f9f9f"}>
-            <p>What are you going to share today?</p>
-            <Input
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="http://"
-              disabled={loading}
-            />
-            <Input
-              disabled={loading}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Awesome article about javascript"
-            />
-            <Button disabled={loading} onClick={publishPost}>
-              {loading ? "Publishing..." : "Publish"}
-            </Button>
-          </Box>
-        </NewPost>
-        {
-          posts.length === 0 ? (
-            <span>{feedMessage}</span>
-          ) : (
-            posts.map((object, index) => 
-              <PostBox
-              id={object.id}
-              key={index} 
-              url={object.url} 
-              profilePhoto={object.profilePhoto} 
-              username={object.username} 
-              description={object.description}
-              urlDescription={object.urlDescription}
-              urlTitle={object.urlTitle}
-              urlImage={object.urlImage}
-              likes={object.likes}
-              setIdDeleting={setIdDeleting}
-              setDeleting={setDeleting}
-              setUpdatePosts={setUpdatePosts}
-              updatePosts={updatePosts}
-              userId={object.userId}
-              setOpenModal={setOpenModal}
-              setRepostId={setRepostId}
-              />)
-        )}
-
-
-
-       
-      </Feed>
-      <div>
-        <Trendings />
-      </div>
-        
-      </Content>
-    </Container>
-  </>
+        </Content>
+      </Container>
+    </>
   );
 }
 
 const Container = styled.div`
-    width: 100%;
-    min-height: 100vh;
-    background-color: #333333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    opacity: ${props => props.deleting ? 0.2 : 1};
-`; 
+  width: 100%;
+  min-height: 100vh;
+  background-color: #333333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: ${(props) => (props.deleting ? 0.2 : 1)};
+`;
 const Header = styled.div`
-    width: 100%; 
-    height: 72px; 
-    background-color: rgba(21, 21, 21, 1);
-    display: flex; 
-    justify-content: space-between; 
-    align-items:center;
-    position: fixed; 
-    top: 0; 
-    left: 0;
-    padding: 0px 12px 0px 20px; 
-    z-index: 1;
+  width: 100%;
+  height: 72px;
+  background-color: rgba(21, 21, 21, 1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 0px 12px 0px 20px;
+  z-index: 1;
 
-    a { 
-        color: white; 
-        font-family: Passion One;
-        font-size: 49px;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-align: left;
-    }  
+  a {
+    color: white;
+    font-family: Passion One;
+    font-size: 49px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-align: left;
+  }
+`;
+const Containerr = styled.div`
+  width: 30%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+`;
+const Search = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 56px;
 
- `
- const Containerr = styled.div`
-    width: 30%;
-    height: 100%; 
-    display: flex; 
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
- `
- const Search = styled.div`
+  ul {
     width: 100%;
-    height: 100%; 
-    display: flex; 
-    flex-direction: column;
-    position: absolute;
-    top: 56px;
-    
-    ul { 
-        width: 100%; 
-        height: 100%;
-        background-color: rgba(231, 231, 231, 1); 
-        border-radius: 0px 0px 8px 8px; 
-        padding: 40px 17px;
-    }
+    height: 100%;
+    background-color: rgba(231, 231, 231, 1);
+    border-radius: 0px 0px 8px 8px;
+    padding: 40px 17px;
+  }
 
-    @media (max-width: 1000px) {
-        display: none;
-    }
- `
- const InputText = styled.div`
-    width: 100%; 
-    height: 45px;   
-    display: flex; 
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    border-radius: 8px 8px 0px 0px;  
-    border: none; 
-    padding: 0px 13px 0px 19px;
-    color: rgba(198, 198, 198, 1); 
+  @media (max-width: 1000px) {
+    display: none;
+  }
+`;
+const InputText = styled.div`
+  width: 100%;
+  height: 45px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px 8px 0px 0px;
+  border: none;
+  padding: 0px 13px 0px 19px;
+  color: rgba(198, 198, 198, 1);
 
-    input { 
-        width: 95%; 
-        height: 100%;
-        font-weight: 100;
-        font-size: 19px; 
-        border: none;
-    } 
+  input {
+    width: 95%;
+    height: 100%;
+    font-weight: 100;
+    font-size: 19px;
+    border: none;
+  }
 
-    ion-icon { 
-        width: 21px; 
-        height: 21px;
-        color: rgba(198, 198, 198, 1); 
-    } 
+  ion-icon {
+    width: 21px;
+    height: 21px;
+    color: rgba(198, 198, 198, 1);
+  }
 
-    @media (max-width: 1000px) {
-        display: none;
-    }
- ` 
+  @media (max-width: 1000px) {
+    display: none;
+  }
+`;
 const LoggedUser = styled.div`
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    color: white; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
 
-    ion-icon { 
-        width: 27px;
-        height: 27px; 
+  ion-icon {
+    width: 27px;
+    height: 27px;
 
-        &:hover { 
-            cursor: pointer;
-        }
+    &:hover {
+      cursor: pointer;
     }
+  }
 
-    img { 
-        width: 53px;
-        height: 53px;
-        border-radius: 50%; 
-        margin-left: 17px;
-    } 
- `
+  img {
+    width: 53px;
+    height: 53px;
+    border-radius: 50%;
+    margin-left: 17px;
+  }
+`;
 const Logout = styled.div`
-    width: 150px; 
-    height: 47px; 
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    background-color: rgba(23, 23, 23, 1);
-    color: white; 
-    border-radius: 0px 0px 0px 20px; 
-    position: fixed; 
-    right: 0; 
-    top: 72px; 
+  width: 150px;
+  height: 47px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(23, 23, 23, 1);
+  color: white;
+  border-radius: 0px 0px 0px 20px;
+  position: fixed;
+  right: 0;
+  top: 72px;
 
-    a { 
-        font-size: 17px;
-        font-weight: bold; 
-    } 
+  a {
+    font-size: 17px;
+    font-weight: bold;
+  }
 
-    &:hover { 
-        cursor: pointer;
-    }
- ` 
- const Container2 = styled.div`
-    display: none;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+const Container2 = styled.div`
+  display: none;
 
-    @media (max-width: 1000px) {
-        display: inline;
-        width: 100%;
-        height: 100%; 
-        padding: 0px 20px 0px 20px;
-        display: flex; 
-        flex-direction: column;
-        align-itens: center; 
-        position: relative;
-        left: 0; 
-        top: 85px;
-    }
- `
- const Search2 = styled.div`
+  @media (max-width: 1000px) {
+    display: inline;
     width: 100%;
-    height: 100%; 
-    display: flex; 
+    height: 100%;
+    padding: 0px 20px 0px 20px;
+    display: flex;
     flex-direction: column;
+    align-itens: center;
+    position: relative;
+    left: 0;
+    top: 85px;
+  }
+`;
+const Search2 = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 56px;
+  display: none;
+
+  ul {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(231, 231, 231, 1);
+    border-radius: 0px 0px 8px 8px;
+    padding: 40px 17px;
+  }
+
+  @media (max-width: 1000px) {
+    display: inline;
     position: absolute;
-    top: 56px;
-    display: none;
-    
-    ul { 
-        width: 100%; 
-        height: 100%;
-        background-color: rgba(231, 231, 231, 1); 
-        border-radius: 0px 0px 8px 8px; 
-        padding: 40px 17px;
+    top: 1;
+
+    ul {
+      width: 94%;
+      height: 100%;
     }
+  }
+`;
+const InputText2 = styled.div`
+  width: 100%;
+  height: 45px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px 8px 0px 0px;
+  border: none;
+  padding: 0px 13px 0px 19px;
+  color: rgba(198, 198, 198, 1);
+  display: none;
 
-    @media (max-width: 1000px) {
-        display: inline;
-        position: absolute;
-        top: 1;
+  input {
+    width: 95%;
+    height: 100%;
+    font-weight: 100;
+    font-size: 19px;
+    border: none;
+  }
 
-        ul { 
-            width: 94%; 
-            height: 100%;
-        }
-    }
- `
- const InputText2 = styled.div`
-    width: 100%; 
-    height: 45px;   
-    display: flex; 
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    border-radius: 8px 8px 0px 0px;  
-    border: none; 
-    padding: 0px 13px 0px 19px;
-    color: rgba(198, 198, 198, 1); 
-    display: none;
+  ion-icon {
+    width: 21px;
+    height: 21px;
+    color: rgba(198, 198, 198, 1);
+  }
 
-    input { 
-        width: 95%; 
-        height: 100%;
-        font-weight: 100;
-        font-size: 19px; 
-        border: none;
-    } 
-
-    ion-icon { 
-        width: 21px; 
-        height: 21px;
-        color: rgba(198, 198, 198, 1); 
-    } 
-
-    @media (max-width: 1000px) {
-        display: inline;
-        border-radius: 8px;
-    }
- `
+  @media (max-width: 1000px) {
+    display: inline;
+    border-radius: 8px;
+  }
+`;
 const Feed = styled.div`
   margin-top: 150px;
   margin-right: 50px;
 
-  
   > h3 {
     font-size: 50px;
     font-family: "Oswald";
@@ -493,7 +536,7 @@ const Feed = styled.div`
     margin-top: 50px;
     text-decoration: none;
   }
-  @media (max-width:1000px) {
+  @media (max-width: 1000px) {
     margin-left: 0;
     width: 100%;
   }
@@ -514,14 +557,13 @@ const NewPost = styled.div`
     color: #ffffff;
   }
   > div:nth-child(1) {
-    width: 15%; 
-    height: 100%; 
-    display: flex; 
-    flex-direction: column; 
+    width: 15%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    
   }
-  @media (max-width:1000px) {
+  @media (max-width: 1000px) {
     width: 100%;
   }
 `;
@@ -557,17 +599,17 @@ const Box = styled.div`
     width: 30vw;
     color: white;
     font-weight: 600;
-    padding: 10px 0; 
+    padding: 10px 0;
 
-    &:hover { 
+    &:hover {
       cursor: pointer;
     }
   }
   span {
     color: #b7b7b7;
-  } 
+  }
 
-  @media (max-width:1000px) {
+  @media (max-width: 1000px) {
     width: 100%;
   }
 `;
@@ -597,7 +639,7 @@ const Input = styled.input`
     font-style: normal;
     font-weight: 700;
     font-size: 1.4rem;
-  } 
+  }
 `;
 
 const Button = styled.button`
@@ -626,14 +668,12 @@ const Button = styled.button`
   font-size: 16px;
 `;
 
-
 const Post = styled.div`
   width: 611px;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-
 
   img {
     height: 50px;
@@ -643,7 +683,7 @@ const Post = styled.div`
     padding-left: 10px;
     margin-top: 10px;
 
-    &:hover{ 
+    &:hover {
       cursor: pointer;
     }
   }
@@ -655,18 +695,12 @@ const Post = styled.div`
   @media (max-width: 1000px) {
     width: 100%;
     height: 100%;
-    
+
     ul {
       width: 100%;
-
     }
   }
-
 `;
 const Content = styled.div`
-    display: flex;
-
+  display: flex;
 `;
-
-
-
