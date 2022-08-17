@@ -22,7 +22,7 @@ useEffect(() => {
                 <></> : 
                 trendingsRank.map(object => 
                 <Link to={`/hashtag/${object.name.slice(1)}`}> 
-                  <span>{object.name}</span> 
+                  <span># {object.name}</span> 
                 </Link>)
               }
             </div>

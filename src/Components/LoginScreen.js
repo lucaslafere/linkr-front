@@ -19,7 +19,7 @@ export default function LoginScreen() {
 
   const { setToken, token } = useContext(TokenContext);
   const { setUserData } = useContext(UserContext);
-
+  
   // Code to get and use the localStorage token:
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function LoginScreen() {
           email: res.data.user.email,
           profilePhoto: res.data.user.profilePhoto,
         });
-
+        console.log(userInfo);
         window.localStorage.setItem("userInfo", userInfo);
         setLoading(false);
         
