@@ -29,7 +29,7 @@ export default function FeedScreen() {
 
   //const URL = "http://localhost:4000/posts";
 
-  const data = JSON.parse(userData);
+  const data = JSON.parse(localStorage.getItem("userInfo"));
 
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
 
