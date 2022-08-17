@@ -39,22 +39,20 @@ export default function FeedScreen() {
     },
   };
 
-  function getPosts(queryLimit) {
-    setQueryLimit(queryLimit + itemsPerPage);
-    const promise = axios.get(URL + queryLimit, config);
-    promise.then((response) => {
-      setPosts([...response.data]);
+  async function getPosts(queryLimit) {
+  
+    return axios.get(backendURL + queryLimit, config)
+    .then((response) => {
+      console.log(response.data,'response.data')
       if (response.data.length === 0) setFeedMessage("There are no posts yet");
-    });
-    promise.catch(() => {
+      return(response.data);
+    })
+    .catch(() => {
       alert(
         "An error occured while trying to fetch the posts, please refresh the page"
       );
-    });
-    console.log("busquei");
+    })
   }
-
-  useEffect(() => getPosts(10), [updatePosts]);
 
   function publishPost() {
     if (!url) {
@@ -68,11 +66,12 @@ export default function FeedScreen() {
     };
     const promise = axios.post(backendURL, body, config);
     promise
-      .then((res) => {
+      .then(async (res) => {
         setLoading(false);
         setDescription("");
         setUrl("");
-        setUpdatePosts(!updatePosts);
+        const data = await getPosts(posts.length);
+        setPosts(data);
       })
       .catch(() => {
         window.alert("Houve um erro ao publicar seu post, tente novamente.");
@@ -112,11 +111,11 @@ export default function FeedScreen() {
   const itemsPerPage = 10;
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [records, setRecords] = useState(itemsPerPage);
-  const [queryLimit, setQueryLimit] = useState(0);
+  const [queryLimit, setQueryLimit] = useState(itemsPerPage);
 
   const showItems = (posts) => {
+    console.log(posts,'posts');
     let items = [];
-
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
@@ -144,7 +143,23 @@ export default function FeedScreen() {
     }
     return items;
   };
+  const loadMore = async () => {
+    console.log("load");
+    console.log("querylimit", queryLimit);
+    console.log('hasmoreitems',hasMoreItems)
+    // console.log("posts",posts.length)
 
+    if (queryLimit > posts.length + 10) {
+      setHasMoreItems(false); 
+    } else {
+      const data = await getPosts(queryLimit);
+      setPosts(data);
+      console.log(data,'data');
+      setQueryLimit(queryLimit+itemsPerPage)
+      setRecords(records+itemsPerPage)
+    }
+  
+  };
   // const loadMore = () => {
   //   let limit = records;
   //   if (records > posts.length) limit = posts.length;
@@ -159,17 +174,7 @@ export default function FeedScreen() {
   //     }, 100);
   //   }
   // };
-  useEffect(() => {
-    console.log(hasMoreItems);
-    console.log("querylimit", queryLimit);
-  }, [hasMoreItems]);
-  const loadMore = () => {
-    //BUSCAR 10 POSTS POR VEZ, A CADA REQUISIÇÃO AUMENTAR O MARCADOR EM 10 QUANDO POSTS.LENGTH < MARCADOR ISSO SIGNIFICA O FIM DOS POSTS E hasMoreItems = false;
-    // if (queryLimit > posts.length + 10) {
-    //   setHasMoreItems(false);
-    // }
-    // getPosts(queryLimit);
-  };
+  
 
   return (
     <>
@@ -330,7 +335,7 @@ export default function FeedScreen() {
                     Loading...{" "}
                   </div>
                 }
-                useWindow={false}
+                useWindow={true}
               >
                 {showItems(posts)}
               </InfiniteScroll>
