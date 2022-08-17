@@ -27,7 +27,7 @@ export default function FeedScreen() {
   const { token, setToken } = useContext(TokenContext);
   const navigate = useNavigate();
 
-  //const URL = "http://localhost:4000/posts";
+  const URL = "http://localhost:4000/posts/";
 
   const data = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -39,21 +39,22 @@ export default function FeedScreen() {
     },
   };
 
-  useEffect(() => {
-    const promise = axios.get(
-      "https://projeto17-linkrback.herokuapp.com/posts",
-      config
-    );
+  function getPosts(queryLimit) {
+    setQueryLimit(queryLimit + itemsPerPage);
+    const promise = axios.get(URL + queryLimit, config);
     promise.then((response) => {
       setPosts([...response.data]);
       if (response.data.length === 0) setFeedMessage("There are no posts yet");
     });
-    promise.catch((error) => {
+    promise.catch(() => {
       alert(
         "An error occured while trying to fetch the posts, please refresh the page"
       );
     });
-  }, [updatePosts]);
+    console.log("busquei");
+  }
+
+  useEffect(() => getPosts(10), [updatePosts]);
 
   function publishPost() {
     if (!url) {
@@ -111,12 +112,15 @@ export default function FeedScreen() {
   const itemsPerPage = 10;
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [records, setRecords] = useState(itemsPerPage);
+  const [queryLimit, setQueryLimit] = useState(0);
 
   const showItems = (posts) => {
     let items = [];
+
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
+      console.log(i);
       const object = posts[i];
       items.push(
         <PostBox
@@ -138,18 +142,33 @@ export default function FeedScreen() {
         />
       );
     }
+    return items;
   };
 
+  // const loadMore = () => {
+  //   let limit = records;
+  //   if (records > posts.length) limit = posts.length;
+  //   if (limit === posts.length) {
+  //     setHasMoreItems(false);
+  //   } else {
+  //     setTimeout(() => {
+  //       setRecords(records + itemsPerPage);
+  //       // posts.length - records > 10
+  //       //   ? setRecords(records + 10)
+  //       //   : setRecords(records + 15);
+  //     }, 100);
+  //   }
+  // };
+  useEffect(() => {
+    console.log(hasMoreItems);
+    console.log("querylimit", queryLimit);
+  }, [hasMoreItems]);
   const loadMore = () => {
-    let limit = records;
-    if (records > posts.length) limit = posts.length;
-    if (limit === posts.length) {
-      setHasMoreItems(false);
-    } else {
-      setTimeout(() => {
-        setRecords(records + itemsPerPage);
-      }, 100);
-    }
+    //BUSCAR 10 POSTS POR VEZ, A CADA REQUISIÇÃO AUMENTAR O MARCADOR EM 10 QUANDO POSTS.LENGTH < MARCADOR ISSO SIGNIFICA O FIM DOS POSTS E hasMoreItems = false;
+    // if (queryLimit > posts.length + 10) {
+    //   setHasMoreItems(false);
+    // }
+    // getPosts(queryLimit);
   };
 
   return (
@@ -273,7 +292,7 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
-            {posts.length === 0 ? (
+            {/* {posts.length === 0 ? (
               <span>{feedMessage}</span>
             ) : (
               posts.map((object, index) => (
@@ -295,15 +314,27 @@ export default function FeedScreen() {
                   userId={object.userId}
                 />
               ))
-            )}
-            {/* <InfiniteScroll
-              loadMore={loadMore}
-              hasMore={hasMoreItems}
-              loader={<div className="loader"> Loading... </div>}
-              useWindow={false}
+            )} */}
+            <div
+              style={{
+                overflow: "auto",
+                padding: "15px",
+              }}
             >
-              {showItems(posts)}
-            </InfiniteScroll> */}
+              <InfiniteScroll
+                loadMore={loadMore}
+                hasMore={hasMoreItems}
+                loader={
+                  <div className="loader" key={0}>
+                    {" "}
+                    Loading...{" "}
+                  </div>
+                }
+                useWindow={false}
+              >
+                {showItems(posts)}
+              </InfiniteScroll>
+            </div>
           </Feed>
           <div>
             <Trendings />
