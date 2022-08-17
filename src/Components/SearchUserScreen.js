@@ -23,7 +23,8 @@ export default function SerchUserScreen() {
     const [repostId, setRepostId] = useState();
     const [isFollowed, setIsFollowed] = useState(false); 
     const navigate = useNavigate();
-    console.log(userData);
+    const data =  JSON.parse(userData);
+    console.log(data);
     const config = {
         headers: { Authorization: `Bearer ${token}` },
       };
@@ -145,7 +146,7 @@ export default function SerchUserScreen() {
                 ) : ( 
                 <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
                 )}
-                <img src={userData.profilePhoto} alt="profile"/>
+                <img src={data.profilePhoto} alt="profile"/>
             </LoggedUser>
         </Header>  
 
@@ -304,6 +305,7 @@ const FollowButton = styled.div`
 
     @media (max-width: 1000px) {
         display: none;
+    }
  ` 
 const InputText = styled.div`
   width: 100%;

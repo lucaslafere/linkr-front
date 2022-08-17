@@ -9,9 +9,10 @@ import { useNavigate } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext.js";
 import RenderSearchUser from "../Pages/RenderSearchUser.js";
 import { DebounceInput } from 'react-debounce-input';
+import RepostBox from "../Pages/RepostBox.js";
 
 export default function FeedScreen() {
-  const { userData, setUserData } = useContext(UserContext);
+  const { userData } = useContext(UserContext);
 
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
@@ -24,6 +25,8 @@ export default function FeedScreen() {
   const [clickedLogout, setClickedLogout] = useState(false);
   const [search, setSearch] = useState([]); 
   const { token, setToken } = useContext(TokenContext);
+  const [openModal, setOpenModal] = useState(false);
+  const [repostId, setRepostId] = useState();
   const navigate = useNavigate();
   
   //const URL = "http://localhost:4000/posts"; 
@@ -112,7 +115,15 @@ export default function FeedScreen() {
       setUpdatePosts={setUpdatePosts} 
       updatePosts ={updatePosts} /> 
       : <> </>
-    }
+    } 
+
+    {openModal ? (
+            <RepostBox 
+                setOpenModal={setOpenModal}
+                repostId={repostId}
+            />
+      ) :  ""}
+      
     <Container deleting={deleting}>
     <Header>
             <a onClick={() => navigate("/timeline")}>linkr</a>
@@ -235,6 +246,8 @@ export default function FeedScreen() {
               setUpdatePosts={setUpdatePosts}
               updatePosts={updatePosts}
               userId={object.userId}
+              setOpenModal={setOpenModal}
+              setRepostId={setRepostId}
               />)
         )}
 

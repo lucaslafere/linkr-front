@@ -20,7 +20,9 @@ export default function PostBox({
   updatePosts, 
   setUpdatePosts, 
   likes, 
-  userId }) {
+  userId, 
+  setOpenModal, 
+  setRepostId }) {
 
     const [liked, setLiked] = useState(false); 
     const [ editing, setEditing ] = useState(false);
@@ -91,13 +93,10 @@ function inputKeybord(e) {
         setDeleting(true);
     }
 
-    async function repost() { 
-      try {
-        
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    function openModal(id) { 
+      setOpenModal(true); 
+      setRepostId(id);
+  }
     
     return(
         <Post>
@@ -111,8 +110,8 @@ function inputKeybord(e) {
                 <p>{amountLikes} likes</p>
                 <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
                 <p>13comments</p>
-                <ion-icon name="repeat-sharp" id="repost"></ion-icon>
-                <p onClick={() => repost(id)}>13 re-posts</p>
+                <ion-icon name="repeat-sharp" id="repost" onClick={() => openModal(id)}></ion-icon>
+                <p>13 re-posts</p>
             </PictureAndLike>
             <PostInfo>
                 <div>

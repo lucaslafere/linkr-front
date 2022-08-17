@@ -1,8 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function RepostBox({ setOpenModal, repostId }) { 
-    const [clicked, setClicked] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     return(
         <Reposts>
@@ -11,7 +12,11 @@ export default function RepostBox({ setOpenModal, repostId }) {
                     <a>Do you want to re-post this link?</a>
                     <Buttons>
                         <button id="cancel" onClick={() => setOpenModal(false)}>No, cancel</button>
-                        <button id="share" onClick={() => console.log(repostId)}>Yes, share!</button>
+                        <button id="share" onClick={() => setLoading(true)}>
+                            {loading ? ( 
+                                <ThreeDots color="#fff" height={80} width={80} /> 
+                                ) : ("Yes, share!") }
+                        </button>
                     </Buttons>
                 </Box>
             </Repostbox>
@@ -38,7 +43,12 @@ const Reposts = styled.div`
     border-radius: 20px;
     display: flex; 
     justify-content: center;
-    z-index: 1; 
+    z-index: 1;  
+
+    @media (max-width: 1000px) {
+        width: 35%;
+        height: 25%;
+    }
 `
  const Box = styled.div`
     width: 60%; 
@@ -52,7 +62,7 @@ const Reposts = styled.div`
         font-size: 29px; 
         font-weight: 700;
         text-align: center;
-    }
+    } 
 `
  const Buttons = styled.div`
     width: 100%; 
@@ -85,6 +95,12 @@ const Reposts = styled.div`
     button#share { 
         background-color: rgba(24, 119, 242, 1); 
         color: rgba(255, 255, 255, 1); 
+    }
+
+    @media (max-width: 1000px) {
+        button { 
+            height: 60px;
+        }
     }
 `
  
