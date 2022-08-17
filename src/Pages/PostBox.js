@@ -74,6 +74,14 @@ function inputKeybord(e) {
         setIdDeleting(id)
         setDeleting(true);
     }
+
+    async function repost() { 
+      try {
+        
+      } catch (error) {
+        console.log(error);
+      }
+    }
     
     return(
         <Post>
@@ -85,6 +93,10 @@ function inputKeybord(e) {
                 : <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 }
                 <p>{amountLikes} likes</p>
+                <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
+                <p>13comments</p>
+                <ion-icon name="repeat-sharp" id="repost"></ion-icon>
+                <p onClick={() => repost(id)}>13 re-posts</p>
             </PictureAndLike>
             <PostInfo>
                 <div>
@@ -167,9 +179,17 @@ const PictureAndLike = styled.div`
   }
   p {
     margin-top: 4px;
-    font-size: 11px;
-    color: #ffffff;
-    font-family: "Lato";
+    margin-bottom: 15px;
+    font-size: 11px; 
+    color: white;
+  } 
+
+  ion-icon#comments {
+      color: white;
+  }
+
+  ion-icon#repost {
+      color: white;
   }
 `;
 const PostInfo = styled.div`

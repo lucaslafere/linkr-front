@@ -8,6 +8,7 @@ import RenderUserPosts from "../Pages/RenderUserPosts";
 import RenderHashtags from "../Pages/RenderHashtags";
 import axios from 'axios';
 import { DebounceInput } from 'react-debounce-input';
+import RepostBox from "../Pages/RepostBox";
 
 export default function SerchUserScreen() {
     const { id } = useParams();
@@ -18,6 +19,9 @@ export default function SerchUserScreen() {
     const { userData } = useContext(UserContext); 
     const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [idReposting, setIdReposting] = useState();
+    const [reposting, setReposting] = useState();
     const navigate = useNavigate();
     console.log(userData);
 
@@ -68,7 +72,13 @@ export default function SerchUserScreen() {
     };
 
     return( 
-        <>
+        <> 
+        {openModal ? (
+            <RepostBox 
+                id={idReposting}
+                setReposting={setReposting}
+            />
+        ) :  ""}
         <Header>
             <a onClick={() => navigate("/timeline")}>linkr</a>
             <Container>
@@ -156,6 +166,8 @@ export default function SerchUserScreen() {
                             urlImage={post.urlImage}
                             urlTitle={post.urlTitle}
                             id={post.id}
+                            idReposting={idReposting}
+                            setReposting={setReposting}
                         />
                     ))}
                 </ul>
@@ -259,7 +271,6 @@ export default function SerchUserScreen() {
         display: none;
     }
  ` 
-
  const Container2 = styled.div`
     display: none;
 

@@ -37,6 +37,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
     }
     
     return(
+        <>
         <Post value={index}>
             <PictureAndLike>
                 <img src={profilePhoto} alt={username}/>
@@ -45,6 +46,10 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 )}
                 <p>{amountLikes} likes</p>
+                <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
+                <p>13 comments</p>
+                <ion-icon name="repeat-sharp" id="repost"></ion-icon>
+                <p>13 re-posts</p>
             </PictureAndLike>
             <PostInfo>
                 <p>{username}</p> 
@@ -61,6 +66,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 </MainInfo>
             </PostInfo>
         </Post>
+        </>
     )
 } 
 
@@ -106,7 +112,16 @@ const PictureAndLike = styled.div`
 
     p {
         margin-top: 4px;
+        margin-bottom: 15px;
         font-size: 11px; 
+        color: white;
+    } 
+
+    ion-icon#comments {
+        color: white;
+    }
+
+    ion-icon#repost {
         color: white;
     }
  `
