@@ -20,8 +20,7 @@ export default function SerchUserScreen() {
     const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
     const [openModal, setOpenModal] = useState(false);
-    const [idReposting, setIdReposting] = useState();
-    const [reposting, setReposting] = useState();
+    const [repostId, setRepostId] = useState(); 
     const navigate = useNavigate();
     console.log(userData);
 
@@ -75,8 +74,8 @@ export default function SerchUserScreen() {
         <> 
         {openModal ? (
             <RepostBox 
-                id={idReposting}
-                setReposting={setReposting}
+                setOpenModal={setOpenModal}
+                repostId={repostId}
             />
         ) :  ""}
         <Header>
@@ -166,8 +165,8 @@ export default function SerchUserScreen() {
                             urlImage={post.urlImage}
                             urlTitle={post.urlTitle}
                             id={post.id}
-                            idReposting={idReposting}
-                            setReposting={setReposting}
+                            setOpenModal={setOpenModal}
+                            setRepostId={setRepostId}
                         />
                     ))}
                 </ul>

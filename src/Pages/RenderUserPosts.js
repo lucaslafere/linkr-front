@@ -5,7 +5,7 @@ import TokenContext from "../Contexts/TokenContext";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 
-export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id}) {
+export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id, setOpenModal, setRepostId}) {
     const [liked, setLiked] = useState(false); 
     let [amountLikes, setAmountLikes] = useState(likes);
     const { token } = useContext(TokenContext);
@@ -34,6 +34,11 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                             .catch(() => alert("Não foi possível descurtir esse post!"));
             
                 }
+    } 
+
+    function openModal(id) { 
+        setOpenModal(true); 
+        setRepostId(id);
     }
     
     return(
@@ -48,7 +53,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 <p>{amountLikes} likes</p>
                 <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
                 <p>13 comments</p>
-                <ion-icon name="repeat-sharp" id="repost"></ion-icon>
+                <ion-icon name="repeat-sharp" id="repost" onClick={() => openModal(id)}></ion-icon>
                 <p>13 re-posts</p>
             </PictureAndLike>
             <PostInfo>

@@ -1,15 +1,17 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-export default function RepostBox({ id }) { 
+export default function RepostBox({ setOpenModal, repostId }) { 
+    const [clicked, setClicked] = useState(false);
+
     return(
         <Reposts>
             <Repostbox>
                 <Box>
                     <a>Do you want to re-post this link?</a>
                     <Buttons>
-                        <button id="cancel">No, cancel</button>
-                        <button id="share">Yes, share!</button>
+                        <button id="cancel" onClick={() => setOpenModal(false)}>No, cancel</button>
+                        <button id="share" onClick={() => console.log(repostId)}>Yes, share!</button>
                     </Buttons>
                 </Box>
             </Repostbox>
