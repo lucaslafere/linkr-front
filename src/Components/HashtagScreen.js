@@ -12,6 +12,7 @@ export default function HashtagScreen() {
   const [ trendingPosts, setTrendingPosts ] = useState(null);
   const { token } = useContext(TokenContext);
   const trending = useParams();
+  const data = JSON.parse(localStorage.getItem("userInfo"));
   const config = {
         headers: {
             "Authorization": "Bearer " + token
@@ -26,6 +27,17 @@ export default function HashtagScreen() {
 
   }, [trending]);
 
+  function postIsLiked (usersArray) {
+      console.log(usersArray)
+    const userLiked = usersArray.find(object => object.userId === data.id);
+     if(userLiked === undefined) {
+       return false
+     };
+
+     if(userLiked.userId) {
+       return true;
+     }
+  }
  
   return(
     <Container>
@@ -42,16 +54,25 @@ export default function HashtagScreen() {
             <div>
                 <Posts>
                     {trendingPosts === null ? <></> : 
-                    trendingPosts.map((object, index) => <PostBox 
+                    trendingPosts.map((object, index) => <PostBox
+                    id={object.id}
                     key={index}
-                    url={object.url} 
-                    profilePhoto={object.profilePhoto} 
-                    username={object.username} 
+                    url={object.url}
+                    profilePhoto={object.profilePhoto}
+                    username={object.username}
                     description={object.description}
                     urlDescription={object.urlDescription}
                     urlTitle={object.urlTitle}
                     urlImage={object.urlImage}
                     likes={object.likes}
+                    //setIdDeleting={setIdDeleting}
+                    //setDeleting={setDeleting}
+                    //setUpdatePosts={setUpdatePosts}
+                    //updatePosts={updatePosts}
+                    userId={object.userId}
+                    liked={() => postIsLiked(object.usersLiked)}
+                    //setOpenModal={setOpenModal}
+                    //setRepostId={setRepostId}
                     />)
                     }
                 </Posts>

@@ -134,21 +134,23 @@ export default function FeedScreen() {
       const object = posts[i];
       items.push(
         <PostBox
-          id={object.id}
-          key={i}
-          url={object.url}
-          profilePhoto={object.profilePhoto}
-          username={object.username}
-          description={object.description}
-          urlDescription={object.urlDescription}
-          urlTitle={object.urlTitle}
-          urlImage={object.urlImage}
-          likes={object.likes}
-          setIdDeleting={setIdDeleting}
-          setDeleting={setDeleting}
-          setUpdatePosts={setUpdatePosts}
-          updatePosts={updatePosts}
-          userId={object.userId}
+        id={object.id}
+        url={object.url}
+        profilePhoto={object.profilePhoto}
+        username={object.username}
+        description={object.description}
+        urlDescription={object.urlDescription}
+        urlTitle={object.urlTitle}
+        urlImage={object.urlImage}
+        likes={object.likes}
+        setIdDeleting={setIdDeleting}
+        setDeleting={setDeleting}
+        setUpdatePosts={setUpdatePosts}
+        updatePosts={updatePosts}
+        userId={object.userId}
+        liked={() => postIsLiked(object.usersLiked)}
+        setOpenModal={setOpenModal}
+        setRepostId={setRepostId}
         />
       );
     }
@@ -165,7 +167,7 @@ export default function FeedScreen() {
       setRecords(records + itemsPerPage);
     }
   };
-
+  console.log(posts);
   return (
   <>
     {
