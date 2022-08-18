@@ -20,7 +20,9 @@ export default function PostBox({
   updatePosts, 
   setUpdatePosts, 
   likes, 
-  userId }) {
+  userId, 
+  setOpenModal, 
+  setRepostId }) {
 
     const [liked, setLiked] = useState(false); 
     const [ editing, setEditing ] = useState(false);
@@ -90,6 +92,11 @@ function inputKeybord(e) {
         setIdDeleting(id)
         setDeleting(true);
     }
+
+    function openModal(id) { 
+      setOpenModal(true); 
+      setRepostId(id);
+  }
     
     return(
         <Post>
@@ -101,6 +108,10 @@ function inputKeybord(e) {
                 : <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 }
                 <p>{amountLikes} likes</p>
+                <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
+                <p>13comments</p>
+                <ion-icon name="repeat-sharp" id="repost" onClick={() => openModal(id)}></ion-icon>
+                <p>13 re-posts</p>
             </PictureAndLike>
             <PostInfo>
                 <div>
@@ -183,9 +194,17 @@ const PictureAndLike = styled.div`
   }
   p {
     margin-top: 4px;
-    font-size: 11px;
-    color: #ffffff;
-    font-family: "Lato";
+    margin-bottom: 15px;
+    font-size: 11px; 
+    color: white;
+  } 
+
+  ion-icon#comments {
+      color: white;
+  }
+
+  ion-icon#repost {
+      color: white;
   }
 `;
 const PostInfo = styled.div`
