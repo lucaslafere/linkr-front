@@ -24,6 +24,7 @@ export default function SerchUserScreen() {
   const [repostId, setRepostId] = useState();
   const [userReposts, setUserReposts] = useState([]);
   const [isFollowed, setIsFollowed] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
   const data = JSON.parse(userData);
   const config = {
@@ -63,6 +64,7 @@ export default function SerchUserScreen() {
     const body = {
       friendId: id,
     };
+    setDisabled(true);
     axios
       .post(
         `https://projeto17-linkrback.herokuapp.com/check-follow`,
@@ -73,6 +75,7 @@ export default function SerchUserScreen() {
         setIsFollowed(res.data.isFollower);
         console.log("caiu no then");
         console.log(res.data.isFollower);
+        setDisabled(false);
       })
       .catch((err) => {
         console.log("caiu no erro");
@@ -113,14 +116,16 @@ export default function SerchUserScreen() {
     const body = {
       friendId: id,
     };
-
+    setDisabled(true)
     try {
       axios
       .post("https://projeto17-linkrback.herokuapp.com/follow", body, config)
       await console.log("seguiu / parou de seguir")
       setIsFollowed((value) => !value);
+      setDisabled(false);
     } catch (error) {
       console.log("deu ruim na hora de seguir");
+      alert("Houve um problema ao tentar seguir esse usuário")
     }
   }
 
@@ -219,7 +224,7 @@ export default function SerchUserScreen() {
           <img src={userPosts.profilePhoto} alt={userPosts.username} />
           <a>{userPosts.username}'s posts</a>
         </UserTitle>
-        <FollowButton isFollowed={isFollowed} onClick={followUser} >
+        <FollowButton disabled={disabled} isFollowed={isFollowed} onClick={followUser} >
           {isFollowed ? "Unfollow" : "Follow"}
         </FollowButton>
       </UserContainer>
@@ -287,7 +292,7 @@ const UserContainer = styled.div`
   justify-content: space-between;
 `;
 
-const FollowButton = styled.div`
+const FollowButton = styled.button`
   width: 120px;
   height: 35px;
   background: ${(props) => (props.isFollowed ? "#fff" : "#1877f2")};
@@ -296,7 +301,7 @@ const FollowButton = styled.div`
   align-items: center;
   justify-content: center;
   margin-right: 300px;
-
+  border: 0px solid #1877f2;
   font-family: "Lato";
   font-style: normal;
   font-weight: 700;
