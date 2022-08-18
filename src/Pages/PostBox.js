@@ -31,7 +31,7 @@ export default function PostBox({
     const { userData } = useContext(UserContext);
     const token = localStorage.getItem('MY_TOKEN');
     const navigate = useNavigate();
-    const data = JSON.parse(userData);
+    const data = JSON.parse(localStorage.getItem("userInfo"));
     const config = {
         headers: {
           Authorization: `Bearer ${token}`,

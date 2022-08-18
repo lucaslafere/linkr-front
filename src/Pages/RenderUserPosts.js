@@ -5,7 +5,7 @@ import TokenContext from "../Contexts/TokenContext";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 
-export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id, setOpenModal, setRepostId}) {
+export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id, setOpenModal, setRepostId,reposts}) {
     const [liked, setLiked] = useState(false); 
     let [amountLikes, setAmountLikes] = useState(likes);
     const { token } = useContext(TokenContext);
@@ -54,7 +54,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
                 <p>13 comments</p>
                 <ion-icon name="repeat-sharp" id="repost" onClick={() => openModal(id)}></ion-icon>
-                <p>13 re-posts</p>
+                <p>{reposts} re-posts</p>
             </PictureAndLike>
             <PostInfo>
                 <p>{username}</p> 

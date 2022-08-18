@@ -5,82 +5,90 @@ import TokenContext from "../Contexts/TokenContext";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 
-export default function Test({setOpenModal,setRepostId}) { 
+export default function RenderReposts({index,likes,url,description,ownerUsername,ownerProfilePhoto,urlDescription,urlImage,urlTitle,id,reposts,repostedUsername,repostedUserId}) { 
+    const [liked,setLiked] = useState(false);
     const navigate = useNavigate();
-    const [liked, setLiked] = useState(false);
-    const p ={
-        id: 4,
-        url: "https://www.google.com",
-        description: "boa noite",
-        urlDescription: "",
-        urlImage: "/images/branding/googleg/1x/googleg_standard_color_128dp.png",
-        urlTitle: "Google",
-        likes: 0,
-        userId: 2,
-        username: "cr7",
-        email: "cr7@gmail.com",
-        profilePhoto: "https://conteudo.imguol.com.br/c/esporte/e3/2020/11/21/o-atacante-son-comemora-o-primeiro-gol-do-tottenham-contra-o-manchester-city-pelo-ingles-1605986406883_v2_1x1.png"
-      }
-
-    function openModal(id) { 
-        setOpenModal(true); 
-        setRepostId();
-    } 
 
     return( 
         <>
-        <Post>
-            <Top>
-                <a>Re-posted by <strong>{p.username}</strong></a>
-            </Top>
+        <Post key={index}>
+            <RepostMessage>
+                <ion-icon name="repeat-sharp" id="repost"></ion-icon>
+                <a>Re-posted by <strong onClick={() => navigate(`/timeline/${repostedUserId}`)}>{repostedUsername}</strong></a>
+            </RepostMessage>
+            <RepostContainer>
             <PictureAndLike>
-                <img src={p.profilePhoto} alt={p.username}/>
+                <img src={ownerProfilePhoto} alt={ownerUsername} />
                 {liked ? (
                 <ion-icon name="heart" id="heart"></ion-icon> ) : (
                 <ion-icon name="heart-outline" id="heart-outline"></ion-icon>
                 )}
-                <p>{p.likes} likes</p>
+                <p>{likes} likes</p>
                 <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
                 <p>13 comments</p>
-                <ion-icon name="repeat-sharp" id="repost" onClick={() => openModal()}></ion-icon>
-                <p>13 re-posts</p>
+                <ion-icon name="repeat-sharp" id="repost"></ion-icon>
+                <p>{reposts} re-posts</p>
             </PictureAndLike>
             <PostInfo>
-                <p>{p.username}</p> 
+                <p>{ownerUsername}</p> 
                 <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
-                <a>{p.description}</a>
+                <a>{description}</a>
                 </ReactTagify>
-                <MainInfo onClick={() => window.open(p.url)}>
+                <MainInfo onClick={() => window.open(url)}>
                     <MainInfoDescription>
-                        <h3>{p.urlTitle}</h3>
-                        <h4>{p.urlDescription}</h4>
-                        <h5>{p.url}</h5>
+                        <h3>{urlTitle}</h3>
+                        <h4>{urlDescription}</h4>
+                        <h5>{url}</h5>
                     </MainInfoDescription>
-                        <img src={p.urlImage} alt={p.urlTitle}/>
+                        <img src={urlImage} alt={urlTitle}/>
                 </MainInfo>
             </PostInfo>
+            </RepostContainer>
         </Post>
         </>
     )
 }  
 
 const Post = styled.li`
-  width: 35%;
-  height: 276px;
-  display: flex;
+  width: 100%;
+  height: 309px;
   background-color: rgba(23, 23, 23, 1);
-  padding: 19px 23px 20px 20px;
   border-radius: 16px;
   margin-bottom: 18px;
-  margin-top: 200px;
 `;
-const Top = styled.div`
+const RepostContainer = styled.div`
     width: 100%; 
-    height: 100%; 
+    height: 92%; 
+    display: flex;
+    padding: 15px 23px 20px 20px;
+    margin-bottom: 18px;
+`
+const RepostMessage = styled.div`
+    width: 100%; 
+    height: 8%; 
     display: flex;
     align-items: center;
-    padding-left: 13px;
+    padding: 8px 0px 0px 13px;
+
+    ion-icon { 
+        color: rgba(255, 255, 255, 1);
+        font-weight: bold;  
+        width: 20px; 
+        height: 20px;
+    }
     
+    a { 
+        color: rgba(255, 255, 255, 1); 
+        font-weight: 300; 
+        font-size: 12px;
+        margin-left: 7px; 
+
+        strong { 
+            &:hover { 
+                cursor: pointer;
+            }
+        }
+    }
 `
 const PictureAndLike = styled.div`
   width: 10%;

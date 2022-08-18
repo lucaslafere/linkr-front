@@ -9,6 +9,7 @@ import RenderHashtags from "../Pages/RenderHashtags";
 import axios from 'axios';
 import { DebounceInput } from 'react-debounce-input';
 import RepostBox from "../Pages/RepostBox";
+import RenderReposts from "../Pages/RenderReposts";
 
 export default function SerchUserScreen() {
     const { id } = useParams();
@@ -21,10 +22,10 @@ export default function SerchUserScreen() {
     const [clickedLogout, setClickedLogout] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [repostId, setRepostId] = useState();
+    const [userReposts, setUserReposts] = useState([]);
     const [isFollowed, setIsFollowed] = useState(false); 
     const navigate = useNavigate();
     const data =  JSON.parse(userData);
-    console.log(data);
     const config = {
         headers: { Authorization: `Bearer ${token}` },
       };
@@ -34,12 +35,16 @@ export default function SerchUserScreen() {
         const promises = axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`);
 
         promise.then(response => { 
-            console.log(response.data[0]);
+            console.log(response.data);
             setUserPosts(response.data[0]);
             setPost(response.data[0].posts);
+            if(response.data[1].reposts) {
+              setUserReposts(response.data[1].reposts); 
+            } else { 
+              setUserReposts([]);
+            }
 
             promises.then(responses => { 
-                console.log(responses.data);
                 setHashtags([...response.data]);
             });
         });
@@ -191,7 +196,24 @@ export default function SerchUserScreen() {
 
         <Main>
             <Posts>
-                <ul>
+                <ul> 
+                    {userReposts.map((rep,index) => (
+                      <RenderReposts 
+                      index={index}
+                      likes= {rep.likes}
+                      url={rep.url}
+                      description={rep.description}
+                      ownerUsername={rep.ownerUsername}
+                      ownerProfilePhoto={rep.ownerProfilePhoto}
+                      urlDescription={rep.urlDescription}
+                      urlImage={rep.urlImage}
+                      urlTitle={rep.urlTitle}
+                      id={rep.id}
+                      reposts={rep.reposts}
+                      repostedUsername={rep.repostedUsername}
+                      repostedUserId={rep.repostedUserId}
+                      /> 
+                    ))}
                     {post.map((post,index) => (
                         <RenderUserPosts 
                             index={index}
@@ -206,6 +228,7 @@ export default function SerchUserScreen() {
                             id={post.id}
                             setOpenModal={setOpenModal}
                             setRepostId={setRepostId}
+                            reposts={post.reposts}
                         />
                     ))}
                 </ul>
