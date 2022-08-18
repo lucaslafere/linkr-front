@@ -163,6 +163,7 @@ export default function SerchUserScreen() {
                         image={users.profilePhoto}
                         username={users.username}
                         follows={users.followerId}
+                        id={users.id}
                       />
                       <h6>
                         {users.followerId === null ? "" : "•" + "following"}
@@ -214,6 +215,7 @@ export default function SerchUserScreen() {
                       image={users.profilePhoto}
                       username={users.username}
                       follows={users.followerId}
+                      id={users.id}
                     />
                     <h6>
                       {users.followerId === null ? "" : "•" + "following"}
