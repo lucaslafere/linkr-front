@@ -22,9 +22,11 @@ export default function PostBox({
   likes, 
   userId, 
   setOpenModal, 
-  setRepostId }) {
+  setRepostId,
+  liked
+}) {
 
-    const [liked, setLiked] = useState(false); 
+    const [isLiked, setIsLiked] = useState(liked); 
     const [ editing, setEditing ] = useState(false);
     let [amountLikes, setAmountLikes] = useState(likes);
     const [ descriptionInput, setDescriptionInput ] = useState(description);
@@ -48,14 +50,14 @@ export default function PostBox({
             if(event==="like") {
                 await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
                             .then(() => {
-                                setLiked(true);
+                                setIsLiked(true);
                                 setAmountLikes(() => ++amountLikes);
                             })
                             .catch(() => alert("Não foi possível curtir esse post!"));                           
             } else {
                 await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
                             .then(() => {
-                                setLiked(false);
+                              setIsLiked(false);
                                 setAmountLikes(() => --amountLikes);
                             })
                             .catch(() => alert("Não foi possível descurtir esse post!"));
@@ -103,7 +105,7 @@ function inputKeybord(e) {
             <PictureAndLike>
 
                 <img src={profilePhoto} alt="User" onClick={() => navigate(`/timeline/${userId}`)}/>
-                { liked ? 
+                { isLiked ? 
                   <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> 
                 : <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 }

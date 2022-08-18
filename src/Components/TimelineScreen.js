@@ -114,19 +114,15 @@ export default function FeedScreen() {
 
   function postIsLiked (usersArray) {
     const userLiked = usersArray.find(object => object.userId === data.id);
+
     if(userLiked.length === 0) {
       return false
     };
+
     if(userLiked.length !== 0) {
       return true;
     }
   }
-  
-
-
-  
-  
-
 
   const showItems = (posts) => {
     console.log(posts,'posts');
@@ -305,17 +301,13 @@ export default function FeedScreen() {
                   setUpdatePosts={setUpdatePosts}
                   updatePosts={updatePosts}
                   userId={object.userId}
-                  // liked={() => postIsLiked(object.usersLiked)}
+                  liked={() => postIsLiked(object.usersLiked)}
                   setOpenModal={setOpenModal}
                   setRepostId={setRepostId}
                 />
               ))
             )}
-            {/* <InfiniteScroll
-              loadMore={loadMore}
-              hasMore={hasMoreItems}
-              loader={<div className="loader"> Loading... </div>}
-              useWindow={false}
+            
             <div
               style={{
                 overflow: "auto",
@@ -335,7 +327,7 @@ export default function FeedScreen() {
               >
                 {showItems(posts)}
               </InfiniteScroll>
-            </div>*/}
+            </div>
           </Feed>
           <div>
             <Trendings />
