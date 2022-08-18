@@ -37,16 +37,18 @@ export default function FeedScreen() {
   };
 
   async function getPosts(queryLimit) {
-    return axios.get(backendURL + queryLimit, config)
-    .then((response) => {
-      if (response.data.length === 0) setFeedMessage("There are no posts yet");
-      return(response.data);
-    })
-    .catch(() => {
-      alert(
-        "An error occured while trying to fetch the posts, please refresh the page"
-      );
-    })
+    return axios
+      .get(backendURL + queryLimit, config)
+      .then((response) => {
+        if (response.data.length === 0)
+          setFeedMessage("There are no posts yet");
+        return response.data;
+      })
+      .catch(() => {
+        alert(
+          "An error occured while trying to fetch the posts, please refresh the page"
+        );
+      });
   }
 
   function publishPost() {
@@ -109,7 +111,7 @@ export default function FeedScreen() {
   const [queryLimit, setQueryLimit] = useState(itemsPerPage);
 
   const showItems = (posts) => {
-    console.log(posts,'posts');
+    console.log(posts, "posts");
     let items = [];
     let limit = records;
     if (records > posts.length) limit = posts.length;
@@ -140,17 +142,15 @@ export default function FeedScreen() {
   };
   const loadMore = async () => {
     if (queryLimit > posts.length + 10) {
-      setHasMoreItems(false); 
+      setHasMoreItems(false);
     } else {
       const postsData = await getPosts(0);
-      if(!postsData) postsData = [];
+      if (!postsData) postsData = [];
       setPosts(postsData);
-      setQueryLimit(queryLimit+itemsPerPage)
-      setRecords(records+itemsPerPage)
+      setQueryLimit(queryLimit + itemsPerPage);
+      setRecords(records + itemsPerPage);
     }
-  
   };
-  
 
   return (
     <>
