@@ -31,9 +31,9 @@ export default function LoginScreen() {
     window.localStorage.setItem("MY_TOKEN", token);
   }, [token]);
 
-  if (token) {
-    navigate("/timeline");
-  }
+  // if (token) {
+  //   navigate("/timeline");
+  // }
 
   const body = {
     email,
