@@ -30,7 +30,6 @@ export default function PostBox({
     const [ editing, setEditing ] = useState(false);
     let [amountLikes, setAmountLikes] = useState(likes);
     const [ descriptionInput, setDescriptionInput ] = useState(description);
-    const { userData } = useContext(UserContext);
     const token = localStorage.getItem('MY_TOKEN');
     const navigate = useNavigate();
     const data = JSON.parse(localStorage.getItem("userInfo"));
@@ -80,7 +79,8 @@ function inputKeybord(e) {
         return editPost();
     }
     if(e.key === "Enter") {
-        axios.put(`localhost:4000/posts/${id}`, descriptionInput, config)
+      console.log(id, descriptionInput, config);
+        axios.put(`https://projeto17-linkrback.herokuapp.com/posts/${id}`, descriptionInput, config)
         .then(() => {
 
             editPost();

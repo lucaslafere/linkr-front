@@ -35,7 +35,7 @@ export default function FeedScreen() {
   const URL = "http://localhost:4000/posts/";
   const data = JSON.parse(localStorage.getItem("userInfo"));
   const [queryLimit, setQueryLimit] = useState(itemsPerPage);
-  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
+  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts/";
   console.log(data);
   
 
@@ -46,6 +46,7 @@ export default function FeedScreen() {
   };
 
   async function getPosts(queryLimit) {
+    
     return axios
       .get(backendURL + queryLimit, config)
       .then((response) => {
@@ -93,12 +94,11 @@ export default function FeedScreen() {
         "https://projeto17-linkrback.herokuapp.com/other-users",
         username
       );
-      console.log(promise.data);
+      
       setSearch(promise.data);
     } catch (error) {
       setSearch([]);
-      console.log(error);
-      setSearch([]);
+    
     }
   }
 
@@ -116,23 +116,23 @@ export default function FeedScreen() {
 
   function postIsLiked (usersArray) {
     const userLiked = usersArray.find(object => object.userId === data.id);
+   
+     if(userLiked === undefined) {
+       return false
+     };
 
-    if(userLiked.length === 0) {
-      return false
-    };
-
-    if(userLiked.length !== 0) {
-      return true;
-    }
+     if(userLiked.userId) {
+       return true;
+     }
   }
 
   const showItems = (posts) => {
-    console.log(posts, "posts");
+    
     let items = [];
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
-      console.log(i);
+      
       const object = posts[i];
       items.push(
         <PostBox
@@ -160,7 +160,7 @@ export default function FeedScreen() {
     if (queryLimit > posts.length + 10) {
       setHasMoreItems(false);
     } else {
-      const postsData = await getPosts(0);
+      const postsData = await getPosts(queryLimit);
       if (!postsData) postsData = [];
       setPosts(postsData);
       setQueryLimit(queryLimit + itemsPerPage);
