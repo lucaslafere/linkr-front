@@ -26,9 +26,9 @@ export default function FeedScreen() {
   const [search, setSearch] = useState([]);
   const { token, setToken } = useContext(TokenContext);
   const navigate = useNavigate();
-  const URL = "http://localhost:4000/posts/";
+  const URL = "http://localhost:4000/posts";
   const data = JSON.parse(localStorage.getItem("userInfo"));
-  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts/";
+  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
 
   const config = {
     headers: {
@@ -38,7 +38,7 @@ export default function FeedScreen() {
 
   async function getPosts(queryLimit) {
     return axios
-      .get(backendURL + queryLimit, config)
+      .get(`${URL}?queryLimit=${queryLimit}&userId=${data.id}`, config)
       .then((response) => {
         if (response.data.length === 0)
           setFeedMessage("There are no posts yet");
@@ -61,7 +61,7 @@ export default function FeedScreen() {
       url,
       description,
     };
-    const promise = axios.post(backendURL, body, config);
+    const promise = axios.post(URL, body, config);
     promise
       .then(async (res) => {
         setLoading(false);
