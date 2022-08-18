@@ -96,6 +96,7 @@ const PictureAndLike = styled.div`
     height: 50px;
     border-radius: 50%;
     margin-bottom: 20px;
+    object-fit: cover;
   }
 
   ion-icon {

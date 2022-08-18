@@ -45,7 +45,8 @@ export default function SerchUserScreen() {
             }
 
             promises.then(responses => { 
-                setHashtags([...response.data]);
+              console.log(responses.data);
+                setHashtags([...responses.data]);
             });
         });
 
@@ -111,6 +112,32 @@ export default function SerchUserScreen() {
 
   }
 
+  function changeUser(userClickedId) { 
+    navigate(`/timeline/${userClickedId}`);
+    window.location.reload();
+  } 
+
+  const uusers = [ 
+    {
+      id: 17,
+      email: "ney@gmail.com",
+      profilePhoto: "https://conteudo.imguol.com.br/c/esporte/b7/2022/08/13/neymar-do-psg-comemora-gol-marcado-diante-do-rayo-vallecano-1660420189462_v2_900x506.jpg",
+      username: "ney"
+    }, 
+    {
+      id: 6,
+      email: "cr7@gmail.com",
+      profilePhoto: "https://cdn.esbrasil.com.br/wp-content/uploads/2021/09/23130355/5f57e7bb28fb9.jpeg",
+      username: "cr7"
+    }, 
+    {
+      id: 2,
+      email: "son@gmail.com",
+      profilePhoto: "https://conteudo.imguol.com.br/c/esporte/e3/2020/11/21/o-atacante-son-comemora-o-primeiro-gol-do-tottenham-contra-o-manchester-city-pelo-ingles-1605986406883_v2_3x4.png",
+      username: "son"
+    }
+  ]
+
     return( 
         <> 
         {openModal ? (
@@ -131,10 +158,10 @@ export default function SerchUserScreen() {
                         onChange={(event) => searchUser(event.target.value)} />
                     <ion-icon name="search-sharp"></ion-icon>
                 </InputText> 
-                {search.length !== 0 ? (
+                {uusers.length !== 0 ? (
                 <Search>
                     <ul>
-                        {search.map((users,index) => (
+                        {uusers.map((users,index) => (
                             <RenderSearchUser 
                                 index= {index}
                                 image= {users.profilePhoto}
@@ -151,7 +178,7 @@ export default function SerchUserScreen() {
                 ) : ( 
                 <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
                 )}
-                <img src={data.profilePhoto} alt="profile"/>
+                <img src={data.profilePhoto} alt="profile" onClick={() => changeUser(data.id)}/>
             </LoggedUser>
         </Header>  
 
@@ -165,10 +192,10 @@ export default function SerchUserScreen() {
                         onChange={(event) => searchUser(event.target.value)} />
                     <ion-icon name="search-sharp"></ion-icon>
                 </InputText2>
-                {search.length !== 0 ? (
+                {uusers.length !== 0 ? (
                 <Search2>
                     <ul>
-                        {search.map((users,index) => (
+                        {uusers.map((users,index) => (
                             <RenderSearchUser 
                                 index= {index}
                                 image= {users.profilePhoto}
@@ -212,6 +239,7 @@ export default function SerchUserScreen() {
                       reposts={rep.reposts}
                       repostedUsername={rep.repostedUsername}
                       repostedUserId={rep.repostedUserId}
+                      loggedUsername={data.username}
                       /> 
                     ))}
                     {post.map((post,index) => (
@@ -311,19 +339,19 @@ const FollowButton = styled.div`
     position: relative;
  `
  const Search = styled.div`
-    width: 100%;
+    width: 29.35%;
     height: 100%; 
     display: flex; 
-    flex-direction: column;
-    position: absolute;
-    top: 56px;
+    justify-content: center;
+    position: fixed;
+    top: 59px;
     
     ul { 
         width: 100%; 
-        height: 100%;
         background-color: rgba(231, 231, 231, 1); 
         border-radius: 0px 0px 8px 8px; 
         padding: 40px 17px;
+        z-index: 1;
     }
 
     @media (max-width: 1000px) {
@@ -372,9 +400,9 @@ const Container2 = styled.div`
     display: flex;
     flex-direction: column;
     align-itens: center;
-    position: relative;
+    position: fixed;
     left: 0;
-    top: 85px;
+    top: 30px;
   }
 `;
 const Search2 = styled.div`
@@ -456,7 +484,12 @@ const LoggedUser = styled.div`
     width: 53px;
     height: 53px;
     border-radius: 50%;
-    margin-left: 17px;
+    margin-left: 17px; 
+    object-fit: cover;
+
+    &:hover { 
+      cursor: pointer;
+    }
   }
 `;
 const Logout = styled.div`
@@ -494,6 +527,7 @@ const UserTitle = styled.div`
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    object-fit: cover;
   }
 
   a {

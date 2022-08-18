@@ -1,11 +1,9 @@
 import styled from "styled-components";  
-import axios from "axios";
-import { useState, useContext } from "react";
-import TokenContext from "../Contexts/TokenContext";
+import { useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 
-export default function RenderReposts({index,likes,url,description,ownerUsername,ownerProfilePhoto,urlDescription,urlImage,urlTitle,id,reposts,repostedUsername,repostedUserId}) { 
+export default function RenderReposts({index,likes,url,description,ownerUsername,ownerProfilePhoto,urlDescription,urlImage,urlTitle,id,reposts,repostedUsername,repostedUserId,loggedUsername}) { 
     const [liked,setLiked] = useState(false);
     const navigate = useNavigate();
 
@@ -14,7 +12,7 @@ export default function RenderReposts({index,likes,url,description,ownerUsername
         <Post key={index}>
             <RepostMessage>
                 <ion-icon name="repeat-sharp" id="repost"></ion-icon>
-                <a>Re-posted by <strong onClick={() => navigate(`/timeline/${repostedUserId}`)}>{repostedUsername}</strong></a>
+                <a>Re-posted by <strong onClick={() => navigate(`/timeline/${repostedUserId}`)}>{loggedUsername===repostedUsername ? ("you") : (repostedUsername)}</strong></a>
             </RepostMessage>
             <RepostContainer>
             <PictureAndLike>
@@ -102,6 +100,7 @@ const PictureAndLike = styled.div`
     height: 50px;
     border-radius: 50%;
     margin-bottom: 20px;
+    object-fit: cover;
   }
 
   ion-icon {

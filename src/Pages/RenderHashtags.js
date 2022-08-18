@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function RenderHashtags({ index, name }) {
   const navigate = useNavigate();
+  const hastag = name.substring(1,name.length);
 
   return (
     <Hashtag value={index}>
-        <a onClick={() => navigate(`/hashtag/${name}`)}>{name}</a>
+        <a onClick={() => navigate(`/hashtag/${hastag}`)}>{name}</a>
     </Hashtag>
   );
 }

@@ -269,6 +269,7 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
+            {/*}
             {posts.length === 0 ? (
               <span>{feedMessage}</span>
             ) : (
@@ -293,7 +294,8 @@ export default function FeedScreen() {
                   setRepostId={setRepostId}
                 />
               ))
-            )}
+            )} 
+              */} 
             <InfiniteScroll
               loadMore={loadMore}
               hasMore={hasMoreItems}
