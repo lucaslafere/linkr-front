@@ -144,7 +144,7 @@ export default function FeedScreen() {
     if (queryLimit > posts.length + 10) {
       setHasMoreItems(false);
     } else {
-      const postsData = await getPosts(0);
+      const postsData = await getPosts(queryLimit);
       if (!postsData) postsData = [];
       setPosts(postsData);
       setQueryLimit(queryLimit + itemsPerPage);
