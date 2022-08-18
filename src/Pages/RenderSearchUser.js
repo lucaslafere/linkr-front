@@ -22,7 +22,6 @@ const UserCard = styled.li`
     height: 0%;
     display: flex; 
     align-items: center;
-    margin-bottom: 40px;
 
     img { 
         width: 39px;

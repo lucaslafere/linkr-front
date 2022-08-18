@@ -154,11 +154,12 @@ export default function SerchUserScreen() {
             <Search>
               <ul>
                 {search.map((users, index) => (
-                  <RenderSearchUser
+                  <>
+                  <SearchBarUserContainer><RenderSearchUser
                     index={index}
                     image={users.profilePhoto}
-                    username={users.username}
-                  />
+                    username={users.username} follows={users.followerId}/><h6>{users.followerId === null ? "" : "•" + "following"}</h6>
+                    </SearchBarUserContainer></>
                 ))}
               </ul>
             </Search>
@@ -282,6 +283,22 @@ export default function SerchUserScreen() {
   );
 }
 
+export const SearchBarUserContainer = styled.div`
+display: flex;
+width: 80%;
+align-items: center;
+
+ h6 {
+  font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 19px;
+line-height: 23px;
+
+color: #C5C5C5;
+ }
+`
+
 const UserContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -337,26 +354,26 @@ const Header = styled.div`
 `;
 const Container = styled.div`
   width: 30%;
-  height: 100%;
+  height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
+  position: sticky;
 `;
 const Search = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 56px;
+  /* position: absolute;
+  top: 56px; */
 
   ul {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     background-color: rgba(231, 231, 231, 1);
     border-radius: 0px 0px 8px 8px;
-    padding: 40px 17px;
+    padding: 1rem;
   }
 
   @media (max-width: 1000px) {
@@ -377,7 +394,7 @@ const InputText = styled.div`
 
   input {
     width: 95%;
-    height: 100%;
+    height: 45px;
     font-weight: 100;
     font-size: 19px;
     border: none;

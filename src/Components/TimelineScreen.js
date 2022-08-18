@@ -11,6 +11,7 @@ import RenderSearchUser from "../Pages/RenderSearchUser.js";
 import { DebounceInput } from 'react-debounce-input';
 import RepostBox from "../Pages/RepostBox.js";
 import InfiniteScroll from "react-infinite-scroller";
+import { SearchBarUserContainer} from "./SearchUserScreen";
 
 export default function FeedScreen() {
   const { userData } = useContext(UserContext);
@@ -189,15 +190,16 @@ export default function FeedScreen() {
                 </InputText> 
                 {search.length !== 0 ? (
                 <Search>
-                    <ul>
-                        {search.map((users,index) => (
-                            <RenderSearchUser 
-                                index= {index}
-                                image= {users.profilePhoto}
-                                username= {users.username}
-                            />
-                        ))}
-                        </ul>
+                   <ul>
+                {search.map((users, index) => (
+                  <>
+                  <SearchBarUserContainer><RenderSearchUser
+                    index={index}
+                    image={users.profilePhoto}
+                    username={users.username} follows={users.followerId}/><p>{users.followerId === null ? "" : "following"}</p>
+                    </SearchBarUserContainer></>
+                ))}
+              </ul>
                 </Search> 
                 ) : ""}
             </Containerr>
