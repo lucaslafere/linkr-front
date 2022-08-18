@@ -31,7 +31,7 @@ export default function LoginScreen() {
     window.localStorage.setItem("MY_TOKEN", token);
   }, [token]);
 
-  if (token) {
+  if (token !== null) {
     navigate("/timeline");
   }
 
