@@ -111,12 +111,12 @@ export default function FeedScreen() {
   const [queryLimit, setQueryLimit] = useState(itemsPerPage);
 
   const showItems = (posts) => {
-    console.log(posts, "posts");
+
     let items = [];
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
-      console.log(i);
+ 
       const object = posts[i];
       items.push(
         <PostBox
@@ -125,7 +125,7 @@ export default function FeedScreen() {
           url={object.url}
           profilePhoto={object.profilePhoto}
           username={object.username}
-          description={object.description}
+          description={object.description ? object.description : ""}
           urlDescription={object.urlDescription}
           urlTitle={object.urlTitle}
           urlImage={object.urlImage}
@@ -146,6 +146,7 @@ export default function FeedScreen() {
     } else {
       const postsData = await getPosts(queryLimit);
       if (!postsData) postsData = [];
+    
       setPosts(postsData);
       setQueryLimit(queryLimit + itemsPerPage);
       setRecords(records + itemsPerPage);
