@@ -175,7 +175,7 @@ export default function FeedScreen() {
       ) :  ""}
       
     <Container deleting={deleting}>
-    <Header>
+      <Header>
             <a onClick={() => navigate("/timeline")}>linkr</a>
             <Containerr>
                 <InputText>
