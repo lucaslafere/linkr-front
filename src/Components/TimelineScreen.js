@@ -13,7 +13,6 @@ import RepostBox from "../Pages/RepostBox.js";
 import InfiniteScroll from "react-infinite-scroller";
 
 export default function FeedScreen() {
-  const { userData } = useContext(UserContext);
 
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
@@ -116,7 +115,6 @@ export default function FeedScreen() {
 
   function postIsLiked (usersArray) {
     const userLiked = usersArray.find(object => object.userId === data.id);
-   
      if(userLiked === undefined) {
        return false
      };
