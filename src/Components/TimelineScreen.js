@@ -26,12 +26,9 @@ export default function FeedScreen() {
   const [search, setSearch] = useState([]);
   const { token, setToken } = useContext(TokenContext);
   const navigate = useNavigate();
-
-  //const URL = "http://localhost:4000/posts";
-
+  const URL = "http://localhost:4000/posts/";
   const data = JSON.parse(localStorage.getItem("userInfo"));
-
-  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
+  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts/";
 
   const config = {
     headers: {
@@ -39,21 +36,18 @@ export default function FeedScreen() {
     },
   };
 
-  useEffect(() => {
-    const promise = axios.get(
-      "https://projeto17-linkrback.herokuapp.com/posts",
-      config
-    );
-    promise.then((response) => {
-      setPosts([...response.data]);
+  async function getPosts(queryLimit) {
+    return axios.get(backendURL + queryLimit, config)
+    .then((response) => {
       if (response.data.length === 0) setFeedMessage("There are no posts yet");
-    });
-    promise.catch((error) => {
+      return(response.data);
+    })
+    .catch(() => {
       alert(
         "An error occured while trying to fetch the posts, please refresh the page"
       );
-    });
-  }, [updatePosts]);
+    })
+  }
 
   function publishPost() {
     if (!url) {
@@ -67,11 +61,12 @@ export default function FeedScreen() {
     };
     const promise = axios.post(backendURL, body, config);
     promise
-      .then((res) => {
+      .then(async (res) => {
         setLoading(false);
         setDescription("");
         setUrl("");
-        setUpdatePosts(!updatePosts);
+        const postsData = await getPosts(posts.length);
+        setPosts(postsData);
       })
       .catch(() => {
         window.alert("Houve um erro ao publicar seu post, tente novamente.");
@@ -111,12 +106,15 @@ export default function FeedScreen() {
   const itemsPerPage = 10;
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [records, setRecords] = useState(itemsPerPage);
+  const [queryLimit, setQueryLimit] = useState(itemsPerPage);
 
   const showItems = (posts) => {
+    console.log(posts,'posts');
     let items = [];
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
+      console.log(i);
       const object = posts[i];
       items.push(
         <PostBox
@@ -138,19 +136,21 @@ export default function FeedScreen() {
         />
       );
     }
+    return items;
   };
-
-  const loadMore = () => {
-    let limit = records;
-    if (records > posts.length) limit = posts.length;
-    if (limit === posts.length) {
-      setHasMoreItems(false);
+  const loadMore = async () => {
+    if (queryLimit > posts.length + 10) {
+      setHasMoreItems(false); 
     } else {
-      setTimeout(() => {
-        setRecords(records + itemsPerPage);
-      }, 100);
+      const postsData = await getPosts(0);
+      if(!postsData) postsData = [];
+      setPosts(postsData);
+      setQueryLimit(queryLimit+itemsPerPage)
+      setRecords(records+itemsPerPage)
     }
+  
   };
+  
 
   return (
     <>
@@ -273,37 +273,26 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
-            {posts.length === 0 ? (
-              <span>{feedMessage}</span>
-            ) : (
-              posts.map((object, index) => (
-                <PostBox
-                  id={object.id}
-                  key={index}
-                  url={object.url}
-                  profilePhoto={object.profilePhoto}
-                  username={object.username}
-                  description={object.description}
-                  urlDescription={object.urlDescription}
-                  urlTitle={object.urlTitle}
-                  urlImage={object.urlImage}
-                  likes={object.likes}
-                  setIdDeleting={setIdDeleting}
-                  setDeleting={setDeleting}
-                  setUpdatePosts={setUpdatePosts}
-                  updatePosts={updatePosts}
-                  userId={object.userId}
-                />
-              ))
-            )}
-            {/* <InfiniteScroll
-              loadMore={loadMore}
-              hasMore={hasMoreItems}
-              loader={<div className="loader"> Loading... </div>}
-              useWindow={false}
+            <div
+              style={{
+                overflow: "auto",
+                padding: "15px",
+              }}
             >
-              {showItems(posts)}
-            </InfiniteScroll> */}
+              <InfiniteScroll
+                loadMore={loadMore}
+                hasMore={hasMoreItems}
+                loader={
+                  <div className="loader" key={0}>
+                    {" "}
+                    Loading...{" "}
+                  </div>
+                }
+                useWindow={true}
+              >
+                {showItems(posts)}
+              </InfiniteScroll>
+            </div>
           </Feed>
           <div>
             <Trendings />
