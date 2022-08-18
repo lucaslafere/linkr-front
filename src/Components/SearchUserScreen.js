@@ -72,7 +72,7 @@ export default function SerchUserScreen() {
       .then((res) => {
         setIsFollowed(res.data.isFollower);
         console.log("caiu no then");
-        console.log(res.data.isFollower)
+        console.log(res.data.isFollower);
       })
       .catch((err) => {
         console.log("caiu no erro");
@@ -85,7 +85,8 @@ export default function SerchUserScreen() {
     try {
       const promise = await axios.post(
         "https://projeto17-linkrback.herokuapp.com/other-users",
-        username
+        username,
+        config
       );
       console.log(promise.data);
       setSearch(promise.data);
@@ -116,12 +117,13 @@ export default function SerchUserScreen() {
       .post("https://projeto17-linkrback.herokuapp.com/follow", body, config)
       .then((res) => {
         console.log("seguiu / parou de seguir");
-        setIsFollowed(value => !value);
+        setIsFollowed((value) => !value);
       })
       .catch((err) => {
         console.log("deu ruim na hora de seguir");
       });
   }
+
 
   return (
     <>
@@ -212,12 +214,12 @@ export default function SerchUserScreen() {
         ""
       )}
 
-      <UserContainer isFollowed={isFollowed}>
+      <UserContainer >
         <UserTitle>
           <img src={userPosts.profilePhoto} alt={userPosts.username} />
           <a>{userPosts.username}'s posts</a>
         </UserTitle>
-        <FollowButton onClick={followUser}>
+        <FollowButton isFollowed={isFollowed} onClick={followUser} >
           {isFollowed ? "Unfollow" : "Follow"}
         </FollowButton>
       </UserContainer>
@@ -288,7 +290,7 @@ const UserContainer = styled.div`
 const FollowButton = styled.div`
   width: 120px;
   height: 35px;
-  background: ${props => props.isFollowed ? "#fff" : "#1877f2"};
+  background: ${(props) => (props.isFollowed ? "#fff" : "#1877f2")};
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -300,7 +302,7 @@ const FollowButton = styled.div`
   font-weight: 700;
   font-size: 14px;
 
-  color: ${props => props.isFollowed ? "#1877f2" : "#fff"};
+  color: ${(props) => (props.isFollowed ? "#1877f2" : "#fff")};
   :hover {
     cursor: pointer;
   }
