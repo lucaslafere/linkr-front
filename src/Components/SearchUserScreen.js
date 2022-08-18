@@ -77,7 +77,7 @@ export default function SerchUserScreen() {
       .catch((err) => {
         console.log("caiu no erro");
       });
-  }, [isFollowed]);
+  }, []);
 
   async function searchUser(event) {
     const username = { username: event };
@@ -113,15 +113,15 @@ export default function SerchUserScreen() {
     const body = {
       friendId: id,
     };
-    axios
+
+    try {
+      axios
       .post("https://projeto17-linkrback.herokuapp.com/follow", body, config)
-      .then((res) => {
-        console.log("seguiu / parou de seguir");
-        setIsFollowed((value) => !value);
-      })
-      .catch((err) => {
-        console.log("deu ruim na hora de seguir");
-      });
+      await console.log("seguiu / parou de seguir")
+      setIsFollowed((value) => !value);
+    } catch (error) {
+      console.log("deu ruim na hora de seguir");
+    }
   }
 
 
@@ -214,7 +214,7 @@ export default function SerchUserScreen() {
         ""
       )}
 
-      <UserContainer >
+      <UserContainer isFollowed={isFollowed} >
         <UserTitle>
           <img src={userPosts.profilePhoto} alt={userPosts.username} />
           <a>{userPosts.username}'s posts</a>
