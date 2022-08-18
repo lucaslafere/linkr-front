@@ -212,7 +212,7 @@ export default function SerchUserScreen() {
         ""
       )}
 
-      <UserContainer>
+      <UserContainer isFollowed={isFollowed}>
         <UserTitle>
           <img src={userPosts.profilePhoto} alt={userPosts.username} />
           <a>{userPosts.username}'s posts</a>
@@ -288,7 +288,7 @@ const UserContainer = styled.div`
 const FollowButton = styled.div`
   width: 120px;
   height: 35px;
-  background: #1877f2;
+  background: ${props => props.isFollowed ? "#fff" : "#1877f2"};
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -300,7 +300,7 @@ const FollowButton = styled.div`
   font-weight: 700;
   font-size: 14px;
 
-  color: #ffffff;
+  color: ${props => props.isFollowed ? "#1877f2" : "#fff"};
   :hover {
     cursor: pointer;
   }
