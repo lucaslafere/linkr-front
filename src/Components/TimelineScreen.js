@@ -36,7 +36,7 @@ export default function FeedScreen() {
   //const URL = "http://localhost:4000/posts";
 
   const data = JSON.parse(localStorage.getItem("userInfo"));
-
+  console.log(data);
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
 
   const config = {
@@ -113,7 +113,15 @@ export default function FeedScreen() {
 
     navigate("/");
   }
-
+  function postIsLiked (usersArray) {
+    const userLiked = usersArray.find(object => object.userId === data.id);
+    if(userLiked.length === 0) {
+      return false
+    };
+    if(userLiked.length !== 0) {
+      return true;
+    }
+  }
   const loadMore = () => {
     let limit = records;
     if (records > posts.length) limit = posts.length;
@@ -287,6 +295,7 @@ export default function FeedScreen() {
                   setUpdatePosts={setUpdatePosts}
                   updatePosts={updatePosts}
                   userId={object.userId}
+                  // liked={() => postIsLiked(object.usersLiked)}
                   setOpenModal={setOpenModal}
                   setRepostId={setRepostId}
                 />

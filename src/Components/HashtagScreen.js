@@ -26,6 +26,7 @@ export default function HashtagScreen() {
 
   }, [trending]);
 
+ 
   return(
     <Container>
         <Header>
