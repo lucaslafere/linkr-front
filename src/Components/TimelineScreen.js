@@ -38,7 +38,7 @@ export default function FeedScreen() {
 
   async function getPosts(queryLimit) {
     return axios
-      .get(URL + queryLimit, config)
+      .get(backendURL + queryLimit, config)
       .then((response) => {
         if (response.data.length === 0)
           setFeedMessage("There are no posts yet");
@@ -61,7 +61,7 @@ export default function FeedScreen() {
       url,
       description,
     };
-    const promise = axios.post(URL, body, config);
+    const promise = axios.post(backendURL, body, config);
     promise
       .then(async (res) => {
         setLoading(false);
