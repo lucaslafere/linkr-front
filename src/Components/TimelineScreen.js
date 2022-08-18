@@ -352,26 +352,26 @@ const Header = styled.div`
 `;
 const Containerr = styled.div`
   width: 30%;
-  height: 100%;
+  height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
+  position: sticky;
 `;
 const Search = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 56px;
+  /* position: absolute;
+  top: 56px; */
 
   ul {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     background-color: rgba(231, 231, 231, 1);
     border-radius: 0px 0px 8px 8px;
-    padding: 40px 17px;
+    padding: 1rem;
   }
 
   @media (max-width: 1000px) {
@@ -392,7 +392,7 @@ const InputText = styled.div`
 
   input {
     width: 95%;
-    height: 100%;
+    height: 45px;
     font-weight: 100;
     font-size: 19px;
     border: none;
