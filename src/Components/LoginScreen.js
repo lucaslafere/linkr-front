@@ -13,7 +13,7 @@ export default function LoginScreen() {
   const [errorText, setErrorText] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const URL = "http://projeto17-linkrback.herokuapp.com/login";
+  const URL = "https://projeto17-linkrback.herokuapp.com/login";
   // const URL = "http://localhost:4000/login";
   const navigate = useNavigate();
 
@@ -31,9 +31,9 @@ export default function LoginScreen() {
     window.localStorage.setItem("MY_TOKEN", token);
   }, [token]);
 
-  if (token) {
-    navigate("/timeline");
-  }
+  // if (token) {
+  //   navigate("/timeline");
+  // }
 
   const body = {
     email,

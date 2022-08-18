@@ -6,8 +6,8 @@ import UserContext from "../Contexts/UserContext";
 import RenderSearchUser from "../Pages/RenderSearchUser";
 import RenderUserPosts from "../Pages/RenderUserPosts";
 import RenderHashtags from "../Pages/RenderHashtags";
-import axios from 'axios';
-import { DebounceInput } from 'react-debounce-input';
+import axios from "axios";
+import { DebounceInput } from "react-debounce-input";
 import RepostBox from "../Pages/RepostBox";
 import RenderReposts from "../Pages/RenderReposts";
 
@@ -24,6 +24,7 @@ export default function SerchUserScreen() {
     const [repostId, setRepostId] = useState();
     const [userReposts, setUserReposts] = useState([]);
     const [isFollowed, setIsFollowed] = useState(false); 
+    const [disabled, setDisabled] = useState(false);
     const navigate = useNavigate();
     const data =  JSON.parse(userData);
     const config = {
@@ -88,28 +89,76 @@ export default function SerchUserScreen() {
         }
     }
 
-    async function logout() { 
-        axios.delete("https://projeto17-linkrback.herokuapp.com/logout", { data: {}, headers: { Authorization: `Bearer ${token}` } });
-        window.localStorage.setItem("MY_TOKEN", "");
-        localStorage.setItem("userInfo","");
-        setToken("");
-    
-        navigate("/");
+  useEffect(() => {
+    const body = {
+      friendId: id,
     };
-
-    async function followUser () {
-        const body = {
-            friendId: id
-        } 
-        axios.post("https://projeto17-linkrback.herokuapp.com/follow", body, config)
-    .then((res) => {
-        console.log("seguiu");
-        setIsFollowed(true);
+    setDisabled(true);
+    axios
+      .post(
+        `https://projeto17-linkrback.herokuapp.com/check-follow`,
+        body,
+        config
+      )
+      .then((res) => {
+        setIsFollowed(res.data.isFollower);
+        console.log("caiu no then");
+        console.log(res.data.isFollower);
+        setDisabled(false);
       })
       .catch((err) => {
-        console.log("deu ruim na hora de seguir");
+        console.log("caiu no erro");
       });
+  }, []);
 
+  async function searchUser(event) {
+    const username = { username: event };
+    console.log(username);
+    try {
+      const promise = await axios.post(
+        "https://projeto17-linkrback.herokuapp.com/other-users",
+        username,
+        config
+      );
+      console.log(promise.data);
+      setSearch(promise.data);
+    } catch (error) {
+      setSearch([]);
+      console.log(error);
+      setSearch([]);
+    }
+  }
+
+  async function logout() {
+    axios.delete("https://projeto17-linkrback.herokuapp.com/logout", {
+      data: {},
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    window.localStorage.setItem("MY_TOKEN", "");
+    localStorage.setItem("userInfo", "");
+    setToken("");
+
+    navigate("/");
+  } 
+
+  async function followUser() {
+    const body = {
+      friendId: id,
+    };
+    setDisabled(true);
+    try {
+      axios.post(
+        "https://projeto17-linkrback.herokuapp.com/follow",
+        body,
+        config
+      );
+      await console.log("seguiu / parou de seguir");
+      setIsFollowed((value) => !value);
+      setDisabled(false);
+    } catch (error) {
+      console.log("deu ruim na hora de seguir");
+      alert("Houve um problema ao tentar seguir esse usuário");
+    }
   }
 
   function changeUser(userClickedId) { 
@@ -161,14 +210,23 @@ export default function SerchUserScreen() {
                 {uusers.length !== 0 ? (
                 <Search>
                     <ul>
-                        {uusers.map((users,index) => (
-                            <RenderSearchUser 
-                                index= {index}
-                                image= {users.profilePhoto}
-                                username= {users.username}
-                            />
-                        ))}
-                        </ul>
+                    {search.map((users, index) => (
+                     <>
+                    <SearchBarUserContainer>
+                      <RenderSearchUser
+                        index={index}
+                        image={users.profilePhoto}
+                        username={users.username}
+                        follows={users.followerId}
+                        id={users.id}
+                      />
+                      <h6>
+                        {users.followerId === null ? "" : "•" + "following"}
+                      </h6>
+                    </SearchBarUserContainer>
+                  </>
+                ))}
+              </ul>
                 </Search> 
                 ) : ""}
             </Container>
@@ -195,15 +253,23 @@ export default function SerchUserScreen() {
                 {uusers.length !== 0 ? (
                 <Search2>
                     <ul>
-                        {uusers.map((users,index) => (
-                            <RenderSearchUser 
-                                index= {index}
-                                image= {users.profilePhoto}
-                                username= {users.username}
-                                id= {users.id}
-                            />
-                        ))}
-                        </ul>
+                    {search.map((users, index) => (
+                    <>
+                    <SearchBarUserContainer>
+                      <RenderSearchUser
+                        index={index}
+                        image={users.profilePhoto}
+                        username={users.username}
+                        follows={users.followerId}
+                        id={users.id}
+                      />
+                      <h6>
+                        {users.followerId === null ? "" : "•" + "following"}
+                      </h6>
+                    </SearchBarUserContainer>
+                  </>
+                ))}
+              </ul>
                 </Search2> 
                 ) : "" }
             </Container2>
@@ -213,12 +279,18 @@ export default function SerchUserScreen() {
             <a>Logout</a>
         </Logout> ) : ("")}
 
-        <UserContainer>
-            <UserTitle>
-                <img src={userPosts.profilePhoto} alt={userPosts.username} />
-                <a>{userPosts.username}'s posts</a>
-            </UserTitle>
-            <FollowButton onClick={followUser}>{isFollowed ? "Unfollow" : "Follow"}</FollowButton>
+        <UserContainer isFollowed={isFollowed}>
+        <UserTitle>
+          <img src={userPosts.profilePhoto} alt={userPosts.username} />
+          <a>{userPosts.username}'s posts</a>
+        </UserTitle>
+        <FollowButton
+          disabled={disabled}
+          isFollowed={isFollowed}
+          onClick={followUser}
+        >
+          {isFollowed ? "Unfollow" : "Follow"}
+        </FollowButton>
       </UserContainer>
 
         <Main>
@@ -279,85 +351,114 @@ export default function SerchUserScreen() {
     )
  }
 
- const UserContainer = styled.div`
-        width: 100%;
-        height: 100%;
-        display: flex;
-        margin-top: 150px;
-        margin-bottom: 40px;
-        align-items: center;
-        justify-content: space-between;
-`
+ export const SearchBarUserContainer = styled.div`
+  display: flex;
+  width: 80%;
+  align-items: center;
 
-const FollowButton = styled.div`
+  h6 {
+    font-family: "Lato";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 23px;
+
+    color: #c5c5c5;
+  }
+  @media (max-width: 1000px) {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 30px;
+
+    li {
+      width: auto;
+    }
+  }
+`;
+
+const UserContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  margin-top: 150px;
+  margin-bottom: 40px;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const FollowButton = styled.button`
   width: 120px;
   height: 35px;
-  background: #1877f2;
+  background: ${(props) => (props.isFollowed ? "#fff" : "#1877f2")};
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 300px;
-
+  border: 0px solid #1877f2;
   font-family: "Lato";
   font-style: normal;
   font-weight: 700;
   font-size: 14px;
 
-  color: #ffffff;
+  color: ${(props) => (props.isFollowed ? "#1877f2" : "#fff")};
+  :hover {
+    cursor: pointer;
+  }
 `;
 
- const Header = styled.div`
-    width: 100%; 
-    height: 72px; 
-    background-color: rgba(21, 21, 21, 1);
-    display: flex; 
-    justify-content: space-between; 
-    align-items:center;
-    position: fixed; 
-    top: 0; 
-    left: 0;
-    padding: 0px 12px 0px 20px; 
-    z-index: 1;
 
-    a { 
-        color: white; 
-        font-family: Passion One;
-        font-size: 49px;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-align: left;
-    }  
+const Header = styled.div`
+width: 100%;
+height: 72px;
+background-color: rgba(21, 21, 21, 1);
+display: flex;
+justify-content: space-between;
+align-items: center;
+position: fixed;
+top: 0;
+left: 0;
+padding: 0px 12px 0px 20px;
+z-index: 1;
 
- `
- const Container = styled.div`
-    width: 30%;
-    height: 100%; 
-    display: flex; 
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
- `
- const Search = styled.div`
-    width: 29.35%;
-    height: 100%; 
-    display: flex; 
-    justify-content: center;
-    position: fixed;
-    top: 59px;
-    
-    ul { 
-        width: 100%; 
-        background-color: rgba(231, 231, 231, 1); 
-        border-radius: 0px 0px 8px 8px; 
-        padding: 40px 17px;
-        z-index: 1;
-    }
+a {
+  color: white;
+  font-family: Passion One;
+  font-size: 49px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: left;
+}
+`;
+const Container = styled.div`
+width: 30%;
+height: 45px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+position: sticky;
+`;
+const Search = styled.div`
+width: 100%;
+height: 100%;
+display: flex;
+flex-direction: column;
+/* position: absolute;
+top: 56px; */
 
-    @media (max-width: 1000px) {
-        display: none;
-    }
- ` 
+ul {
+  width: 100%;
+  /* height: 100%; */
+  background-color: rgba(231, 231, 231, 1);
+  border-radius: 0px 0px 8px 8px;
+  padding: 1rem;
+}
+>>>>>>> 44a5a91d8b71ae45232d1fead6bbf4a1a4642898
+
+@media (max-width: 1000px) {
+  display: none;
+}
+`;
 const InputText = styled.div`
   width: 100%;
   height: 45px;
@@ -372,7 +473,7 @@ const InputText = styled.div`
 
   input {
     width: 95%;
-    height: 100%;
+    height: 45px;
     font-weight: 100;
     font-size: 19px;
     border: none;
@@ -407,7 +508,7 @@ const Container2 = styled.div`
 `;
 const Search2 = styled.div`
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -416,10 +517,13 @@ const Search2 = styled.div`
 
   ul {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     background-color: rgba(231, 231, 231, 1);
     border-radius: 0px 0px 8px 8px;
     padding: 40px 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   @media (max-width: 1000px) {

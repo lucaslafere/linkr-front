@@ -11,6 +11,7 @@ import RenderSearchUser from "../Pages/RenderSearchUser.js";
 import { DebounceInput } from 'react-debounce-input';
 import RepostBox from "../Pages/RepostBox.js";
 import InfiniteScroll from "react-infinite-scroller";
+import { SearchBarUserContainer} from "./SearchUserScreen";
 
 export default function FeedScreen() {
   const { userData } = useContext(UserContext);
@@ -89,7 +90,8 @@ export default function FeedScreen() {
     try {
       const promise = await axios.post(
         "https://projeto17-linkrback.herokuapp.com/other-users",
-        username
+        username,
+        config
       );
       console.log(promise.data);
       setSearch(promise.data);
@@ -175,7 +177,7 @@ export default function FeedScreen() {
       ) :  ""}
       
     <Container deleting={deleting}>
-    <Header>
+      <Header>
             <a onClick={() => navigate("/timeline")}>linkr</a>
             <Containerr>
                 <InputText>
@@ -189,15 +191,16 @@ export default function FeedScreen() {
                 </InputText> 
                 {search.length !== 0 ? (
                 <Search>
-                    <ul>
-                        {search.map((users,index) => (
-                            <RenderSearchUser 
-                                index= {index}
-                                image= {users.profilePhoto}
-                                username= {users.username}
-                            />
-                        ))}
-                        </ul>
+                   <ul>
+                {search.map((users, index) => (
+                  <>
+                  <SearchBarUserContainer><RenderSearchUser
+                    index={index}
+                    image={users.profilePhoto}
+                    username={users.username} follows={users.followerId}/><p>{users.followerId === null ? "" : "following"}</p>
+                    </SearchBarUserContainer></>
+                ))}
+              </ul>
                 </Search> 
                 ) : ""}
             </Containerr>
@@ -269,8 +272,7 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
-            {/*}
-            {posts.length === 0 ? (
+            {/* {posts.length === 0 ? (
               <span>{feedMessage}</span>
             ) : (
               posts.map((object, index) => (
@@ -295,7 +297,7 @@ export default function FeedScreen() {
                 />
               ))
             )} 
-              */} 
+              */}
             <InfiniteScroll
               loadMore={loadMore}
               hasMore={hasMoreItems}
@@ -352,26 +354,26 @@ const Header = styled.div`
 `;
 const Containerr = styled.div`
   width: 30%;
-  height: 100%;
+  height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
+  position: sticky;
 `;
 const Search = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 56px;
+  /* position: absolute;
+  top: 56px; */
 
   ul {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     background-color: rgba(231, 231, 231, 1);
     border-radius: 0px 0px 8px 8px;
-    padding: 40px 17px;
+    padding: 1rem;
   }
 
   @media (max-width: 1000px) {
@@ -392,7 +394,7 @@ const InputText = styled.div`
 
   input {
     width: 95%;
-    height: 100%;
+    height: 45px;
     font-weight: 100;
     font-size: 19px;
     border: none;
