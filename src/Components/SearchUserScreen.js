@@ -116,19 +116,21 @@ export default function SerchUserScreen() {
     const body = {
       friendId: id,
     };
-    setDisabled(true)
+    setDisabled(true);
     try {
-      axios
-      .post("https://projeto17-linkrback.herokuapp.com/follow", body, config)
-      await console.log("seguiu / parou de seguir")
+      axios.post(
+        "https://projeto17-linkrback.herokuapp.com/follow",
+        body,
+        config
+      );
+      await console.log("seguiu / parou de seguir");
       setIsFollowed((value) => !value);
       setDisabled(false);
     } catch (error) {
       console.log("deu ruim na hora de seguir");
-      alert("Houve um problema ao tentar seguir esse usuário")
+      alert("Houve um problema ao tentar seguir esse usuário");
     }
   }
-
 
   return (
     <>
@@ -155,11 +157,19 @@ export default function SerchUserScreen() {
               <ul>
                 {search.map((users, index) => (
                   <>
-                  <SearchBarUserContainer><RenderSearchUser
-                    index={index}
-                    image={users.profilePhoto}
-                    username={users.username} follows={users.followerId}/><h6>{users.followerId === null ? "" : "•" + "following"}</h6>
-                    </SearchBarUserContainer></>
+                    <SearchBarUserContainer>
+                      <RenderSearchUser
+                        index={index}
+                        image={users.profilePhoto}
+                        username={users.username}
+                        follows={users.followerId}
+                        id={users.id}
+                      />
+                      <h6>
+                        {users.followerId === null ? "" : "•" + "following"}
+                      </h6>
+                    </SearchBarUserContainer>
+                  </>
                 ))}
               </ul>
             </Search>
@@ -198,12 +208,20 @@ export default function SerchUserScreen() {
           <Search2>
             <ul>
               {search.map((users, index) => (
-                <RenderSearchUser
-                  index={index}
-                  image={users.profilePhoto}
-                  username={users.username}
-                  id={users.id}
-                />
+                <>
+                  <SearchBarUserContainer>
+                    <RenderSearchUser
+                      index={index}
+                      image={users.profilePhoto}
+                      username={users.username}
+                      follows={users.followerId}
+                      id={users.id}
+                    />
+                    <h6>
+                      {users.followerId === null ? "" : "•" + "following"}
+                    </h6>
+                  </SearchBarUserContainer>
+                </>
               ))}
             </ul>
           </Search2>
@@ -220,12 +238,16 @@ export default function SerchUserScreen() {
         ""
       )}
 
-      <UserContainer isFollowed={isFollowed} >
+      <UserContainer isFollowed={isFollowed}>
         <UserTitle>
           <img src={userPosts.profilePhoto} alt={userPosts.username} />
           <a>{userPosts.username}'s posts</a>
         </UserTitle>
-        <FollowButton disabled={disabled} isFollowed={isFollowed} onClick={followUser} >
+        <FollowButton
+          disabled={disabled}
+          isFollowed={isFollowed}
+          onClick={followUser}
+        >
           {isFollowed ? "Unfollow" : "Follow"}
         </FollowButton>
       </UserContainer>
@@ -284,20 +306,29 @@ export default function SerchUserScreen() {
 }
 
 export const SearchBarUserContainer = styled.div`
-display: flex;
-width: 80%;
-align-items: center;
+  display: flex;
+  width: 80%;
+  align-items: center;
 
- h6 {
-  font-family: 'Lato';
-font-style: normal;
-font-weight: 400;
-font-size: 19px;
-line-height: 23px;
+  h6 {
+    font-family: "Lato";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 23px;
 
-color: #C5C5C5;
- }
-`
+    color: #c5c5c5;
+  }
+  @media (max-width: 1000px) {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 30px;
+
+    li {
+      width: auto;
+    }
+  }
+`;
 
 const UserContainer = styled.div`
   width: 100%;
@@ -429,7 +460,7 @@ const Container2 = styled.div`
 `;
 const Search2 = styled.div`
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -438,10 +469,13 @@ const Search2 = styled.div`
 
   ul {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     background-color: rgba(231, 231, 231, 1);
     border-radius: 0px 0px 8px 8px;
     padding: 40px 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   @media (max-width: 1000px) {
