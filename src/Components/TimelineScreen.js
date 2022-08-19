@@ -97,7 +97,8 @@ export default function FeedScreen() {
     try {
       const promise = await axios.post(
         "https://projeto17-linkrback.herokuapp.com/other-users",
-        username
+        username,
+        config
       );
       console.log(promise.data);
       setSearch(promise.data);
