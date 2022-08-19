@@ -286,7 +286,8 @@ const SendComment = styled.div`
         width: 95%; 
         height: 100%;
         background-color: rgba(37, 37, 37, 1);
-        color: rgba(87, 87, 87, 1);
+        color: rgba(243, 243, 243, 1);
+        font-style: italic;
         border: none;
     }
 
@@ -303,14 +304,4 @@ const SendComment = styled.div`
     border-radius: 50%;
     object-fit: cover;
   }
-`
-const InputComments = styled.div`
-    width: 90%;
-    height: 39px;
-    border-radius: 8px; 
-    background-color: rgba(37, 37, 37, 1); 
-    color: rgba(87, 87, 87, 1);
-    padding: 0px 13px 0px 15px;
-    margin-left: 14px;
-    border: none;
 `
