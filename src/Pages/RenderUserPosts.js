@@ -5,6 +5,7 @@ import TokenContext from "../Contexts/TokenContext";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
+import RenderComments from "./RenderComments";
 
 export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id, setOpenModal, setRepostId,reposts, filterPosts, comments}) {
     const [liked, setLiked] = useState(false); 
@@ -31,11 +32,11 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
         const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/comments/${id}`,config);
 
         promise.then(response => { 
-            console.log(response.data);
             if(response.data.length===0) { 
                 setCommentsPost(response.data); 
             } else { 
-                console.log("Tem alguma coisa nos comentarios");
+                console.log(response.data[0].allComments);
+                setCommentsPost(response.data[0].allComments);
             }
         })
     },[]);
@@ -70,20 +71,18 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
         setRepostId(id);
     } 
 
-    const fakeComments = [ 
-    {
-        comentt: "hahaha",
-        userIdd: 3,
-        usernamee: "ney",
-        profilePhotoo: "https://conteudo.imguol.com.br/c/esporte/e3/2020/11/21/o-atacante-son-comemora-o-primeiro-gol-do-tottenham-contra-o-manchester-city-pelo-ingles-1605986406883_v2_1x1.png"
-      },
-      {
-        comentt: "hahaha",
-        userIdd: 3,
-        usernamee: "ney",
-        profilePhotoo: "https://conteudo.imguol.com.br/c/esporte/e3/2020/11/21/o-atacante-son-comemora-o-primeiro-gol-do-tottenham-contra-o-manchester-city-pelo-ingles-1605986406883_v2_1x1.png"
-      }
-    ]
+    async function postComment(id) { 
+        const text = { comment: sendMessage }
+        console.log(id);
+    
+        try {
+            await axios.post(`https://projeto17-linkrback.herokuapp.com/comments/${id}`,text,config);
+            setSendMessage("");
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
+        }
+    }
     
     return(
         <>
@@ -114,10 +113,22 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
             </PostInfo>
         </Post>
         <Comments>
-            <div></div>
+            <UsersComentaries>
+                <ul>
+                    {commentsPost.map((commt,index) => (
+                        <RenderComments 
+                            index={index}
+                            coment={commt.coment}
+                            profilePhoto={commt.profilePhoto}
+                            username={commt.username}
+                            userId={commt.userId}
+                        />
+                    ))}
+                </ul>
+            </UsersComentaries>
             <SendComment>
-                <img src={fakeComments[0].profilePhotoo} alt={fakeComments[0].userIdd} />
-                <form>
+                <img src={profilePhoto} alt={username} />
+                <form onSubmit={() => postComment(id)}>
                     <input
                         type="text"
                         placeholder="write a comment..."
@@ -125,7 +136,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                         onChange={(event) => setSendMessage(event.target.value)}
                         required
                     />
-                    <ion-icon name="paper-plane-outline"></ion-icon>
+                    <ion-icon name="paper-plane-outline" onClick={() => postComment(id)}></ion-icon>
                 </form>
             </SendComment>
         </Comments>
@@ -263,6 +274,13 @@ const Comments = styled.div`
   margin-bottom: 18px;
   padding: 0px 23px 0px 24px;
 ` 
+const UsersComentaries = styled.div`
+  width: 100%; 
+
+  ul { 
+    width: 100%;
+  }
+`
 const SendComment = styled.div`
   width: 100%; 
   height: 83px; 
@@ -295,6 +313,10 @@ const SendComment = styled.div`
         width: 19px; 
         height: 19px; 
         color: rgba(243, 243, 243, 1);
+
+        &:hover { 
+            cursor: pointer;
+        }
     }
   }
 
