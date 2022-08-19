@@ -19,7 +19,6 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
       let compare = filterPosts[i].usersLiked.find(u => u.userId===data.id); 
       likeState.push(compare);
     } 
-    console.log(likeState);
 
     
     async function likeDeslike(event) { 
