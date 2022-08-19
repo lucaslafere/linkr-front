@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import UserContext from "../Contexts/UserContext.js";
 import PostBox from "../Pages/PostBox.js";
 import DeleteBox from "../Pages/DeleteBox.js";
 import Trendings from "../Pages/Trending.js";
@@ -12,6 +11,8 @@ import { DebounceInput } from "react-debounce-input";
 import RepostBox from "../Pages/RepostBox.js";
 import InfiniteScroll from "react-infinite-scroller";
 import { SearchBarUserContainer } from "./SearchUserScreen";
+import NewPosts, { newPosts } from "../Pages/NewPosts";
+import useInterval from "use-interval";
 
 export default function FeedScreen() {
   const [posts, setPosts] = useState([]);
@@ -32,6 +33,10 @@ export default function FeedScreen() {
   const [records, setRecords] = useState(itemsPerPage);
   const [queryLimit, setQueryLimit] = useState(itemsPerPage);
   const [followers, setFollowers] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const [display, setDisplay] = useState(false);
+  const [render, setRender] = useState([]);
+  const [toRender, setToRender] = useState([]);
   const navigate = useNavigate();
   const URL = "http://localhost:4000/posts";
   const data = JSON.parse(localStorage.getItem("userInfo"));
@@ -192,8 +197,44 @@ export default function FeedScreen() {
       );
     }
   };
+  useEffect(() => setTimeout(loadMore, 10), []);
 
-  useEffect(() => setTimeout(loadMore, 200), []);
+ 
+
+  useEffect(() => {
+    setPosts([...render]);
+  }, [update]);
+
+  function comparison(post, newPost) {
+    return (
+      post.comments === newPost.comments &&
+      post.description === newPost.description &&
+      post.email === newPost.email &&
+      post.id === newPost.id &&
+      post.email === newPost.email &&
+      post.likes === newPost.likes &&
+      post.profilePhoto === newPost.profilePhoto &&
+      post.reposts === newPost.reposts &&
+      post.url === newPost.url &&
+      post.urlDescription === newPost.urlDescription &&
+      post.urlImage === newPost.urlImage &&
+      post.urlTitle === newPost.urlTitle &&
+      post.userId === newPost.userId &&
+      post.username === newPost.username
+    );
+  }
+
+  useInterval(async () => {
+    const newPosts = await getPosts(posts.length);
+    toRender.length = 0;
+    for (let i = 0; i < newPosts.length; i++) {
+      if (!comparison(posts[0], newPosts[i])) {
+        toRender.push(newPosts[i]);
+        setDisplay(true);
+      } else break;
+    }
+    setRender([...newPosts]);
+  }, 15000);
 
 
   return (
@@ -330,8 +371,13 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
-
-
+            <NewPosts
+              num={toRender.length}
+              display={display}
+              update={update}
+              setUpdate={setUpdate}
+              setDisplay={setDisplay}
+            />
             <Scroll>
               {posts.length !== 0 ? (
                 <InfiniteScroll
