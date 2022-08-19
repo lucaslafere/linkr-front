@@ -436,6 +436,9 @@ const Header = styled.div`
     text-align: left;
     cursor: pointer;
   }
+  @media(max-width: 612px){
+    max-width: 100vw;
+  }
 `;
 const Containerr = styled.div`
   width: 30%;
@@ -619,8 +622,11 @@ const Feed = styled.div`
     text-decoration: none;
   }
   @media (max-width: 1000px) {
-    margin-left: 0;
-    width: 100%;
+    margin-right: 0;
+    max-width: 100vw;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
   }
 `;
 
@@ -646,7 +652,7 @@ const NewPost = styled.div`
     align-items: center;
   }
   @media (max-width: 1000px) {
-    width: 100%;
+    width: 100vw;
   }
 `;
 
@@ -773,6 +779,12 @@ const Post = styled.div`
 `;
 const Content = styled.div`
   display: flex;
+ 
+
+  @media (max-width:1000px){
+    max-width:100%;
+    flex-direction:column !important;
+  }
 `;
 const Scroll = styled.div`
   > p {
@@ -784,5 +796,8 @@ const Scroll = styled.div`
     font-size: 30px;
     border-radius: 20px;
     margin-top: 40px;
+  }
+  @media (max-width:700px){
+   
   }
 `;

@@ -39,6 +39,7 @@ export default function SerchUserScreen() {
 
         promise.then(response => { 
             setUserPosts(response.data[0]);
+            console.log(response.data[0].posts);
             setPost(response.data[0].posts);
             if(response.data[1].reposts) {
               setUserReposts(response.data[1].reposts); 
@@ -170,7 +171,7 @@ export default function SerchUserScreen() {
         <Header>
             <a onClick={() => navigate("/timeline")}>linkr</a>
             <Container>
-                <InputText>
+                <InputText search={search}>
                     <DebounceInput
                         type="text"
                         placeholder="Search for people"
@@ -303,6 +304,7 @@ export default function SerchUserScreen() {
                             setRepostId={setRepostId}
                             reposts={post.reposts}
                             filterPosts={filterPosts}
+                            comments={post.comments}
                         />
                     ))}
                 </ul>
@@ -440,7 +442,7 @@ const InputText = styled.div`
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  border-radius: 8px 8px 0px 0px;
+  border-radius: ${props => props.search.length !==0 ? ("8px 8px 0px 0px") : ("8px")};
   border: none;
   padding: 0px 13px 0px 19px;
   color: rgba(198, 198, 198, 1);

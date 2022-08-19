@@ -166,6 +166,9 @@ const Post = styled.li`
   padding: 19px 22px 10px 20px;
   border-radius: 16px;
   margin-bottom: 18px;
+  @media (max-width:612px){
+    width: 100vw;
+  } 
 `;
 const PictureAndLike = styled.div`
   width: 10%;
@@ -296,5 +299,9 @@ const MainInfoDescription = styled.div`
     color: rgba(206, 206, 206, 1);
     text-align: left;
     margin-bottom: 8px;
+    @media (max-width:612px){
+      width: 40px;
+      word-break:break-all;
+    }
   }
 `
