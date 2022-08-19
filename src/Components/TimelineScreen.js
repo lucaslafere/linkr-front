@@ -8,12 +8,12 @@ import Trendings from "../Pages/Trending.js";
 import { useNavigate } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext.js";
 import RenderSearchUser from "../Pages/RenderSearchUser.js";
-import { DebounceInput } from 'react-debounce-input';
+import { DebounceInput } from "react-debounce-input";
 import RepostBox from "../Pages/RepostBox.js";
 import InfiniteScroll from "react-infinite-scroller";
+import { SearchBarUserContainer } from "./SearchUserScreen";
 
 export default function FeedScreen() {
-
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
@@ -30,13 +30,12 @@ export default function FeedScreen() {
   const itemsPerPage = 10;
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [records, setRecords] = useState(itemsPerPage);
-  const navigate = useNavigate();
-  const URL = "http://localhost:4000/posts/";
-  const data = JSON.parse(localStorage.getItem("userInfo"));
   const [queryLimit, setQueryLimit] = useState(itemsPerPage);
-  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts/";
-  console.log(data);
-  
+  const [followers, setFollowers] = useState(false);
+  const navigate = useNavigate();
+  const URL = "http://localhost:4000/posts";
+  const data = JSON.parse(localStorage.getItem("userInfo"));
+  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
 
   const config = {
     headers: {
@@ -45,9 +44,8 @@ export default function FeedScreen() {
   };
 
   async function getPosts(queryLimit) {
-    
     return axios
-      .get(backendURL + queryLimit, config)
+      .get(`${backendURL}?queryLimit=${queryLimit}&userId=${data.id}`, config)
       .then((response) => {
         if (response.data.length === 0)
           setFeedMessage("There are no posts yet");
@@ -57,6 +55,17 @@ export default function FeedScreen() {
         alert(
           "An error occured while trying to fetch the posts, please refresh the page"
         );
+      });
+  }
+
+  async function getFollowers() {
+    axios
+      .get(
+        `https://projeto17-linkrback.herokuapp.com/followers?userId=${data.id}`,
+        config
+      )
+      .then((response) => {
+        setFollowers([...response.data]);
       });
   }
 
@@ -91,13 +100,15 @@ export default function FeedScreen() {
     try {
       const promise = await axios.post(
         "https://projeto17-linkrback.herokuapp.com/other-users",
-        username
+        username,
+        config
       );
-      
+      console.log(promise.data);
       setSearch(promise.data);
     } catch (error) {
       setSearch([]);
-    
+      console.log(error);
+      setSearch([]);
     }
   }
 
@@ -113,147 +124,163 @@ export default function FeedScreen() {
     navigate("/");
   }
 
-  function postIsLiked (usersArray) {
-    const userLiked = usersArray.find(object => object.userId === data.id);
-     if(userLiked === undefined) {
-       return false
-     };
-
-     if(userLiked.userId) {
-       return true;
-     }
-  }
-
   const showItems = (posts) => {
-    
     let items = [];
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
-      
       const object = posts[i];
       items.push(
         <PostBox
-        id={object.id}
-        url={object.url}
-        profilePhoto={object.profilePhoto}
-        username={object.username}
-        description={object.description}
-        urlDescription={object.urlDescription}
-        urlTitle={object.urlTitle}
-        urlImage={object.urlImage}
-        likes={object.likes}
-        setIdDeleting={setIdDeleting}
-        setDeleting={setDeleting}
-        setUpdatePosts={setUpdatePosts}
-        updatePosts={updatePosts}
-        userId={object.userId}
-        liked={() => postIsLiked(object.usersLiked)}
-        setOpenModal={setOpenModal}
-        setRepostId={setRepostId}
+          id={object.id}
+          key={i}
+          url={object.url}
+          profilePhoto={object.profilePhoto}
+          username={object.username}
+          description={object.description ? object.description : ""}
+          urlDescription={object.urlDescription}
+          urlTitle={object.urlTitle}
+          urlImage={object.urlImage}
+          likes={object.likes}
+          setIdDeleting={setIdDeleting}
+          setDeleting={setDeleting}
+          setUpdatePosts={setUpdatePosts}
+          updatePosts={updatePosts}
+          userId={object.userId}
         />
       );
     }
     return items;
   };
+
   const loadMore = async () => {
     if (queryLimit > posts.length + 10) {
       setHasMoreItems(false);
     } else {
-      const postsData = await getPosts(queryLimit);
+      let postsData = await getPosts(queryLimit);
       if (!postsData) postsData = [];
+      getFollowers();
       setPosts(postsData);
       setQueryLimit(queryLimit + itemsPerPage);
       setRecords(records + itemsPerPage);
+      setFeedMessage(
+        followers?.length === 0 || !followers ? (
+          <p>You don't follow anyone yet. Search for new friends!</p>
+        ) : (
+          <p>No posts found from your friends</p>
+        )
+      );
     }
   };
-  console.log(posts);
+  useEffect(() => setTimeout(loadMore, 200), []);
+
   return (
-  <>
-    {
-      deleting ? <DeleteBox 
-      id={idDeleting} 
-      setDeleting={setDeleting} 
-      setUpdatePosts={setUpdatePosts} 
-      updatePosts ={updatePosts} /> 
-      : <> </>
-    } 
+    <>
+      {deleting ? (
+        <DeleteBox
+          id={idDeleting}
+          setDeleting={setDeleting}
+          setUpdatePosts={setUpdatePosts}
+          updatePosts={updatePosts}
+        />
+      ) : (
+        <> </>
+      )}
 
-    {openModal ? (
-            <RepostBox 
-                setOpenModal={setOpenModal}
-                repostId={repostId}
-            />
-      ) :  ""}
-      
-    <Container deleting={deleting}>
-    <Header>
-            <a onClick={() => navigate("/timeline")}>linkr</a>
-            <Containerr>
-                <InputText>
-                    <DebounceInput
-                        type="text"
-                        placeholder="Search for people"
-                        minLength={3}
-                        debounceTimeout={400}
-                        onChange={(event) => searchUser(event.target.value)} />
-                    <ion-icon name="search-sharp"></ion-icon>
-                </InputText> 
-                {search.length !== 0 ? (
-                <Search>
-                    <ul>
-                        {search.map((users,index) => (
-                            <RenderSearchUser 
-                                index= {index}
-                                image= {users.profilePhoto}
-                                username= {users.username}
-                            />
-                        ))}
-                        </ul>
-                </Search> 
-                ) : ""}
-            </Containerr>
-            <LoggedUser>
-                {clickedLogout ? (
-                <ion-icon name="chevron-up-outline" onClick={() => setClickedLogout(false)}></ion-icon>
-                ) : ( 
-                <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
-                )}
-                <img src={data.profilePhoto} alt="profile"/>
-            </LoggedUser>
-        </Header>  
-      <Content>
-      
-      {clickedLogout ? (
-        <Logout onClick={logout}> 
-            <a>Logout</a>
-        </Logout> ) : ("")} 
+      {openModal ? (
+        <RepostBox setOpenModal={setOpenModal} repostId={repostId} />
+      ) : (
+        ""
+      )}
 
-        <Container2>
-                <InputText2>
-                    <DebounceInput
-                        type="text"
-                        placeholder="Search for people"
-                        minLength={3}
-                        debounceTimeout={400}
-                        onChange={(event) => searchUser(event.target.value)} />
-                    <ion-icon name="search-sharp"></ion-icon>
-                </InputText2>
-                {search.length !== 0 ? (
-                <Search2>
-                    <ul>
-                        {search.map((users,index) => (
-                            <RenderSearchUser 
-                                index= {index}
-                                image= {users.profilePhoto}
-                                username= {users.username}
-                                id= {users.id}
-                            />
-                        ))}
-                        </ul>
-                </Search2> 
-                ) : "" }
-        </Container2>
+      <Container deleting={deleting}>
+        <Header>
+          <a onClick={() => navigate("/timeline")}>linkr</a>
+          <Containerr>
+            <InputText>
+              <DebounceInput
+                type="text"
+                placeholder="Search for people"
+                minLength={3}
+                debounceTimeout={400}
+                onChange={(event) => searchUser(event.target.value)}
+              />
+              <ion-icon name="search-sharp"></ion-icon>
+            </InputText>
+            {search.length !== 0 ? (
+              <Search>
+                <ul>
+                  {search.map((users, index) => (
+                    <>
+                      <SearchBarUserContainer>
+                        <RenderSearchUser
+                          index={index}
+                          image={users.profilePhoto}
+                          username={users.username}
+                          follows={users.followerId}
+                        />
+                        <p>{users.followerId === null ? "" : "following"}</p>
+                      </SearchBarUserContainer>
+                    </>
+                  ))}
+                </ul>
+              </Search>
+            ) : (
+              ""
+            )}
+          </Containerr>
+          <LoggedUser>
+            {clickedLogout ? (
+              <ion-icon
+                name="chevron-up-outline"
+                onClick={() => setClickedLogout(false)}
+              ></ion-icon>
+            ) : (
+              <ion-icon
+                name="chevron-down-outline"
+                onClick={() => setClickedLogout(true)}
+              ></ion-icon>
+            )}
+            <img src={data.profilePhoto} alt="profile" />
+          </LoggedUser>
+        </Header>
+        <Content>
+          {clickedLogout ? (
+            <Logout onClick={logout}>
+              <a>Logout</a>
+            </Logout>
+          ) : (
+            ""
+          )}
+
+          <Container2>
+            <InputText2>
+              <DebounceInput
+                type="text"
+                placeholder="Search for people"
+                minLength={3}
+                debounceTimeout={400}
+                onChange={(event) => searchUser(event.target.value)}
+              />
+              <ion-icon name="search-sharp"></ion-icon>
+            </InputText2>
+            {search.length !== 0 ? (
+              <Search2>
+                <ul>
+                  {search.map((users, index) => (
+                    <RenderSearchUser
+                      index={index}
+                      image={users.profilePhoto}
+                      username={users.username}
+                      id={users.id}
+                    />
+                  ))}
+                </ul>
+              </Search2>
+            ) : (
+              ""
+            )}
+          </Container2>
 
           <Feed>
             <h3>timeline</h3>
@@ -281,53 +308,25 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
-            {posts.length === 0 ? (
-              <span>{feedMessage}</span>
-            ) : (
-              posts.map((object, index) => (
-                <PostBox
-                  id={object.id}
-                  key={index}
-                  url={object.url}
-                  profilePhoto={object.profilePhoto}
-                  username={object.username}
-                  description={object.description}
-                  urlDescription={object.urlDescription}
-                  urlTitle={object.urlTitle}
-                  urlImage={object.urlImage}
-                  likes={object.likes}
-                  setIdDeleting={setIdDeleting}
-                  setDeleting={setDeleting}
-                  setUpdatePosts={setUpdatePosts}
-                  updatePosts={updatePosts}
-                  userId={object.userId}
-                  liked={() => postIsLiked(object.usersLiked)}
-                  setOpenModal={setOpenModal}
-                  setRepostId={setRepostId}
-                />
-              ))
-            )}
-            
-            <div
-              style={{
-                overflow: "auto",
-                padding: "15px",
-              }}
-            >
-              <InfiniteScroll
-                loadMore={loadMore}
-                hasMore={hasMoreItems}
-                loader={
-                  <div className="loader" key={0}>
-                    {" "}
-                    Loading...{" "}
-                  </div>
-                }
-                useWindow={true}
-              >
-                {showItems(posts)}
-              </InfiniteScroll>
-            </div>
+            <Scroll>
+              {posts.length !== 0 ? (
+                <InfiniteScroll
+                  loadMore={loadMore}
+                  hasMore={hasMoreItems}
+                  loader={
+                    <div className="loader" key={0}>
+                      {" "}
+                      Loading...{" "}
+                    </div>
+                  }
+                  useWindow={true}
+                >
+                  {showItems(posts)}
+                </InfiniteScroll>
+              ) : (
+                <p>{feedMessage}</p>
+              )}
+            </Scroll>
           </Feed>
           <div>
             <Trendings />
@@ -359,7 +358,6 @@ const Header = styled.div`
   left: 0;
   padding: 0px 12px 0px 20px;
   z-index: 1;
-
   a {
     color: white;
     font-family: Passion One;
@@ -371,28 +369,26 @@ const Header = styled.div`
 `;
 const Containerr = styled.div`
   width: 30%;
-  height: 100%;
+  height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
+  position: sticky;
 `;
 const Search = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 56px;
-
+  /* position: absolute;
+  top: 56px; */
   ul {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     background-color: rgba(231, 231, 231, 1);
     border-radius: 0px 0px 8px 8px;
-    padding: 40px 17px;
+    padding: 1rem;
   }
-
   @media (max-width: 1000px) {
     display: none;
   }
@@ -408,21 +404,18 @@ const InputText = styled.div`
   border: none;
   padding: 0px 13px 0px 19px;
   color: rgba(198, 198, 198, 1);
-
   input {
     width: 95%;
-    height: 100%;
+    height: 45px;
     font-weight: 100;
     font-size: 19px;
     border: none;
   }
-
   ion-icon {
     width: 21px;
     height: 21px;
     color: rgba(198, 198, 198, 1);
   }
-
   @media (max-width: 1000px) {
     display: none;
   }
@@ -432,16 +425,13 @@ const LoggedUser = styled.div`
   justify-content: center;
   align-items: center;
   color: white;
-
   ion-icon {
     width: 27px;
     height: 27px;
-
     &:hover {
       cursor: pointer;
     }
   }
-
   img {
     width: 53px;
     height: 53px;
@@ -461,19 +451,16 @@ const Logout = styled.div`
   position: fixed;
   right: 0;
   top: 72px;
-
   a {
     font-size: 17px;
     font-weight: bold;
   }
-
   &:hover {
     cursor: pointer;
   }
 `;
 const Container2 = styled.div`
   display: none;
-
   @media (max-width: 1000px) {
     display: inline;
     width: 100%;
@@ -495,7 +482,6 @@ const Search2 = styled.div`
   position: absolute;
   top: 56px;
   display: none;
-
   ul {
     width: 100%;
     height: 100%;
@@ -503,12 +489,10 @@ const Search2 = styled.div`
     border-radius: 0px 0px 8px 8px;
     padding: 40px 17px;
   }
-
   @media (max-width: 1000px) {
     display: inline;
     position: absolute;
     top: 1;
-
     ul {
       width: 94%;
       height: 100%;
@@ -527,7 +511,6 @@ const InputText2 = styled.div`
   padding: 0px 13px 0px 19px;
   color: rgba(198, 198, 198, 1);
   display: none;
-
   input {
     width: 95%;
     height: 100%;
@@ -535,13 +518,11 @@ const InputText2 = styled.div`
     font-size: 19px;
     border: none;
   }
-
   ion-icon {
     width: 21px;
     height: 21px;
     color: rgba(198, 198, 198, 1);
   }
-
   @media (max-width: 1000px) {
     display: inline;
     border-radius: 8px;
@@ -550,7 +531,6 @@ const InputText2 = styled.div`
 const Feed = styled.div`
   margin-top: 150px;
   margin-right: 50px;
-
   > h3 {
     font-size: 50px;
     font-family: "Oswald";
@@ -628,7 +608,6 @@ const Box = styled.div`
     color: white;
     font-weight: 600;
     padding: 10px 0;
-
     &:hover {
       cursor: pointer;
     }
@@ -636,7 +615,6 @@ const Box = styled.div`
   span {
     color: #b7b7b7;
   }
-
   @media (max-width: 1000px) {
     width: 100%;
   }
@@ -645,22 +623,18 @@ const Box = styled.div`
 const Input = styled.input`
   width: 80%;
   height: 60px;
-
   border-radius: 6px;
   border: ${(props) =>
     props.disabled ? "1px solid #9f9f9f" : "1px solid #FFF"};
   padding: 1rem;
-
   opacity: ${(props) => (props.disabled ? 0.7 : 1)};
   background-color: ${(props) => (props.disabled ? "#9f9f9f" : "#EFEFEF")};
-
   font-family: "Oswald";
   font-style: normal;
   font-weight: 700;
   font-size: 1.4rem;
   line-height: 60px;
   color: #000000;
-
   ::placeholder {
     color: ${(props) => (props.disabled ? "#000" : "#9F9F9F")};
     font-family: "Oswald";
@@ -679,19 +653,16 @@ const Button = styled.button`
   position: absolute;
   right: 0px;
   bottom: 10px;
-
   border-radius: 6px;
   border: 1px solid #1877f2;
   background-color: #1877f2;
   padding: 1rem;
   opacity: ${(props) => (props.disabled ? 0.7 : 1)};
-
   font-family: "Oswald";
   font-style: normal;
   font-weight: 700;
   font-size: 1.4rem;
   line-height: 60px;
-
   color: #ffffff;
   font-size: 16px;
 `;
@@ -702,7 +673,6 @@ const Post = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   img {
     height: 50px;
     width: auto;
@@ -710,7 +680,6 @@ const Post = styled.div`
     color: #ffffff;
     padding-left: 10px;
     margin-top: 10px;
-
     &:hover {
       cursor: pointer;
     }
@@ -719,11 +688,9 @@ const Post = styled.div`
     width: 100%;
     height: 100%;
   }
-
   @media (max-width: 1000px) {
     width: 100%;
     height: 100%;
-
     ul {
       width: 100%;
     }
@@ -731,4 +698,16 @@ const Post = styled.div`
 `;
 const Content = styled.div`
   display: flex;
+`;
+const Scroll = styled.div`
+  > p {
+    color: lightgray;
+    background-color: #324a51;
+    text-align: center;
+    padding: 40px;
+    font-family: "Oswald";
+    font-size: 30px;
+    border-radius: 20px;
+    margin-top: 40px;
+  }
 `;
