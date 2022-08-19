@@ -5,85 +5,91 @@ import TokenContext from "../Contexts/TokenContext";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 
-export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id, setOpenModal, setRepostId,reposts}) {
-    const [liked, setLiked] = useState(false); 
-    let [amountLikes, setAmountLikes] = useState(likes);
-    const { token } = useContext(TokenContext);
+export default function RenderReposts({index,likes,url,description,ownerUsername,ownerProfilePhoto,urlDescription,urlImage,urlTitle,id,reposts,repostedUsername,repostedUserId}) { 
+    const [liked,setLiked] = useState(false);
     const navigate = useNavigate();
 
-    
-    async function likeDeslike(event) { 
-        const postLiked = { postLiked: event};
-
-            const config = {
-                headers: { Authorization: `Bearer ${token}` },
-            };
-            if(event==="like") {
-                await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
-                            .then(() => {
-                                setLiked(true);
-                                setAmountLikes(() => ++amountLikes);
-                            })
-                            .catch(() => alert("Não foi possível curtir esse post!"));                           
-            } else {
-                await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
-                            .then(() => {
-                                setLiked(false);
-                                setAmountLikes(() => --amountLikes);
-                            })
-                            .catch(() => alert("Não foi possível descurtir esse post!"));
-            
-                }
-    } 
-
-    function openModal(id) { 
-        setOpenModal(true); 
-        setRepostId(id);
-    }
-    
-    return(
+    return( 
         <>
-        <Post value={index}>
+        <Post key={index}>
+            <RepostMessage>
+                <ion-icon name="repeat-sharp" id="repost"></ion-icon>
+                <a>Re-posted by <strong onClick={() => navigate(`/timeline/${repostedUserId}`)}>{repostedUsername}</strong></a>
+            </RepostMessage>
+            <RepostContainer>
             <PictureAndLike>
-                <img src={profilePhoto} alt={username}/>
+                <img src={ownerProfilePhoto} alt={ownerUsername} />
                 {liked ? (
-                <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> ) : (
-                <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
+                <ion-icon name="heart" id="heart"></ion-icon> ) : (
+                <ion-icon name="heart-outline" id="heart-outline"></ion-icon>
                 )}
-                <p>{amountLikes} likes</p>
+                <p>{likes} likes</p>
                 <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
                 <p>13 comments</p>
-                <ion-icon name="repeat-sharp" id="repost" onClick={() => openModal(id)}></ion-icon>
+                <ion-icon name="repeat-sharp" id="repost"></ion-icon>
                 <p>{reposts} re-posts</p>
             </PictureAndLike>
             <PostInfo>
-                <p>{username}</p> 
+                <p>{ownerUsername}</p> 
                 <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
                 <a>{description}</a>
                 </ReactTagify>
                 <MainInfo onClick={() => window.open(url)}>
                     <MainInfoDescription>
-                        <h3>{ulrTitle}</h3>
+                        <h3>{urlTitle}</h3>
                         <h4>{urlDescription}</h4>
                         <h5>{url}</h5>
                     </MainInfoDescription>
-                        <img src={urlImage} alt={ulrTitle}/>
+                        <img src={urlImage} alt={urlTitle}/>
                 </MainInfo>
             </PostInfo>
+            </RepostContainer>
         </Post>
         </>
     )
-} 
+}  
 
 const Post = styled.li`
   width: 100%;
-  height: 276px;
-  display: flex;
+  height: 309px;
   background-color: rgba(23, 23, 23, 1);
-  padding: 19px 23px 20px 20px;
   border-radius: 16px;
   margin-bottom: 18px;
 `;
+const RepostContainer = styled.div`
+    width: 100%; 
+    height: 92%; 
+    display: flex;
+    padding: 15px 23px 20px 20px;
+    margin-bottom: 18px;
+`
+const RepostMessage = styled.div`
+    width: 100%; 
+    height: 8%; 
+    display: flex;
+    align-items: center;
+    padding: 8px 0px 0px 13px;
+
+    ion-icon { 
+        color: rgba(255, 255, 255, 1);
+        font-weight: bold;  
+        width: 20px; 
+        height: 20px;
+    }
+    
+    a { 
+        color: rgba(255, 255, 255, 1); 
+        font-weight: 300; 
+        font-size: 12px;
+        margin-left: 7px; 
+
+        strong { 
+            &:hover { 
+                cursor: pointer;
+            }
+        }
+    }
+`
 const PictureAndLike = styled.div`
   width: 10%;
   height: 100%;
@@ -196,3 +202,5 @@ const MainInfoDescription = styled.div`
     margin-bottom: 8px;
   }
 `;
+
+

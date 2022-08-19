@@ -13,6 +13,7 @@ import RepostBox from "../Pages/RepostBox.js";
 import InfiniteScroll from "react-infinite-scroller";
 
 export default function FeedScreen() {
+  const { userData } = useContext(UserContext);
 
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
@@ -30,10 +31,10 @@ export default function FeedScreen() {
   const itemsPerPage = 10;
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [records, setRecords] = useState(itemsPerPage);
+  const [queryLimit, setQueryLimit] = useState(itemsPerPage);
   const navigate = useNavigate();
   const URL = "http://localhost:4000/posts/";
   const data = JSON.parse(localStorage.getItem("userInfo"));
-  const [queryLimit, setQueryLimit] = useState(itemsPerPage);
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts/";
   console.log(data);
   
@@ -131,7 +132,7 @@ export default function FeedScreen() {
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
-      
+
       const object = posts[i];
       items.push(
         <PostBox
@@ -140,7 +141,7 @@ export default function FeedScreen() {
           url={object.url}
           profilePhoto={object.profilePhoto}
           username={object.username}
-          description={object.description}
+          description={object.description ? object.description : ""}
           urlDescription={object.urlDescription}
           urlTitle={object.urlTitle}
           urlImage={object.urlImage}
@@ -155,18 +156,20 @@ export default function FeedScreen() {
     }
     return items;
   };
+
   const loadMore = async () => {
     if (queryLimit > posts.length + 10) {
       setHasMoreItems(false);
     } else {
       const postsData = await getPosts(queryLimit);
       if (!postsData) postsData = [];
+    
       setPosts(postsData);
       setQueryLimit(queryLimit + itemsPerPage);
       setRecords(records + itemsPerPage);
     }
   };
-
+  console.log(posts);
   return (
   <>
     {
@@ -280,7 +283,7 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
-            {posts.length === 0 ? (
+            {/* {posts.length === 0 ? (
               <span>{feedMessage}</span>
             ) : (
               posts.map((object, index) => (
@@ -305,32 +308,24 @@ export default function FeedScreen() {
                   setRepostId={setRepostId}
                 />
               ))
-            )}
-            
-            <div
-              style={{
-                overflow: "auto",
-                padding: "15px",
-              }}
-            >
-              <InfiniteScroll
-                loadMore={loadMore}
-                hasMore={hasMoreItems}
-                loader={
-                  <div className="loader" key={0}>
-                    {" "}
-                    Loading...{" "}
-                  </div>
-                }
-                useWindow={true}
+            )} */}
+            <InfiniteScroll
+              loadMore={loadMore}
+              hasMore={hasMoreItems}
+              loader={
+              <div className="loader" key={0}>
+                  {" "}
+                  Loading...{" "}
+              </div>
+              }
+              useWindow={true}
               >
-                {showItems(posts)}
+              {showItems(posts)}
               </InfiniteScroll>
-            </div>
           </Feed>
-          <div>
+          <TrendingsBox>
             <Trendings />
-          </div>
+          </TrendingsBox>
         </Content>
       </Container>
     </>
@@ -375,6 +370,10 @@ const Containerr = styled.div`
   flex-direction: column;
   justify-content: center;
   position: relative;
+`;
+const TrendingsBox =  styled.div`
+  margin-top: 278px;
+
 `;
 const Search = styled.div`
   width: 100%;
