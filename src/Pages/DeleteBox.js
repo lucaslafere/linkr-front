@@ -1,22 +1,30 @@
 import styled from 'styled-components';
 import axios from 'axios';
+import { useContext } from 'react';
+import TokenContext from '../Contexts/TokenContext';
 
 export default function DeleteBox({ id, setDeleting, setUpdatePosts, updatePosts }) {
-    const backendURL = "https://projeto17-linkrback.herokuapp.com/";
-
+    const backendURL = "https://projeto17-linkrback.herokuapp.com/posts/";
+    const { token } = useContext(TokenContext);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
     function cancel() {
         setDeleting(false);
     }
 
     function deletePost() {
-        axios.delete(backendURL+id)
+      
+        axios.delete(backendURL+id, config)
         .then(() => {
             alert("Post excluido com sucesso!");
             setDeleting(false);
             setUpdatePosts(!updatePosts);
         })
         .catch(error => {
-            alert("Não foi possível excluir o post");
+            alert(error);
             setDeleting(false);
             setUpdatePosts(!updatePosts);
         });

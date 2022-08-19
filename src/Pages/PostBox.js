@@ -22,13 +22,14 @@ export default function PostBox({
   likes, 
   userId, 
   setOpenModal, 
-  setRepostId }) {
+  setRepostId,
+  liked
+}) {
 
-    const [liked, setLiked] = useState(false); 
+    const [isLiked, setIsLiked] = useState(liked); 
     const [ editing, setEditing ] = useState(false);
     let [amountLikes, setAmountLikes] = useState(likes);
     const [ descriptionInput, setDescriptionInput ] = useState(description);
-    const { userData } = useContext(UserContext);
     const token = localStorage.getItem('MY_TOKEN');
     const navigate = useNavigate();
     const data = JSON.parse(localStorage.getItem("userInfo"));
@@ -48,14 +49,14 @@ export default function PostBox({
             if(event==="like") {
                 await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
                             .then(() => {
-                                setLiked(true);
+                                setIsLiked(true);
                                 setAmountLikes(() => ++amountLikes);
                             })
                             .catch(() => alert("Não foi possível curtir esse post!"));                           
             } else {
                 await axios.put(`https://projeto17-linkrback.herokuapp.com/like/${id}`,postLiked,config)
                             .then(() => {
-                                setLiked(false);
+                              setIsLiked(false);
                                 setAmountLikes(() => --amountLikes);
                             })
                             .catch(() => alert("Não foi possível descurtir esse post!"));
@@ -65,7 +66,7 @@ export default function PostBox({
 function navigateHashtagPage (tag) {
     const newTag = tag?.replace("#", "");
     if (newTag === undefined) {
-      return
+      return;
     }
     navigate(`/hashtag/${newTag}`)
 }
@@ -81,12 +82,12 @@ function inputKeybord(e) {
         return editPost();
     }
     if(e.key === "Enter") {
-        axios.put(`localhost:4000/posts/${id}`, descriptionInput, config)
+      console.log(id, descriptionInput, config);
+        axios.put(`https://projeto17-linkrback.herokuapp.com/posts/${id}`, descriptionInput, config)
         .then(() => {
-
             editPost();
             setUpdatePosts(!updatePosts)})
-        .catch(erro => alert("Não foi possível editar esse post"))
+        .catch(erro => alert(erro))
         }
     }
 
@@ -106,7 +107,7 @@ function inputKeybord(e) {
             <PictureAndLike>
 
                 <img src={profilePhoto} alt="User" onClick={() => navigate(`/timeline/${userId}`)}/>
-                { liked ? 
+                { isLiked ? 
                   <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> 
                 : <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 }
@@ -138,7 +139,7 @@ function inputKeybord(e) {
         ) : (
           <ReactTagify
             colors={"#ffffff"}
-            tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}
+            tagClicked={(tag) => navigateHashtagPage(tag)}
           >
             <span>{description}</span>
           </ReactTagify>

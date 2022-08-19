@@ -3,8 +3,9 @@ import styled from "styled-components";
 
 export default function RenderSearchUser({index,image,username,id}) {  
     const navigate = useNavigate(); 
-
+    console.log(id);
     function reload(id) { 
+        console.log(id);
         navigate(`/timeline/${id}`); 
         window.location.reload();
     }

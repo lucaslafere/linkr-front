@@ -129,6 +129,20 @@ export default function FeedScreen() {
     navigate("/");
   }
 
+  function postIsLiked (usersArray) {
+    const userLiked = usersArray.find(object => object.userId === data.id);
+    
+     if(userLiked === undefined) {
+       return false
+     };
+
+     if(userLiked.userId) {
+       return true;
+     }
+  }
+
+
+    
   const showItems = (posts) => {
     let items = [];
     let limit = records;
@@ -152,6 +166,7 @@ export default function FeedScreen() {
           setUpdatePosts={setUpdatePosts}
           updatePosts={updatePosts}
           userId={object.userId}
+          liked={() => postIsLiked(object.usersLiked)}
         />
       );
     }
@@ -177,7 +192,12 @@ export default function FeedScreen() {
       );
     }
   };
-  useEffect(() => setTimeout(loadMore, 10), []);
+
+
+ 
+
+  useEffect(() => setTimeout(loadMore, 200), []);
+
 
  
 
@@ -377,9 +397,9 @@ export default function FeedScreen() {
               )}
             </Scroll>
           </Feed>
-          <div>
+          <TrendingsBox>
             <Trendings />
-          </div>
+          </TrendingsBox>
         </Content>
       </Container>
     </>
@@ -407,7 +427,6 @@ const Header = styled.div`
   left: 0;
   padding: 0px 12px 0px 20px;
   z-index: 1;
-
   a {
     color: white;
     font-family: Passion One;
@@ -415,6 +434,7 @@ const Header = styled.div`
     font-weight: 700;
     letter-spacing: 0.05em;
     text-align: left;
+    cursor: pointer;
   }
   @media(max-width: 612px){
     max-width: 100vw;
@@ -428,6 +448,10 @@ const Containerr = styled.div`
   justify-content: center;
   position: sticky;
 `;
+const TrendingsBox =  styled.div`
+  margin-top: 278px;
+
+`;
 const Search = styled.div`
   width: 100%;
   height: 100%;
@@ -435,7 +459,6 @@ const Search = styled.div`
   flex-direction: column;
   /* position: absolute;
   top: 56px; */
-
   ul {
     width: 100%;
     /* height: 100%; */
@@ -443,7 +466,6 @@ const Search = styled.div`
     border-radius: 0px 0px 8px 8px;
     padding: 1rem;
   }
-
   @media (max-width: 1000px) {
     display: none;
   }
@@ -459,7 +481,6 @@ const InputText = styled.div`
   border: none;
   padding: 0px 13px 0px 19px;
   color: rgba(198, 198, 198, 1);
-
   input {
     width: 95%;
     height: 45px;
@@ -467,13 +488,11 @@ const InputText = styled.div`
     font-size: 19px;
     border: none;
   }
-
   ion-icon {
     width: 21px;
     height: 21px;
     color: rgba(198, 198, 198, 1);
   }
-
   @media (max-width: 1000px) {
     display: none;
   }
@@ -483,16 +502,13 @@ const LoggedUser = styled.div`
   justify-content: center;
   align-items: center;
   color: white;
-
   ion-icon {
     width: 27px;
     height: 27px;
-
     &:hover {
       cursor: pointer;
     }
   }
-
   img {
     width: 53px;
     height: 53px;
@@ -512,19 +528,16 @@ const Logout = styled.div`
   position: fixed;
   right: 0;
   top: 72px;
-
   a {
     font-size: 17px;
     font-weight: bold;
   }
-
   &:hover {
     cursor: pointer;
   }
 `;
 const Container2 = styled.div`
   display: none;
-
   @media (max-width: 1000px) {
     display: inline;
     width: 100%;
@@ -546,7 +559,6 @@ const Search2 = styled.div`
   position: absolute;
   top: 56px;
   display: none;
-
   ul {
     width: 100%;
     height: 100%;
@@ -554,12 +566,10 @@ const Search2 = styled.div`
     border-radius: 0px 0px 8px 8px;
     padding: 40px 17px;
   }
-
   @media (max-width: 1000px) {
     display: inline;
     position: absolute;
     top: 1;
-
     ul {
       width: 94%;
       height: 100%;
@@ -578,7 +588,6 @@ const InputText2 = styled.div`
   padding: 0px 13px 0px 19px;
   color: rgba(198, 198, 198, 1);
   display: none;
-
   input {
     width: 95%;
     height: 100%;
@@ -586,13 +595,11 @@ const InputText2 = styled.div`
     font-size: 19px;
     border: none;
   }
-
   ion-icon {
     width: 21px;
     height: 21px;
     color: rgba(198, 198, 198, 1);
   }
-
   @media (max-width: 1000px) {
     display: inline;
     border-radius: 8px;
@@ -601,7 +608,6 @@ const InputText2 = styled.div`
 const Feed = styled.div`
   margin-top: 150px;
   margin-right: 50px;
-
   > h3 {
     font-size: 50px;
     font-family: "Oswald";
@@ -682,7 +688,6 @@ const Box = styled.div`
     color: white;
     font-weight: 600;
     padding: 10px 0;
-
     &:hover {
       cursor: pointer;
     }
@@ -690,7 +695,6 @@ const Box = styled.div`
   span {
     color: #b7b7b7;
   }
-
   @media (max-width: 1000px) {
     width: 100%;
   }
@@ -699,22 +703,18 @@ const Box = styled.div`
 const Input = styled.input`
   width: 80%;
   height: 60px;
-
   border-radius: 6px;
   border: ${(props) =>
     props.disabled ? "1px solid #9f9f9f" : "1px solid #FFF"};
   padding: 1rem;
-
   opacity: ${(props) => (props.disabled ? 0.7 : 1)};
   background-color: ${(props) => (props.disabled ? "#9f9f9f" : "#EFEFEF")};
-
   font-family: "Oswald";
   font-style: normal;
   font-weight: 700;
   font-size: 1.4rem;
   line-height: 60px;
   color: #000000;
-
   ::placeholder {
     color: ${(props) => (props.disabled ? "#000" : "#9F9F9F")};
     font-family: "Oswald";
@@ -733,56 +733,50 @@ const Button = styled.button`
   position: absolute;
   right: 0px;
   bottom: 10px;
-
   border-radius: 6px;
   border: 1px solid #1877f2;
   background-color: #1877f2;
   padding: 1rem;
   opacity: ${(props) => (props.disabled ? 0.7 : 1)};
-
   font-family: "Oswald";
   font-style: normal;
   font-weight: 700;
   font-size: 1.4rem;
   line-height: 60px;
-
   color: #ffffff;
   font-size: 16px;
 `;
 
-// const Post = styled.div`
-//   width: 611px;
-//   height: 100%;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
 
-//   img {
-//     height: 50px;
-//     width: auto;
-//     border-radius: 50%;
-//     color: #ffffff;
-//     padding-left: 10px;
-//     margin-top: 10px;
-
-//     &:hover {
-//       cursor: pointer;
-//     }
-//   }
-//   ul {
-//     width: 100%;
-//     height: 100%;
-//   }
-
-//   @media (max-width: 1000px) {
-//     width: 100%;
-//     height: 100%;
-
-//     ul {
-//       width: 100%;
-//     }
-//   }
-// `;
+const Post = styled.div`
+  width: 611px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  img {
+    height: 50px;
+    width: auto;
+    border-radius: 50%;
+    color: #ffffff;
+    padding-left: 10px;
+    margin-top: 10px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  ul {
+    width: 100%;
+    height: 100%;
+  }
+  @media (max-width: 1000px) {
+    width: 100%;
+    height: 100%;
+    ul {
+      width: 100%;
+    }
+  }
+`;
 const Content = styled.div`
   display: flex;
  
