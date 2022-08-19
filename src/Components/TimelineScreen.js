@@ -8,13 +8,12 @@ import Trendings from "../Pages/Trending.js";
 import { useNavigate } from "react-router-dom";
 import TokenContext from "../Contexts/TokenContext.js";
 import RenderSearchUser from "../Pages/RenderSearchUser.js";
-import { DebounceInput } from 'react-debounce-input';
+import { DebounceInput } from "react-debounce-input";
 import RepostBox from "../Pages/RepostBox.js";
 import InfiniteScroll from "react-infinite-scroller";
+import { SearchBarUserContainer } from "./SearchUserScreen";
 
 export default function FeedScreen() {
-  const { userData } = useContext(UserContext);
-
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
@@ -32,12 +31,17 @@ export default function FeedScreen() {
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [records, setRecords] = useState(itemsPerPage);
   const [queryLimit, setQueryLimit] = useState(itemsPerPage);
+  const [followers, setFollowers] = useState(false);
   const navigate = useNavigate();
-  const URL = "http://localhost:4000/posts/";
+  const URL = "http://localhost:4000/posts";
   const data = JSON.parse(localStorage.getItem("userInfo"));
+<<<<<<< HEAD
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts/";
   console.log(data);
   
+=======
+  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
+>>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
 
   const config = {
     headers: {
@@ -48,7 +52,7 @@ export default function FeedScreen() {
   async function getPosts(queryLimit) {
     
     return axios
-      .get(backendURL + queryLimit, config)
+      .get(`${backendURL}?queryLimit=${queryLimit}&userId=${data.id}`, config)
       .then((response) => {
         if (response.data.length === 0)
           setFeedMessage("There are no posts yet");
@@ -58,6 +62,17 @@ export default function FeedScreen() {
         alert(
           "An error occured while trying to fetch the posts, please refresh the page"
         );
+      });
+  }
+
+  async function getFollowers() {
+    axios
+      .get(
+        `https://projeto17-linkrback.herokuapp.com/followers?userId=${data.id}`,
+        config
+      )
+      .then((response) => {
+        setFollowers([...response.data]);
       });
   }
 
@@ -92,7 +107,8 @@ export default function FeedScreen() {
     try {
       const promise = await axios.post(
         "https://projeto17-linkrback.herokuapp.com/other-users",
-        username
+        username,
+        config
       );
       
       setSearch(promise.data);
@@ -114,6 +130,7 @@ export default function FeedScreen() {
     navigate("/");
   }
 
+<<<<<<< HEAD
   function postIsLiked (usersArray) {
     const userLiked = usersArray.find(object => object.userId === data.id);
     
@@ -128,11 +145,17 @@ export default function FeedScreen() {
 
   const showItems = (posts) => {
     
+=======
+  const showItems = (posts) => {
+>>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
     let items = [];
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
       const object = posts[i];
       items.push(
         <PostBox
@@ -161,101 +184,134 @@ export default function FeedScreen() {
     if (queryLimit > posts.length + 10) {
       setHasMoreItems(false);
     } else {
-      const postsData = await getPosts(queryLimit);
+      let postsData = await getPosts(queryLimit);
       if (!postsData) postsData = [];
-    
+      getFollowers();
       setPosts(postsData);
       setQueryLimit(queryLimit + itemsPerPage);
       setRecords(records + itemsPerPage);
+      setFeedMessage(
+        followers?.length === 0 || !followers ? (
+          <p>You don't follow anyone yet. Search for new friends!</p>
+        ) : (
+          <p>No posts found from your friends</p>
+        )
+      );
     }
   };
+<<<<<<< HEAD
   console.log(posts);
+=======
+  useEffect(() => setTimeout(loadMore, 200), []);
+
+>>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
   return (
-  <>
-    {
-      deleting ? <DeleteBox 
-      id={idDeleting} 
-      setDeleting={setDeleting} 
-      setUpdatePosts={setUpdatePosts} 
-      updatePosts ={updatePosts} /> 
-      : <> </>
-    } 
+    <>
+      {deleting ? (
+        <DeleteBox
+          id={idDeleting}
+          setDeleting={setDeleting}
+          setUpdatePosts={setUpdatePosts}
+          updatePosts={updatePosts}
+        />
+      ) : (
+        <> </>
+      )}
 
-    {openModal ? (
-            <RepostBox 
-                setOpenModal={setOpenModal}
-                repostId={repostId}
-            />
-      ) :  ""}
-      
-    <Container deleting={deleting}>
-    <Header>
-            <a onClick={() => navigate("/timeline")}>linkr</a>
-            <Containerr>
-                <InputText>
-                    <DebounceInput
-                        type="text"
-                        placeholder="Search for people"
-                        minLength={3}
-                        debounceTimeout={400}
-                        onChange={(event) => searchUser(event.target.value)} />
-                    <ion-icon name="search-sharp"></ion-icon>
-                </InputText> 
-                {search.length !== 0 ? (
-                <Search>
-                    <ul>
-                        {search.map((users,index) => (
-                            <RenderSearchUser 
-                                index= {index}
-                                image= {users.profilePhoto}
-                                username= {users.username}
-                            />
-                        ))}
-                        </ul>
-                </Search> 
-                ) : ""}
-            </Containerr>
-            <LoggedUser>
-                {clickedLogout ? (
-                <ion-icon name="chevron-up-outline" onClick={() => setClickedLogout(false)}></ion-icon>
-                ) : ( 
-                <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
-                )}
-                <img src={data.profilePhoto} alt="profile"/>
-            </LoggedUser>
-        </Header>  
-      <Content>
-      
-      {clickedLogout ? (
-        <Logout onClick={logout}> 
-            <a>Logout</a>
-        </Logout> ) : ("")} 
+      {openModal ? (
+        <RepostBox setOpenModal={setOpenModal} repostId={repostId} />
+      ) : (
+        ""
+      )}
 
-        <Container2>
-                <InputText2>
-                    <DebounceInput
-                        type="text"
-                        placeholder="Search for people"
-                        minLength={3}
-                        debounceTimeout={400}
-                        onChange={(event) => searchUser(event.target.value)} />
-                    <ion-icon name="search-sharp"></ion-icon>
-                </InputText2>
-                {search.length !== 0 ? (
-                <Search2>
-                    <ul>
-                        {search.map((users,index) => (
-                            <RenderSearchUser 
-                                index= {index}
-                                image= {users.profilePhoto}
-                                username= {users.username}
-                                id= {users.id}
-                            />
-                        ))}
-                        </ul>
-                </Search2> 
-                ) : "" }
-        </Container2>
+      <Container deleting={deleting}>
+        <Header>
+          <a onClick={() => navigate("/timeline")}>linkr</a>
+          <Containerr>
+            <InputText>
+              <DebounceInput
+                type="text"
+                placeholder="Search for people"
+                minLength={3}
+                debounceTimeout={400}
+                onChange={(event) => searchUser(event.target.value)}
+              />
+              <ion-icon name="search-sharp"></ion-icon>
+            </InputText>
+            {search.length !== 0 ? (
+              <Search>
+                <ul>
+                  {search.map((users, index) => (
+                    <>
+                      <SearchBarUserContainer>
+                        <RenderSearchUser
+                          index={index}
+                          image={users.profilePhoto}
+                          username={users.username}
+                          follows={users.followerId}
+                        />
+                        <p>{users.followerId === null ? "" : "following"}</p>
+                      </SearchBarUserContainer>
+                    </>
+                  ))}
+                </ul>
+              </Search>
+            ) : (
+              ""
+            )}
+          </Containerr>
+          <LoggedUser>
+            {clickedLogout ? (
+              <ion-icon
+                name="chevron-up-outline"
+                onClick={() => setClickedLogout(false)}
+              ></ion-icon>
+            ) : (
+              <ion-icon
+                name="chevron-down-outline"
+                onClick={() => setClickedLogout(true)}
+              ></ion-icon>
+            )}
+            <img src={data.profilePhoto} alt="profile" />
+          </LoggedUser>
+        </Header>
+        <Content>
+          {clickedLogout ? (
+            <Logout onClick={logout}>
+              <a>Logout</a>
+            </Logout>
+          ) : (
+            ""
+          )}
+
+          <Container2>
+            <InputText2>
+              <DebounceInput
+                type="text"
+                placeholder="Search for people"
+                minLength={3}
+                debounceTimeout={400}
+                onChange={(event) => searchUser(event.target.value)}
+              />
+              <ion-icon name="search-sharp"></ion-icon>
+            </InputText2>
+            {search.length !== 0 ? (
+              <Search2>
+                <ul>
+                  {search.map((users, index) => (
+                    <RenderSearchUser
+                      index={index}
+                      image={users.profilePhoto}
+                      username={users.username}
+                      id={users.id}
+                    />
+                  ))}
+                </ul>
+              </Search2>
+            ) : (
+              ""
+            )}
+          </Container2>
 
           <Feed>
             <h3>timeline</h3>
@@ -283,6 +339,7 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
+<<<<<<< HEAD
             {/* {posts.length === 0 ? (
               <span>{feedMessage}</span>
             ) : (
@@ -322,6 +379,27 @@ export default function FeedScreen() {
               >
               {showItems(posts)}
               </InfiniteScroll>
+=======
+            <Scroll>
+              {posts.length !== 0 ? (
+                <InfiniteScroll
+                  loadMore={loadMore}
+                  hasMore={hasMoreItems}
+                  loader={
+                    <div className="loader" key={0}>
+                      {" "}
+                      Loading...{" "}
+                    </div>
+                  }
+                  useWindow={true}
+                >
+                  {showItems(posts)}
+                </InfiniteScroll>
+              ) : (
+                <p>{feedMessage}</p>
+              )}
+            </Scroll>
+>>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
           </Feed>
           <TrendingsBox>
             <Trendings />
@@ -365,11 +443,11 @@ const Header = styled.div`
 `;
 const Containerr = styled.div`
   width: 30%;
-  height: 100%;
+  height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
+  position: sticky;
 `;
 const TrendingsBox =  styled.div`
   margin-top: 278px;
@@ -380,15 +458,15 @@ const Search = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 56px;
+  /* position: absolute;
+  top: 56px; */
 
   ul {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     background-color: rgba(231, 231, 231, 1);
     border-radius: 0px 0px 8px 8px;
-    padding: 40px 17px;
+    padding: 1rem;
   }
 
   @media (max-width: 1000px) {
@@ -409,7 +487,7 @@ const InputText = styled.div`
 
   input {
     width: 95%;
-    height: 100%;
+    height: 45px;
     font-weight: 100;
     font-size: 19px;
     border: none;
@@ -729,4 +807,16 @@ const Post = styled.div`
 `;
 const Content = styled.div`
   display: flex;
+`;
+const Scroll = styled.div`
+  > p {
+    color: lightgray;
+    background-color: #324a51;
+    text-align: center;
+    padding: 40px;
+    font-family: "Oswald";
+    font-size: 30px;
+    border-radius: 20px;
+    margin-top: 40px;
+  }
 `;
