@@ -21,7 +21,7 @@ useEffect(() => {
               {trendingsRank === null ? 
                 <></> : 
                 trendingsRank.map(object => 
-                <Link to={`/hashtag/${object.name.slice(1)}`}> 
+                <Link to={`/hashtag/${object.name}`}> 
                   <span># {object.name}</span> 
                 </Link>)
               }
@@ -31,13 +31,13 @@ useEffect(() => {
 } 
 
 const TrendingBox = styled.div`
-    margin-top: 278px;
     width: 301px;
     height: 406px;
     background-color: #171717;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
+    margin-left: 25px;
 
     > div:nth-child(1) {
         display: flex;
@@ -69,7 +69,7 @@ const TrendingBox = styled.div`
         }
     }
 
-    @media(max-width: 1000px){
+    @media(max-width: 1600px){
         display:none;
     }
 `;

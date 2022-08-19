@@ -63,7 +63,7 @@ export default function LoginScreen() {
           "email": res.data.user.email,
           "profilePhoto": res.data.user.profilePhoto,
         });
-        console.log(userInfo);
+        
         window.localStorage.setItem("userInfo", userInfo);
         setToken(res.data.token);
         setLoading(false);

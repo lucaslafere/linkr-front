@@ -5,9 +5,10 @@ import UserContext from "./Contexts/UserContext";
 import LoginScreen from "./Components/LoginScreen";
 import SignUpScreen from "./Components/SignUpScreen";
 import FeedScreen from "./Components/TimelineScreen";
-import HashtagScreen from "./Components/HashtagScreen";
 import SerchUserScreen from "./Components/SearchUserScreen";
 import GlobalStyle from "./Styles/globalStyles";
+import HashtagScreen2 from "./Components/HashtagScreen2";
+
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("MY_TOKEN"));
@@ -24,7 +25,7 @@ export default function App() {
             <Route path="/sign-up" element={<SignUpScreen />} /> 
             <Route path="/timeline" element={<FeedScreen />} />
             <Route path="/timeline/:id" element={<SerchUserScreen />} />
-            <Route path="/hashtag/:hashtag" element={<HashtagScreen />} /> 
+            <Route path="/hashtag/:hashtag" element={<HashtagScreen2 />} /> 
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>

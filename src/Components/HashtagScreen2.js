@@ -10,22 +10,21 @@ import axios from "axios";
 import { DebounceInput } from "react-debounce-input";
 import RepostBox from "../Pages/RepostBox";
 import RenderReposts from "../Pages/RenderReposts";
+import PostBox from "../Pages/PostBox";
+import Trendings from "../Pages/Trending";
 
-export default function SerchUserScreen() {
-    const { id } = useParams();
+
+export default function HashtagScreen2() {
+    const [deleting, setDeleting] = useState(false);
+    const [updatePosts, setUpdatePosts] = useState(false);
+    const [idDeleting, setIdDeleting] = useState(null);
+    const trending = useParams();
     const { token, setToken } = useContext(TokenContext);
     const [search, setSearch] = useState([]); 
-    const [userPosts, setUserPosts] = useState([]);
     const [post,setPost] = useState([]);
     const { userData } = useContext(UserContext); 
-    const [hashtags,setHashtags] = useState([]);
     const [clickedLogout, setClickedLogout] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
-    const [repostId, setRepostId] = useState();
-    const [userReposts, setUserReposts] = useState([]);
     const [isFollowed, setIsFollowed] = useState(false); 
-    const [disabled, setDisabled] = useState(false);
-    const [filterPosts, setFilterPosts] = useState([]);
     const navigate = useNavigate();
     const data =  JSON.parse(userData);
     const config = {
@@ -33,77 +32,25 @@ export default function SerchUserScreen() {
       };
 
     useEffect(() => {
-        const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/${id}`,config);
-        const promises = axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`);
-        const promisses = axios.get(`https://projeto17-linkrback.herokuapp.com/posts?queryLimit=1000&userId=${data.id}`,config);
+        const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/hashtag/${trending.hashtag}`, config)
+        .then(response => setPost(response.data))
+        .catch(error => alert(error));
 
-        promise.then(response => { 
-            setUserPosts(response.data[0]);
-            console.log(response.data[0].posts);
-            setPost(response.data[0].posts);
-            if(response.data[1].reposts) {
-              setUserReposts(response.data[1].reposts); 
-            } else { 
-              setUserReposts([]);
-            }
+  
+},[trending]);
 
-            promises.then(responses => { 
-              console.log(responses.data);
-                setHashtags([...responses.data]);
-            }); 
+function postIsLiked (usersArray) {
+    console.log(usersArray)
+  const userLiked = usersArray.find(object => object.userId === data.id);
+   if(userLiked === undefined) {
+     return false
+   };
 
-            promisses.then(responsses => {
-              aboutLikes(responsses); 
-            });
-        });
+   if(userLiked.userId) {
+     return true;
+   }
+}
 
-        promise.catch(error => { 
-            console.log(error);
-        });  
-    },[]);
-
-    async function aboutLikes(res) { 
-      const filter = await res.data.filter(filt => filt.userId===data.id);
-      setFilterPosts(filter);
-    } 
-
-
-    async function searchUser(event) { 
-        const username = { username: event };
-        console.log(username);
-        try {
-            const promise = await axios.post("https://projeto17-linkrback.herokuapp.com/other-users",username); 
-            console.log(promise.data);
-            setSearch(promise.data);
-        } catch (error) {
-            setSearch([]);
-            console.log(error);
-            setSearch([]);
-        }
-    }
-
-    
-  useEffect(() => {
-    const body = {
-      friendId: id,
-    };
-    setDisabled(true);
-    axios
-      .post(
-        `https://projeto17-linkrback.herokuapp.com/check-follow`,
-        body,
-        config
-      )
-      .then((res) => {
-        setIsFollowed(res.data.isFollower);
-        console.log("caiu no then checando follow");
-        console.log(res.data.isFollower);
-        setDisabled(false);
-      })
-      .catch((err) => {
-        console.log("caiu no erro");
-      });
-  }, [isFollowed]);
 
   async function searchUser(event) {
     const username = { username: event };
@@ -135,25 +82,6 @@ export default function SerchUserScreen() {
     navigate("/");
   } 
 
-  async function followUser() {
-    const body = {
-      friendId: id,
-    };
-    setDisabled(true);
-    try {
-      axios.post(
-        "https://projeto17-linkrback.herokuapp.com/follow",
-        body,
-        config
-      );
-      await console.log("seguiu / parou de seguir");
-      setIsFollowed((value) => !value);
-      setDisabled(false);
-    } catch (error) {
-      console.log("deu ruim na hora de seguir");
-      alert("Houve um problema ao tentar seguir esse usuário");
-    }
-  }
 
   function changeUser(userClickedId) { 
     navigate(`/timeline/${userClickedId}`);
@@ -162,16 +90,11 @@ export default function SerchUserScreen() {
 
     return( 
         <> 
-        {openModal ? (
-            <RepostBox 
-                setOpenModal={setOpenModal}
-                repostId={repostId}
-            />
-        ) :  ""}
+        
         <Header>
             <a onClick={() => navigate("/timeline")}>linkr</a>
             <Container>
-                <InputText search={search}>
+                <InputText>
                     <DebounceInput
                         type="text"
                         placeholder="Search for people"
@@ -252,75 +175,39 @@ export default function SerchUserScreen() {
             <a>Logout</a>
         </Logout> ) : ("")}
 
-        <UserContainer >
-        <UserTitle>
-          <img src={userPosts.profilePhoto} alt={userPosts.username} />
-          <a>{userPosts.username}'s posts</a>
-        </UserTitle>
-        <FollowButton
-          disabled={disabled}
-          isFollowed={isFollowed}
-          onClick={followUser}
-        >
-          {isFollowed ? "Unfollow" : "Follow"}
-        </FollowButton>
+        <UserContainer isFollowed={isFollowed}>
+        
       </UserContainer>
 
         <Main>
             <Posts>
                 <ul> 
-                    {userReposts.map((rep,index) => (
-                      <RenderReposts 
-                      index={index}
-                      likes= {rep.likes}
-                      url={rep.url}
-                      description={rep.description}
-                      ownerUsername={rep.ownerUsername}
-                      ownerProfilePhoto={rep.ownerProfilePhoto}
-                      urlDescription={rep.urlDescription}
-                      urlImage={rep.urlImage}
-                      urlTitle={rep.urlTitle}
-                      id={rep.id}
-                      reposts={rep.reposts}
-                      repostedUsername={rep.repostedUsername}
-                      repostedUserId={rep.repostedUserId}
-                      loggedUsername={data.username}
-                      filterPosts={filterPosts}
-                      /> 
-                    ))}
-                    {post.map((post,index) => (
-                        <RenderUserPosts 
-                            index={index}
-                            likes= {post.likes}
-                            url={post.url}
-                            description={post.description}
-                            username={userPosts.username}
-                            profilePhoto={userPosts.profilePhoto}
-                            urlDescription={post.urlDescription}
-                            urlImage={post.urlImage}
-                            urlTitle={post.urlTitle}
-                            id={post.id}
-                            setOpenModal={setOpenModal}
-                            setRepostId={setRepostId}
-                            reposts={post.reposts}
-                            filterPosts={filterPosts}
-                            comments={post.comments}
+                    
+                    {post.map((object,index) => (
+                        <PostBox 
+                        id={object.id}
+                        key={index}
+                        url={object.url}
+                        profilePhoto={object.profilePhoto}
+                        username={object.username}
+                        description={object.description ? object.description : ""}
+                        urlDescription={object.urlDescription}
+                        urlTitle={object.urlTitle}
+                        urlImage={object.urlImage}
+                        likes={object.likes}
+                        setIdDeleting={setIdDeleting}
+                        setDeleting={setDeleting}
+                        setUpdatePosts={setUpdatePosts}
+                        updatePosts={updatePosts}
+                        userId={object.userId}
+                        liked={() => postIsLiked(object.usersLiked)}  
                         />
                     ))}
                 </ul>
             </Posts>
-            <Treading>
-                <span>trending</span>
-                <div></div>
-                <ul> 
-                    {hashtags.map((hashtag,index) => (
-                        <RenderHashtags 
-                            index= {index}
-                            name={hashtag.name}
-                        /> 
-                    ))}
-                </ul>
-            </Treading>
+            <Trendings />
+               
+            
         </Main>
 
         </>
@@ -362,26 +249,6 @@ const UserContainer = styled.div`
   justify-content: space-between;
 `;
 
-const FollowButton = styled.button`
-  width: 120px;
-  height: 35px;
-  background: ${(props) => (props.isFollowed ? "#fff" : "#1877f2")};
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 300px;
-  border: 0px solid #1877f2;
-  font-family: "Lato";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
-
-  color: ${(props) => (props.isFollowed ? "#1877f2" : "#fff")};
-  :hover {
-    cursor: pointer;
-  }
-`;
 
 
 const Header = styled.div`
@@ -397,7 +264,6 @@ left: 0;
 padding: 0px 12px 0px 20px;
 z-index: 1;
 
-
 a {
   color: white;
   font-family: Passion One;
@@ -406,7 +272,9 @@ a {
   letter-spacing: 0.05em;
   text-align: left;
   cursor: pointer;
+  
 }
+
 `;
 const Container = styled.div`
 width: 30%;
@@ -431,6 +299,8 @@ ul {
   border-radius: 0px 0px 8px 8px;
   padding: 1rem;
 }
+
+
 @media (max-width: 1000px) {
   display: none;
 }
@@ -442,7 +312,7 @@ const InputText = styled.div`
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  border-radius: ${props => props.search.length !==0 ? ("8px 8px 0px 0px") : ("8px")};
+  border-radius: 8px 8px 0px 0px;
   border: none;
   padding: 0px 13px 0px 19px;
   color: rgba(198, 198, 198, 1);
@@ -594,30 +464,7 @@ const Logout = styled.div`
     cursor: pointer;
   }
 `;
-const UserTitle = styled.div`
-  width: 47%;
-  height: 100%;
-  /* margin-top: 153px; */
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  /* margin-bottom: 43px; */
 
-  img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  a {
-    margin-left: 18px;
-    color: white;
-    font-size: 43px;
-    font-weight: bold;
-    font-family: "Oswald", sans-serif;
-  }
-`;
 const Main = styled.div`
   width: 100%;
   height: 100%;
@@ -629,7 +476,7 @@ const Posts = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-
+  margin-right: 25px;
   ul {
     width: 65%;
     height: 100%;
@@ -642,40 +489,5 @@ const Posts = styled.div`
     ul {
       width: 100%;
     }
-  }
-`;
-const Treading = styled.div`
-  width: 301px;
-  height: 406px;
-  margin-left: 25px;
-  background-color: rgba(23, 23, 23, 1);
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  padding: 12px 30px 6px 20px;
-
-  span {
-    color: white;
-    font-size: 27px;
-    font-family: "Oswald", sans-serif;
-    font-weight: 700;
-  }
-
-  div {
-    width: 100%;
-    height: 1px;
-    margin: 14px 0px 22px 0px;
-    border: 1px solid rgba(72, 72, 72, 1);
-  }
-
-  ul {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  @media (max-width: 1000px) {
-    display: none;
   }
 `;
