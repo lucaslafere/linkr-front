@@ -416,6 +416,9 @@ const Header = styled.div`
     letter-spacing: 0.05em;
     text-align: left;
   }
+  @media(max-width: 612px){
+    max-width: 100vw;
+  }
 `;
 const Containerr = styled.div`
   width: 30%;
@@ -613,8 +616,11 @@ const Feed = styled.div`
     text-decoration: none;
   }
   @media (max-width: 1000px) {
-    margin-left: 0;
-    width: 100%;
+    margin-right: 0;
+    max-width: 100vw;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
   }
 `;
 
@@ -640,7 +646,7 @@ const NewPost = styled.div`
     align-items: center;
   }
   @media (max-width: 1000px) {
-    width: 100%;
+    width: 100vw;
   }
 `;
 
@@ -744,41 +750,47 @@ const Button = styled.button`
   font-size: 16px;
 `;
 
-const Post = styled.div`
-  width: 611px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+// const Post = styled.div`
+//   width: 611px;
+//   height: 100%;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
 
-  img {
-    height: 50px;
-    width: auto;
-    border-radius: 50%;
-    color: #ffffff;
-    padding-left: 10px;
-    margin-top: 10px;
+//   img {
+//     height: 50px;
+//     width: auto;
+//     border-radius: 50%;
+//     color: #ffffff;
+//     padding-left: 10px;
+//     margin-top: 10px;
 
-    &:hover {
-      cursor: pointer;
-    }
-  }
-  ul {
-    width: 100%;
-    height: 100%;
-  }
+//     &:hover {
+//       cursor: pointer;
+//     }
+//   }
+//   ul {
+//     width: 100%;
+//     height: 100%;
+//   }
 
-  @media (max-width: 1000px) {
-    width: 100%;
-    height: 100%;
+//   @media (max-width: 1000px) {
+//     width: 100%;
+//     height: 100%;
 
-    ul {
-      width: 100%;
-    }
-  }
-`;
+//     ul {
+//       width: 100%;
+//     }
+//   }
+// `;
 const Content = styled.div`
   display: flex;
+ 
+
+  @media (max-width:1000px){
+    max-width:100%;
+    flex-direction:column !important;
+  }
 `;
 const Scroll = styled.div`
   > p {
@@ -790,5 +802,8 @@ const Scroll = styled.div`
     font-size: 30px;
     border-radius: 20px;
     margin-top: 40px;
+  }
+  @media (max-width:700px){
+   
   }
 `;
