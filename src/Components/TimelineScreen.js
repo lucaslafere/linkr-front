@@ -60,7 +60,10 @@ export default function FeedScreen() {
 
   async function getFollowers() {
     axios
-      .get(`https://projeto17-linkrback.herokuapp.com/followers?userId=${data.id}`, config)
+      .get(
+        `https://projeto17-linkrback.herokuapp.com/followers?userId=${data.id}`,
+        config
+      )
       .then((response) => {
         setFollowers([...response.data]);
       });
@@ -160,7 +163,13 @@ export default function FeedScreen() {
       setPosts(postsData);
       setQueryLimit(queryLimit + itemsPerPage);
       setRecords(records + itemsPerPage);
-      console.log(posts.length !== 0);
+      setFeedMessage(
+        followers?.length === 0 || !followers ? (
+          <p>You don't follow anyone yet. Search for new friends!</p>
+        ) : (
+          <p>No posts found from your friends</p>
+        )
+      );
     }
   };
   useEffect(() => setTimeout(loadMore, 200), []);
@@ -314,10 +323,8 @@ export default function FeedScreen() {
                 >
                   {showItems(posts)}
                 </InfiniteScroll>
-              ) : followers.length !== 0 ? (
-                <p>No posts found from your friends</p>
               ) : (
-                <p>You don't follow anyone yet. Search for new friends!</p>
+                <p>{feedMessage}</p>
               )}
             </Scroll>
           </Feed>
