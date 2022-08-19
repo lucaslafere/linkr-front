@@ -14,7 +14,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import { SearchBarUserContainer} from "./SearchUserScreen";
 
 export default function FeedScreen() {
-  const { userData } = useContext(UserContext);
+
 
   const [posts, setPosts] = useState([]);
   const [description, setDescription] = useState("");
@@ -46,7 +46,7 @@ export default function FeedScreen() {
 
   async function getPosts(queryLimit) {
     return axios
-      .get(`${URL}?queryLimit=${queryLimit}&userId=${data.id}`, config)
+      .get(`${backendURL}?queryLimit=${queryLimit}&userId=${data.id}`, config)
       .then((response) => {
         if (response.data.length === 0)
           setFeedMessage("There are no posts yet");
@@ -69,7 +69,7 @@ export default function FeedScreen() {
       url,
       description,
     };
-    const promise = axios.post(URL, body, config);
+    const promise = axios.post(backendURL, body, config);
     promise
       .then(async (res) => {
         setLoading(false);
@@ -271,31 +271,6 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
-            {/* {posts.length === 0 ? (
-              <span>{feedMessage}</span>
-            ) : (
-              posts.map((object, index) => (
-                <PostBox
-                  id={object.id}
-                  key={index}
-                  url={object.url}
-                  profilePhoto={object.profilePhoto}
-                  username={object.username}
-                  description={object.description}
-                  urlDescription={object.urlDescription}
-                  urlTitle={object.urlTitle}
-                  urlImage={object.urlImage}
-                  likes={object.likes}
-                  setIdDeleting={setIdDeleting}
-                  setDeleting={setDeleting}
-                  setUpdatePosts={setUpdatePosts}
-                  updatePosts={updatePosts}
-                  userId={object.userId}
-                  setOpenModal={setOpenModal}
-                  setRepostId={setRepostId}
-                />
-              ))
-            )} */}
             <InfiniteScroll
               loadMore={loadMore}
               hasMore={hasMoreItems}
