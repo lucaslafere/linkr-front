@@ -1,9 +1,32 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import { ThreeDots } from "react-loader-spinner";
+import axios from "axios";
+import TokenContext from "../Contexts/TokenContext";
 
 export default function RepostBox({ setOpenModal, repostId }) { 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); 
+    const { token } = useContext(TokenContext);
+    const config = {
+        headers: { Authorization: `Bearer ${token}` },
+    };
+    console.log(token);
+
+    async function repost(postId) { 
+        console.log(postId);
+        setLoading(true);
+        try {
+            const promise = await axios.post(`https://projeto17-linkrback.herokuapp.com/repost/${postId}`,postId,config);
+            console.log(promise.data);
+            setLoading(false);
+            setOpenModal(false);
+            window.location.reload();
+        } catch (error) {
+            setLoading(false);
+            setOpenModal(false);
+            console.log(error);
+        }
+    }
 
     return(
         <Reposts>
@@ -12,7 +35,7 @@ export default function RepostBox({ setOpenModal, repostId }) {
                     <a>Do you want to re-post this link?</a>
                     <Buttons>
                         <button id="cancel" onClick={() => setOpenModal(false)}>No, cancel</button>
-                        <button id="share" onClick={() => setLoading(true)}>
+                        <button id="share" onClick={() => repost(repostId)}>
                             {loading ? ( 
                                 <ThreeDots color="#fff" height={80} width={80} /> 
                                 ) : ("Yes, share!") }

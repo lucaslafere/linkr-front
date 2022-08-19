@@ -31,7 +31,6 @@ useEffect(() => {
 } 
 
 const TrendingBox = styled.div`
-    margin-top: 278px;
     width: 301px;
     height: 406px;
     background-color: #171717;

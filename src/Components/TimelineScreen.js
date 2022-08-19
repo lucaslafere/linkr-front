@@ -37,6 +37,7 @@ export default function FeedScreen() {
   const data = JSON.parse(localStorage.getItem("userInfo"));
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
 
+
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -124,11 +125,29 @@ export default function FeedScreen() {
     navigate("/");
   }
 
+
+
+  function postIsLiked (usersArray) {
+    const userLiked = usersArray.find(object => object.userId === data.id);
+    
+     if(userLiked === undefined) {
+       return false
+     };
+
+     if(userLiked.userId) {
+       return true;
+     }
+  }
+
+ 
   const showItems = (posts) => {
+
+
     let items = [];
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
+
       const object = posts[i];
       items.push(
         <PostBox
@@ -172,7 +191,9 @@ export default function FeedScreen() {
       );
     }
   };
+
   useEffect(() => setTimeout(loadMore, 200), []);
+
 
   return (
     <>
@@ -308,6 +329,8 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
+
+
             <Scroll>
               {posts.length !== 0 ? (
                 <InfiniteScroll
@@ -327,10 +350,12 @@ export default function FeedScreen() {
                 <p>{feedMessage}</p>
               )}
             </Scroll>
+
+
           </Feed>
-          <div>
+          <TrendingsBox>
             <Trendings />
-          </div>
+          </TrendingsBox>
         </Content>
       </Container>
     </>
@@ -374,6 +399,10 @@ const Containerr = styled.div`
   flex-direction: column;
   justify-content: center;
   position: sticky;
+`;
+const TrendingsBox =  styled.div`
+  margin-top: 278px;
+
 `;
 const Search = styled.div`
   width: 100%;

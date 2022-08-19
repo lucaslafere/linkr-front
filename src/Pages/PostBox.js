@@ -64,7 +64,14 @@ export default function PostBox({
     }
 }
 function navigateHashtagPage (tag) {
-    const newTag = tag.replace("#", "");
+    const newTag = tag?.replace("#", "");
+    if (newTag === undefined) {
+<<<<<<< HEAD
+      return;
+=======
+      return
+>>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
+    }
     navigate(`/hashtag/${newTag}`)
 }
     
@@ -137,7 +144,7 @@ function inputKeybord(e) {
         ) : (
           <ReactTagify
             colors={"#ffffff"}
-            tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}
+            tagClicked={(tag) => navigateHashtagPage(tag)}
           >
             <span>{description}</span>
           </ReactTagify>
