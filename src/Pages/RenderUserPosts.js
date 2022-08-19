@@ -6,20 +6,39 @@ import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../Contexts/UserContext";
 
-export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id, setOpenModal, setRepostId,reposts, filterPosts}) {
+export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id, setOpenModal, setRepostId,reposts, filterPosts, comments}) {
     const [liked, setLiked] = useState(false); 
     let [amountLikes, setAmountLikes] = useState(likes);
+    const [openComments, setOpenComments] = useState(false); 
+    const [commentsPost, setCommentsPost] = useState([]);
+    const [sendMessage,setSendMessage] = useState("");
     const { token } = useContext(TokenContext);
     const { userData } = useContext(UserContext); 
     const data =  JSON.parse(userData);
     const likeState = [];
     const navigate = useNavigate(); 
+    const config = {
+        headers: { Authorization: `Bearer ${token}` },
+    };
 
     for(let i=0; i<filterPosts.length; i++) { 
       let compare = filterPosts[i].usersLiked.find(u => u.userId===data.id); 
       likeState.push(compare);
     } 
-    console.log(likeState);
+    //console.log(likeState); 
+
+    useEffect(() => { 
+        const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/comments/${id}`,config);
+
+        promise.then(response => { 
+            console.log(response.data);
+            if(response.data.length===0) { 
+                setCommentsPost(response.data); 
+            } else { 
+                console.log("Tem alguma coisa nos comentarios");
+            }
+        })
+    },[]);
 
     
     async function likeDeslike(event) { 
@@ -49,11 +68,26 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
     function openModal(id) { 
         setOpenModal(true); 
         setRepostId(id);
-    }
+    } 
+
+    const fakeComments = [ 
+    {
+        comentt: "hahaha",
+        userIdd: 3,
+        usernamee: "ney",
+        profilePhotoo: "https://conteudo.imguol.com.br/c/esporte/e3/2020/11/21/o-atacante-son-comemora-o-primeiro-gol-do-tottenham-contra-o-manchester-city-pelo-ingles-1605986406883_v2_1x1.png"
+      },
+      {
+        comentt: "hahaha",
+        userIdd: 3,
+        usernamee: "ney",
+        profilePhotoo: "https://conteudo.imguol.com.br/c/esporte/e3/2020/11/21/o-atacante-son-comemora-o-primeiro-gol-do-tottenham-contra-o-manchester-city-pelo-ingles-1605986406883_v2_1x1.png"
+      }
+    ]
     
     return(
         <>
-        <Post value={index} >
+        <Post openComments={openComments} >
             <PictureAndLike>
                 <img src={profilePhoto} alt={username}/>
                 {(liked || likeState[index]) ? (
@@ -61,8 +95,8 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 )}
                 <p>{amountLikes} likes</p>
-                <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
-                <p>13 comments</p>
+                <ion-icon name="chatbubble-ellipses-outline" id="comments" onClick={() => setOpenComments(!openComments)}></ion-icon>
+                <p>{comments} comments</p>
                 <ion-icon name="repeat-sharp" id="repost" onClick={() => openModal(id)}></ion-icon>
                 <p>{reposts} re-posts</p>
             </PictureAndLike>
@@ -79,6 +113,22 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 </MainInfo>
             </PostInfo>
         </Post>
+        <Comments>
+            <div></div>
+            <SendComment>
+                <img src={fakeComments[0].profilePhotoo} alt={fakeComments[0].userIdd} />
+                <form>
+                    <input
+                        type="text"
+                        placeholder="write a comment..."
+                        value={sendMessage}
+                        onChange={(event) => setSendMessage(event.target.value)}
+                        required
+                    />
+                    <ion-icon name="paper-plane-outline"></ion-icon>
+                </form>
+            </SendComment>
+        </Comments>
         </>
     )
 } 
@@ -89,8 +139,7 @@ const Post = styled.li`
   display: flex;
   background-color: rgba(23, 23, 23, 1);
   padding: 19px 23px 20px 20px;
-  border-radius: 16px;
-  margin-bottom: 18px;
+  border-radius: ${props => props.openComments ? ("16px 16px 0px 0px"): "16px"};
 `;
 const PictureAndLike = styled.div`
   width: 10%;
@@ -205,3 +254,63 @@ const MainInfoDescription = styled.div`
     margin-bottom: 8px;
   }
 `;
+const Comments = styled.div`
+  width: 100%;
+  display: flex; 
+  flex-direction: column;
+  border-radius: 0px 0px 16px 16px; 
+  background-color: rgba(30, 30, 30, 1);
+  margin-bottom: 18px;
+  padding: 0px 23px 0px 24px;
+` 
+const SendComment = styled.div`
+  width: 100%; 
+  height: 83px; 
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+
+  form { 
+    width: 90%;
+    height: 39px;
+    display: flex; 
+    align-items: center;
+    border-radius: 8px; 
+    background-color: rgba(37, 37, 37, 1); 
+    color: rgba(87, 87, 87, 1);
+    padding: 0px 13px 0px 15px;
+    margin-left: 14px;
+    border: none;
+
+    input { 
+        width: 95%; 
+        height: 100%;
+        background-color: rgba(37, 37, 37, 1);
+        color: rgba(87, 87, 87, 1);
+        border: none;
+    }
+
+    ion-icon { 
+        width: 19px; 
+        height: 19px; 
+        color: rgba(243, 243, 243, 1);
+    }
+  }
+
+  img { 
+    height: 39px; 
+    width: 39px; 
+    border-radius: 50%;
+    object-fit: cover;
+  }
+`
+const InputComments = styled.div`
+    width: 90%;
+    height: 39px;
+    border-radius: 8px; 
+    background-color: rgba(37, 37, 37, 1); 
+    color: rgba(87, 87, 87, 1);
+    padding: 0px 13px 0px 15px;
+    margin-left: 14px;
+    border: none;
+`
