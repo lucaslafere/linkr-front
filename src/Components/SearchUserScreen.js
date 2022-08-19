@@ -66,8 +66,6 @@ export default function SerchUserScreen() {
       setFilterPosts(filter);
     } 
 
-<<<<<<< HEAD
-=======
 
     async function searchUser(event) { 
         const username = { username: event };
@@ -82,7 +80,6 @@ export default function SerchUserScreen() {
             setSearch([]);
         }
     }
->>>>>>> 167ccdff60d0314542f88a2f78e0815e9fb1caf0
 
     
   useEffect(() => {
@@ -432,11 +429,6 @@ ul {
   border-radius: 0px 0px 8px 8px;
   padding: 1rem;
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 167ccdff60d0314542f88a2f78e0815e9fb1caf0
 @media (max-width: 1000px) {
   display: none;
 }

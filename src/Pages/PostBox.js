@@ -85,10 +85,9 @@ function inputKeybord(e) {
       console.log(id, descriptionInput, config);
         axios.put(`https://projeto17-linkrback.herokuapp.com/posts/${id}`, descriptionInput, config)
         .then(() => {
-
             editPost();
             setUpdatePosts(!updatePosts)})
-        .catch(erro => alert("Não foi possível editar esse post"))
+        .catch(erro => alert(erro))
         }
     }
 

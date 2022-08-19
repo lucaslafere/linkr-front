@@ -42,7 +42,6 @@ export default function FeedScreen() {
   const data = JSON.parse(localStorage.getItem("userInfo"));
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
 
-
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -130,8 +129,6 @@ export default function FeedScreen() {
     navigate("/");
   }
 
-
-
   function postIsLiked (usersArray) {
     const userLiked = usersArray.find(object => object.userId === data.id);
     
@@ -144,15 +141,13 @@ export default function FeedScreen() {
      }
   }
 
- 
+
+    
   const showItems = (posts) => {
-
-
     let items = [];
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
-
       const object = posts[i];
       items.push(
         <PostBox
@@ -197,7 +192,12 @@ export default function FeedScreen() {
       );
     }
   };
-  useEffect(() => setTimeout(loadMore, 10), []);
+
+
+ 
+
+  useEffect(() => setTimeout(loadMore, 200), []);
+
 
  
 
@@ -235,7 +235,6 @@ export default function FeedScreen() {
     }
     setRender([...newPosts]);
   }, 15000);
-
 
   return (
     <>
@@ -397,8 +396,6 @@ export default function FeedScreen() {
                 <p>{feedMessage}</p>
               )}
             </Scroll>
-
-
           </Feed>
           <TrendingsBox>
             <Trendings />
@@ -743,6 +740,7 @@ const Button = styled.button`
   color: #ffffff;
   font-size: 16px;
 `;
+
 
 const Post = styled.div`
   width: 611px;

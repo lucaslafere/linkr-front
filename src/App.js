@@ -5,7 +5,6 @@ import UserContext from "./Contexts/UserContext";
 import LoginScreen from "./Components/LoginScreen";
 import SignUpScreen from "./Components/SignUpScreen";
 import FeedScreen from "./Components/TimelineScreen";
-import HashtagScreen from "./Components/HashtagScreen";
 import SerchUserScreen from "./Components/SearchUserScreen";
 import GlobalStyle from "./Styles/globalStyles";
 import HashtagScreen2 from "./Components/HashtagScreen2";
