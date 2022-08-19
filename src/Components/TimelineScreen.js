@@ -45,7 +45,7 @@ export default function FeedScreen() {
 
   async function getPosts(queryLimit) {
     return axios
-      .get(`${URL}?queryLimit=${queryLimit}&userId=${data.id}`, config)
+      .get(`${backendURL}?queryLimit=${queryLimit}&userId=${data.id}`, config)
       .then((response) => {
         if (response.data.length === 0)
           setFeedMessage("There are no posts yet");
@@ -60,7 +60,7 @@ export default function FeedScreen() {
 
   async function getFollowers() {
     axios
-      .get(`http://localhost:4000/followers?userId=${data.id}`, config)
+      .get(`https://projeto17-linkrback.herokuapp.com/followers?userId=${data.id}`, config)
       .then((response) => {
         setFollowers([...response.data]);
       });
@@ -76,7 +76,7 @@ export default function FeedScreen() {
       url,
       description,
     };
-    const promise = axios.post(URL, body, config);
+    const promise = axios.post(backendURL, body, config);
     promise
       .then(async (res) => {
         setLoading(false);
