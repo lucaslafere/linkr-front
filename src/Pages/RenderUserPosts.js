@@ -1,15 +1,24 @@
 import styled from "styled-components";  
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import TokenContext from "../Contexts/TokenContext";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
+import UserContext from "../Contexts/UserContext";
 
-export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id, setOpenModal, setRepostId,reposts}) {
+export default function RenderUserPosts({index,likes,url,description,username,profilePhoto,urlDescription,urlImage,ulrTitle,id, setOpenModal, setRepostId,reposts, filterPosts}) {
     const [liked, setLiked] = useState(false); 
     let [amountLikes, setAmountLikes] = useState(likes);
     const { token } = useContext(TokenContext);
-    const navigate = useNavigate();
+    const { userData } = useContext(UserContext); 
+    const data =  JSON.parse(userData);
+    const likeState = [];
+    const navigate = useNavigate(); 
+
+    for(let i=0; i<filterPosts.length; i++) { 
+      let compare = filterPosts[i].usersLiked.find(u => u.userId===data.id); 
+      likeState.push(compare);
+    } 
 
     
     async function likeDeslike(event) { 
@@ -43,10 +52,10 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
     
     return(
         <>
-        <Post value={index}>
+        <Post value={index} >
             <PictureAndLike>
                 <img src={profilePhoto} alt={username}/>
-                {liked ? (
+                {(liked || likeState[index]) ? (
                 <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> ) : (
                 <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
                 )}
@@ -58,9 +67,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
             </PictureAndLike>
             <PostInfo>
                 <p>{username}</p> 
-                <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
                 <a>{description}</a>
-                </ReactTagify>
                 <MainInfo onClick={() => window.open(url)}>
                     <MainInfoDescription>
                         <h3>{ulrTitle}</h3>
@@ -96,6 +103,7 @@ const PictureAndLike = styled.div`
     height: 50px;
     border-radius: 50%;
     margin-bottom: 20px;
+    object-fit: cover;
   }
 
   ion-icon {

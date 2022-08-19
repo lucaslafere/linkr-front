@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import UserContext from "../Contexts/UserContext.js";
 import PostBox from "../Pages/PostBox.js";
 import DeleteBox from "../Pages/DeleteBox.js";
 import Trendings from "../Pages/Trending.js";
@@ -12,6 +11,8 @@ import { DebounceInput } from "react-debounce-input";
 import RepostBox from "../Pages/RepostBox.js";
 import InfiniteScroll from "react-infinite-scroller";
 import { SearchBarUserContainer } from "./SearchUserScreen";
+import NewPosts, { newPosts } from "../Pages/NewPosts";
+import useInterval from "use-interval";
 
 export default function FeedScreen() {
   const [posts, setPosts] = useState([]);
@@ -32,16 +33,14 @@ export default function FeedScreen() {
   const [records, setRecords] = useState(itemsPerPage);
   const [queryLimit, setQueryLimit] = useState(itemsPerPage);
   const [followers, setFollowers] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const [display, setDisplay] = useState(false);
+  const [render, setRender] = useState([]);
+  const [toRender, setToRender] = useState([]);
   const navigate = useNavigate();
   const URL = "http://localhost:4000/posts";
   const data = JSON.parse(localStorage.getItem("userInfo"));
-<<<<<<< HEAD
-  const backendURL = "https://projeto17-linkrback.herokuapp.com/posts/";
-  console.log(data);
-  
-=======
   const backendURL = "https://projeto17-linkrback.herokuapp.com/posts";
->>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
 
   const config = {
     headers: {
@@ -130,7 +129,6 @@ export default function FeedScreen() {
     navigate("/");
   }
 
-<<<<<<< HEAD
   function postIsLiked (usersArray) {
     const userLiked = usersArray.find(object => object.userId === data.id);
     
@@ -143,19 +141,13 @@ export default function FeedScreen() {
      }
   }
 
-  const showItems = (posts) => {
+
     
-=======
   const showItems = (posts) => {
->>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
     let items = [];
     let limit = records;
     if (records > posts.length) limit = posts.length;
     for (let i = 0; i < limit; i++) {
-<<<<<<< HEAD
-
-=======
->>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
       const object = posts[i];
       items.push(
         <PostBox
@@ -199,12 +191,50 @@ export default function FeedScreen() {
       );
     }
   };
-<<<<<<< HEAD
-  console.log(posts);
-=======
-  useEffect(() => setTimeout(loadMore, 200), []);
 
->>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
+
+ 
+
+  useEffect(() => setTimeout(loadMore, 200), []);
+  useEffect(() => setTimeout(loadMore, 10), []);
+
+ 
+
+  useEffect(() => {
+    setPosts([...render]);
+  }, [update]);
+
+  function comparison(post, newPost) {
+    return (
+      post.comments === newPost.comments &&
+      post.description === newPost.description &&
+      post.email === newPost.email &&
+      post.id === newPost.id &&
+      post.email === newPost.email &&
+      post.likes === newPost.likes &&
+      post.profilePhoto === newPost.profilePhoto &&
+      post.reposts === newPost.reposts &&
+      post.url === newPost.url &&
+      post.urlDescription === newPost.urlDescription &&
+      post.urlImage === newPost.urlImage &&
+      post.urlTitle === newPost.urlTitle &&
+      post.userId === newPost.userId &&
+      post.username === newPost.username
+    );
+  }
+
+  useInterval(async () => {
+    const newPosts = await getPosts(posts.length);
+    toRender.length = 0;
+    for (let i = 0; i < newPosts.length; i++) {
+      if (!comparison(posts[0], newPosts[i])) {
+        toRender.push(newPosts[i]);
+        setDisplay(true);
+      } else break;
+    }
+    setRender([...newPosts]);
+  }, 15000);
+
   return (
     <>
       {deleting ? (
@@ -339,47 +369,13 @@ export default function FeedScreen() {
                 </Button>
               </Box>
             </NewPost>
-<<<<<<< HEAD
-            {/* {posts.length === 0 ? (
-              <span>{feedMessage}</span>
-            ) : (
-              posts.map((object, index) => (
-                <PostBox
-                  id={object.id}
-                  key={index}
-                  url={object.url}
-                  profilePhoto={object.profilePhoto}
-                  username={object.username}
-                  description={object.description}
-                  urlDescription={object.urlDescription}
-                  urlTitle={object.urlTitle}
-                  urlImage={object.urlImage}
-                  likes={object.likes}
-                  setIdDeleting={setIdDeleting}
-                  setDeleting={setDeleting}
-                  setUpdatePosts={setUpdatePosts}
-                  updatePosts={updatePosts}
-                  userId={object.userId}
-                  liked={() => postIsLiked(object.usersLiked)}
-                  setOpenModal={setOpenModal}
-                  setRepostId={setRepostId}
-                />
-              ))
-            )} */}
-            <InfiniteScroll
-              loadMore={loadMore}
-              hasMore={hasMoreItems}
-              loader={
-              <div className="loader" key={0}>
-                  {" "}
-                  Loading...{" "}
-              </div>
-              }
-              useWindow={true}
-              >
-              {showItems(posts)}
-              </InfiniteScroll>
-=======
+            <NewPosts
+              num={toRender.length}
+              display={display}
+              update={update}
+              setUpdate={setUpdate}
+              setDisplay={setDisplay}
+            />
             <Scroll>
               {posts.length !== 0 ? (
                 <InfiniteScroll
@@ -399,11 +395,10 @@ export default function FeedScreen() {
                 <p>{feedMessage}</p>
               )}
             </Scroll>
->>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
           </Feed>
-          <TrendingsBox>
+          <div>
             <Trendings />
-          </TrendingsBox>
+          </div>
         </Content>
       </Container>
     </>
@@ -771,6 +766,7 @@ const Button = styled.button`
   color: #ffffff;
   font-size: 16px;
 `;
+
 
 const Post = styled.div`
   width: 611px;

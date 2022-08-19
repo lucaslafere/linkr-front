@@ -12,53 +12,74 @@ import RepostBox from "../Pages/RepostBox";
 import RenderReposts from "../Pages/RenderReposts";
 
 export default function SerchUserScreen() {
-  const { id } = useParams();
-  const { token, setToken } = useContext(TokenContext);
-  const [search, setSearch] = useState([]);
-  const [userPosts, setUserPosts] = useState([]);
-  const [post, setPost] = useState([]);
-  const { userData } = useContext(UserContext);
-  const [hashtags, setHashtags] = useState([]);
-  const [clickedLogout, setClickedLogout] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
-  const [repostId, setRepostId] = useState();
-  const [userReposts, setUserReposts] = useState([]);
-  const [isFollowed, setIsFollowed] = useState(false);
-  const [disabled, setDisabled] = useState(false);
-  const navigate = useNavigate();
-  const data = JSON.parse(userData);
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
+    const { id } = useParams();
+    const { token, setToken } = useContext(TokenContext);
+    const [search, setSearch] = useState([]); 
+    const [userPosts, setUserPosts] = useState([]);
+    const [post,setPost] = useState([]);
+    const { userData } = useContext(UserContext); 
+    const [hashtags,setHashtags] = useState([]);
+    const [clickedLogout, setClickedLogout] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [repostId, setRepostId] = useState();
+    const [userReposts, setUserReposts] = useState([]);
+    const [isFollowed, setIsFollowed] = useState(false); 
+    const [disabled, setDisabled] = useState(false);
+    const [filterPosts, setFilterPosts] = useState([]);
+    const navigate = useNavigate();
+    const data =  JSON.parse(userData);
+    const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
 
-  useEffect(() => {
-    const promise = axios.get(
-      `https://projeto17-linkrback.herokuapp.com/users/${id}`,
-      config
-    );
-    const promises = axios.get(
-      `https://projeto17-linkrback.herokuapp.com/ranking`
-    );
+    useEffect(() => {
+        const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/${id}`,config);
+        const promises = axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`);
+        const promisses = axios.get(`https://projeto17-linkrback.herokuapp.com/posts?queryLimit=1000&userId=${data.id}`,config);
 
-    promise.then((response) => {
-      console.log(response.data);
-      setUserPosts(response.data[0]);
-      setPost(response.data[0].posts);
-      if (response.data[1].reposts) {
-        setUserReposts(response.data[1].reposts);
-      } else {
-        setUserReposts([]);
-      }
+        promise.then(response => { 
+            setUserPosts(response.data[0]);
+            setPost(response.data[0].posts);
+            if(response.data[1].reposts) {
+              setUserReposts(response.data[1].reposts); 
+            } else { 
+              setUserReposts([]);
+            }
 
-      promises.then((responses) => {
-        setHashtags([...response.data]);
-      });
-    });
+            promises.then(responses => { 
+              console.log(responses.data);
+                setHashtags([...responses.data]);
+            }); 
 
-    promise.catch((error) => {
-      console.log(error);
-    });
-  }, []);
+            promisses.then(responsses => {
+              aboutLikes(responsses); 
+            });
+        });
+
+        promise.catch(error => { 
+            console.log(error);
+        });  
+    },[]);
+
+    async function aboutLikes(res) { 
+      const filter = await res.data.filter(filt => filt.userId===data.id);
+      setFilterPosts(filter);
+    } 
+
+
+    async function searchUser(event) { 
+        const username = { username: event };
+        console.log(username);
+        try {
+            const promise = await axios.post("https://projeto17-linkrback.herokuapp.com/other-users",username); 
+            console.log(promise.data);
+            setSearch(promise.data);
+        } catch (error) {
+            setSearch([]);
+            console.log(error);
+            setSearch([]);
+        }
+    }
 
   useEffect(() => {
     const body = {
@@ -73,14 +94,14 @@ export default function SerchUserScreen() {
       )
       .then((res) => {
         setIsFollowed(res.data.isFollower);
-        console.log("caiu no then");
+        console.log("caiu no then checando follow");
         console.log(res.data.isFollower);
         setDisabled(false);
       })
       .catch((err) => {
         console.log("caiu no erro");
       });
-  }, []);
+  }, [isFollowed]);
 
   async function searchUser(event) {
     const username = { username: event };
@@ -110,7 +131,7 @@ export default function SerchUserScreen() {
     setToken("");
 
     navigate("/");
-  }
+  } 
 
   async function followUser() {
     const body = {
@@ -132,31 +153,36 @@ export default function SerchUserScreen() {
     }
   }
 
-  return (
-    <>
-      {openModal ? (
-        <RepostBox setOpenModal={setOpenModal} repostId={repostId} />
-      ) : (
-        ""
-      )}
-      <Header>
-        <a onClick={() => navigate("/timeline")}>linkr</a>
-        <Container>
-          <InputText>
-            <DebounceInput
-              type="text"
-              placeholder="Search for people"
-              minLength={3}
-              debounceTimeout={400}
-              onChange={(event) => searchUser(event.target.value)}
+  function changeUser(userClickedId) { 
+    navigate(`/timeline/${userClickedId}`);
+    window.location.reload();
+  } 
+
+    return( 
+        <> 
+        {openModal ? (
+            <RepostBox 
+                setOpenModal={setOpenModal}
+                repostId={repostId}
             />
-            <ion-icon name="search-sharp"></ion-icon>
-          </InputText>
-          {search.length !== 0 ? (
-            <Search>
-              <ul>
-                {search.map((users, index) => (
-                  <>
+        ) :  ""}
+        <Header>
+            <a onClick={() => navigate("/timeline")}>linkr</a>
+            <Container>
+                <InputText>
+                    <DebounceInput
+                        type="text"
+                        placeholder="Search for people"
+                        minLength={3}
+                        debounceTimeout={400}
+                        onChange={(event) => searchUser(event.target.value)} />
+                    <ion-icon name="search-sharp"></ion-icon>
+                </InputText> 
+                {search.length !== 0 ? (
+                <Search>
+                    <ul>
+                    {search.map((users, index) => (
+                     <>
                     <SearchBarUserContainer>
                       <RenderSearchUser
                         index={index}
@@ -172,73 +198,59 @@ export default function SerchUserScreen() {
                   </>
                 ))}
               </ul>
-            </Search>
-          ) : (
-            ""
-          )}
-        </Container>
-        <LoggedUser>
-          {clickedLogout ? (
-            <ion-icon
-              name="chevron-up-outline"
-              onClick={() => setClickedLogout(false)}
-            ></ion-icon>
-          ) : (
-            <ion-icon
-              name="chevron-down-outline"
-              onClick={() => setClickedLogout(true)}
-            ></ion-icon>
-          )}
-          <img src={data.profilePhoto} alt="profile" />
-        </LoggedUser>
-      </Header>
+                </Search> 
+                ) : ""}
+            </Container>
+            <LoggedUser>
+                {clickedLogout ? (
+                <ion-icon name="chevron-up-outline" onClick={() => setClickedLogout(false)}></ion-icon>
+                ) : ( 
+                <ion-icon name="chevron-down-outline" onClick={() => setClickedLogout(true)}></ion-icon>
+                )}
+                <img src={data.profilePhoto} alt="profile" onClick={() => changeUser(data.id)}/>
+            </LoggedUser>
+        </Header>  
 
-      <Container2>
-        <InputText2>
-          <DebounceInput
-            type="text"
-            placeholder="Search for people"
-            minLength={3}
-            debounceTimeout={400}
-            onChange={(event) => searchUser(event.target.value)}
-          />
-          <ion-icon name="search-sharp"></ion-icon>
-        </InputText2>
-        {search.length !== 0 ? (
-          <Search2>
-            <ul>
-              {search.map((users, index) => (
-                <>
-                  <SearchBarUserContainer>
-                    <RenderSearchUser
-                      index={index}
-                      image={users.profilePhoto}
-                      username={users.username}
-                      follows={users.followerId}
-                      id={users.id}
-                    />
-                    <h6>
-                      {users.followerId === null ? "" : "•" + "following"}
-                    </h6>
-                  </SearchBarUserContainer>
-                </>
-              ))}
-            </ul>
-          </Search2>
-        ) : (
-          ""
-        )}
-      </Container2>
+        <Container2>
+                <InputText2>
+                    <DebounceInput
+                        type="text"
+                        placeholder="Search for people"
+                        minLength={3}
+                        debounceTimeout={400}
+                        onChange={(event) => searchUser(event.target.value)} />
+                    <ion-icon name="search-sharp"></ion-icon>
+                </InputText2>
+                {search.length !== 0 ? (
+                <Search2>
+                    <ul>
+                    {search.map((users, index) => (
+                    <>
+                    <SearchBarUserContainer>
+                      <RenderSearchUser
+                        index={index}
+                        image={users.profilePhoto}
+                        username={users.username}
+                        follows={users.followerId}
+                        id={users.id}
+                      />
+                      <h6>
+                        {users.followerId === null ? "" : "•" + "following"}
+                      </h6>
+                    </SearchBarUserContainer>
+                  </>
+                ))}
+              </ul>
+                </Search2> 
+                ) : "" }
+            </Container2>
 
-      {clickedLogout ? (
-        <Logout onClick={logout}>
-          <a>Logout</a>
-        </Logout>
-      ) : (
-        ""
-      )}
+        {clickedLogout ? (
+        <Logout onClick={logout}> 
+            <a>Logout</a>
+        </Logout> ) : ("")}
 
-      <UserContainer isFollowed={isFollowed}>
+        <UserContainer >
         <UserTitle>
           <img src={userPosts.profilePhoto} alt={userPosts.username} />
           <a>{userPosts.username}'s posts</a>
@@ -252,60 +264,67 @@ export default function SerchUserScreen() {
         </FollowButton>
       </UserContainer>
 
-      <Main>
-        <Posts>
-          <ul>
-            {userReposts.map((rep, index) => (
-              <RenderReposts
-                index={index}
-                likes={rep.likes}
-                url={rep.url}
-                description={rep.description}
-                ownerUsername={rep.ownerUsername}
-                ownerProfilePhoto={rep.ownerProfilePhoto}
-                urlDescription={rep.urlDescription}
-                urlImage={rep.urlImage}
-                urlTitle={rep.urlTitle}
-                id={rep.id}
-                reposts={rep.reposts}
-                repostedUsername={rep.repostedUsername}
-                repostedUserId={rep.repostedUserId}
-              />
-            ))}
-            {post.map((post, index) => (
-              <RenderUserPosts
-                index={index}
-                likes={post.likes}
-                url={post.url}
-                description={post.description}
-                username={userPosts.username}
-                profilePhoto={userPosts.profilePhoto}
-                urlDescription={post.urlDescription}
-                urlImage={post.urlImage}
-                urlTitle={post.urlTitle}
-                id={post.id}
-                setOpenModal={setOpenModal}
-                setRepostId={setRepostId}
-                reposts={post.reposts}
-              />
-            ))}
-          </ul>
-        </Posts>
-        <Treading>
-          <span>trending</span>
-          <div></div>
-          <ul>
-            {hashtags.map((hashtag, index) => (
-              <RenderHashtags index={index} name={hashtag.name} />
-            ))}
-          </ul>
-        </Treading>
-      </Main>
-    </>
-  );
-}
+        <Main>
+            <Posts>
+                <ul> 
+                    {userReposts.map((rep,index) => (
+                      <RenderReposts 
+                      index={index}
+                      likes= {rep.likes}
+                      url={rep.url}
+                      description={rep.description}
+                      ownerUsername={rep.ownerUsername}
+                      ownerProfilePhoto={rep.ownerProfilePhoto}
+                      urlDescription={rep.urlDescription}
+                      urlImage={rep.urlImage}
+                      urlTitle={rep.urlTitle}
+                      id={rep.id}
+                      reposts={rep.reposts}
+                      repostedUsername={rep.repostedUsername}
+                      repostedUserId={rep.repostedUserId}
+                      loggedUsername={data.username}
+                      filterPosts={filterPosts}
+                      /> 
+                    ))}
+                    {post.map((post,index) => (
+                        <RenderUserPosts 
+                            index={index}
+                            likes= {post.likes}
+                            url={post.url}
+                            description={post.description}
+                            username={userPosts.username}
+                            profilePhoto={userPosts.profilePhoto}
+                            urlDescription={post.urlDescription}
+                            urlImage={post.urlImage}
+                            urlTitle={post.urlTitle}
+                            id={post.id}
+                            setOpenModal={setOpenModal}
+                            setRepostId={setRepostId}
+                            reposts={post.reposts}
+                            filterPosts={filterPosts}
+                        />
+                    ))}
+                </ul>
+            </Posts>
+            <Treading>
+                <span>trending</span>
+                <div></div>
+                <ul> 
+                    {hashtags.map((hashtag,index) => (
+                        <RenderHashtags 
+                            index= {index}
+                            name={hashtag.name}
+                        /> 
+                    ))}
+                </ul>
+            </Treading>
+        </Main>
 
-export const SearchBarUserContainer = styled.div`
+        </>
+    )
+ }
+
+ export const SearchBarUserContainer = styled.div`
   display: flex;
   width: 80%;
   align-items: center;
@@ -361,55 +380,55 @@ const FollowButton = styled.button`
   }
 `;
 
-const Header = styled.div`
-  width: 100%;
-  height: 72px;
-  background-color: rgba(21, 21, 21, 1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 0px 12px 0px 20px;
-  z-index: 1;
 
-  a {
-    color: white;
-    font-family: Passion One;
-    font-size: 49px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-align: left;
-  }
+const Header = styled.div`
+width: 100%;
+height: 72px;
+background-color: rgba(21, 21, 21, 1);
+display: flex;
+justify-content: space-between;
+align-items: center;
+position: fixed;
+top: 0;
+left: 0;
+padding: 0px 12px 0px 20px;
+z-index: 1;
+
+a {
+  color: white;
+  font-family: Passion One;
+  font-size: 49px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: left;
+}
 `;
 const Container = styled.div`
-  width: 30%;
-  height: 45px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: sticky;
+width: 30%;
+height: 45px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+position: sticky;
 `;
 const Search = styled.div`
+width: 100%;
+height: 100%;
+display: flex;
+flex-direction: column;
+/* position: absolute;
+top: 56px; */
+
+ul {
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  /* position: absolute;
-  top: 56px; */
-
-  ul {
-    width: 100%;
-    /* height: 100%; */
-    background-color: rgba(231, 231, 231, 1);
-    border-radius: 0px 0px 8px 8px;
-    padding: 1rem;
-  }
-
-  @media (max-width: 1000px) {
-    display: none;
-  }
+  /* height: 100%; */
+  background-color: rgba(231, 231, 231, 1);
+  border-radius: 0px 0px 8px 8px;
+  padding: 1rem;
+}
+@media (max-width: 1000px) {
+  display: none;
+}
 `;
 const InputText = styled.div`
   width: 100%;
@@ -453,9 +472,9 @@ const Container2 = styled.div`
     display: flex;
     flex-direction: column;
     align-itens: center;
-    position: relative;
+    position: fixed;
     left: 0;
-    top: 85px;
+    top: 30px;
   }
 `;
 const Search2 = styled.div`
@@ -540,7 +559,12 @@ const LoggedUser = styled.div`
     width: 53px;
     height: 53px;
     border-radius: 50%;
-    margin-left: 17px;
+    margin-left: 17px; 
+    object-fit: cover;
+
+    &:hover { 
+      cursor: pointer;
+    }
   }
 `;
 const Logout = styled.div`
@@ -578,6 +602,7 @@ const UserTitle = styled.div`
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    object-fit: cover;
   }
 
   a {
