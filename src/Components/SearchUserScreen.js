@@ -25,6 +25,7 @@ export default function SerchUserScreen() {
     const [userReposts, setUserReposts] = useState([]);
     const [isFollowed, setIsFollowed] = useState(false); 
     const [disabled, setDisabled] = useState(false);
+    const [filterPosts, setFilterPosts] = useState([]);
     const navigate = useNavigate();
     const data =  JSON.parse(userData);
     const config = {
@@ -34,9 +35,9 @@ export default function SerchUserScreen() {
     useEffect(() => {
         const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/${id}`,config);
         const promises = axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`);
+        const promisses = axios.get(`https://projeto17-linkrback.herokuapp.com/posts/10000`,config);
 
         promise.then(response => { 
-            console.log(response.data);
             setUserPosts(response.data[0]);
             setPost(response.data[0].posts);
             if(response.data[1].reposts) {
@@ -48,6 +49,10 @@ export default function SerchUserScreen() {
             promises.then(responses => { 
               console.log(responses.data);
                 setHashtags([...responses.data]);
+            }); 
+
+            promisses.then(responsses => {
+              aboutLikes(responsses); 
             });
         });
 
@@ -55,6 +60,11 @@ export default function SerchUserScreen() {
             console.log(error);
         });  
     },[]);
+
+    async function aboutLikes(res) { 
+      const filter = await res.data.filter(filt => filt.userId===data.id);
+      setFilterPosts(filter);
+    } 
 
     useEffect(() => {
         const body = {
@@ -166,27 +176,6 @@ export default function SerchUserScreen() {
     window.location.reload();
   } 
 
-  const uusers = [ 
-    {
-      id: 17,
-      email: "ney@gmail.com",
-      profilePhoto: "https://conteudo.imguol.com.br/c/esporte/b7/2022/08/13/neymar-do-psg-comemora-gol-marcado-diante-do-rayo-vallecano-1660420189462_v2_900x506.jpg",
-      username: "ney"
-    }, 
-    {
-      id: 6,
-      email: "cr7@gmail.com",
-      profilePhoto: "https://cdn.esbrasil.com.br/wp-content/uploads/2021/09/23130355/5f57e7bb28fb9.jpeg",
-      username: "cr7"
-    }, 
-    {
-      id: 2,
-      email: "son@gmail.com",
-      profilePhoto: "https://conteudo.imguol.com.br/c/esporte/e3/2020/11/21/o-atacante-son-comemora-o-primeiro-gol-do-tottenham-contra-o-manchester-city-pelo-ingles-1605986406883_v2_3x4.png",
-      username: "son"
-    }
-  ]
-
     return( 
         <> 
         {openModal ? (
@@ -207,7 +196,7 @@ export default function SerchUserScreen() {
                         onChange={(event) => searchUser(event.target.value)} />
                     <ion-icon name="search-sharp"></ion-icon>
                 </InputText> 
-                {uusers.length !== 0 ? (
+                {search.length !== 0 ? (
                 <Search>
                     <ul>
                     {search.map((users, index) => (
@@ -250,7 +239,7 @@ export default function SerchUserScreen() {
                         onChange={(event) => searchUser(event.target.value)} />
                     <ion-icon name="search-sharp"></ion-icon>
                 </InputText2>
-                {uusers.length !== 0 ? (
+                {search.length !== 0 ? (
                 <Search2>
                     <ul>
                     {search.map((users, index) => (
@@ -312,6 +301,7 @@ export default function SerchUserScreen() {
                       repostedUsername={rep.repostedUsername}
                       repostedUserId={rep.repostedUserId}
                       loggedUsername={data.username}
+                      filterPosts={filterPosts}
                       /> 
                     ))}
                     {post.map((post,index) => (
@@ -329,6 +319,7 @@ export default function SerchUserScreen() {
                             setOpenModal={setOpenModal}
                             setRepostId={setRepostId}
                             reposts={post.reposts}
+                            filterPosts={filterPosts}
                         />
                     ))}
                 </ul>
