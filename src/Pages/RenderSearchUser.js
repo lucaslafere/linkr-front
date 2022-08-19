@@ -29,6 +29,7 @@ const UserCard = styled.li`
         width: 39px;
         height: 39px; 
         border-radius: 50%;
+        object-fit: cover;
     }
 
     h2 { 
