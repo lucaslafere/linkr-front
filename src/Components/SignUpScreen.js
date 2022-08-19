@@ -23,8 +23,8 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
-  const URL = "https://projeto17-linkrback.herokuapp.com/sign-up";
-  // const URL = "http://localhost:4000/sign-up";
+  // const URL = "https://projeto17-linkrback.herokuapp.com/sign-up";
+  const URL = "http://localhost:4000/sign-up";
   const navigate = useNavigate();
 
   const body = {
