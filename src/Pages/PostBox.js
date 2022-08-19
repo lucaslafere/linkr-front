@@ -23,7 +23,10 @@ export default function PostBox({
   likes, 
   userId, 
   setOpenModal, 
-  setRepostId }) {
+  setRepostId, 
+  reposts,
+  comments
+}) {
 
     const [liked, setLiked] = useState(false); 
     const [ editing, setEditing ] = useState(false);
@@ -130,9 +133,9 @@ function inputKeybord(e) {
                 }
                 <p>{amountLikes} likes</p>
                 <ion-icon name="chatbubble-ellipses-outline" id="comments" onClick={() => setOpenComments(!openComments)}></ion-icon>
-                <p>13comments</p>
+                <p>{comments}comments</p>
                 <ion-icon name="repeat-sharp" id="repost" onClick={() => openModal(id)}></ion-icon>
-                <p>13 re-posts</p>
+                <p>{reposts} re-posts</p>
             </PictureAndLike>
             <PostInfo>
                 <div>

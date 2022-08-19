@@ -152,6 +152,10 @@ export default function FeedScreen() {
           setUpdatePosts={setUpdatePosts}
           updatePosts={updatePosts}
           userId={object.userId}
+          reposts={object.reposts}
+          comments={object.comments}
+          setOpenModal={setOpenModal}
+          setRepostId={setRepostId}
         />
       );
     }
