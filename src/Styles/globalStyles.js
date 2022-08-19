@@ -9,6 +9,11 @@ const GlobalStyle = createGlobalStyle`
     background-color:#333333;
     font-family: 'Lato', sans-serif;
   }
+  html{
+    @media (max-width:612px) {
+      width:100% !important;
+    };
+  }
 `;
 
 export default GlobalStyle;

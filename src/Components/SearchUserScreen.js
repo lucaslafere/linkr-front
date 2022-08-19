@@ -35,7 +35,7 @@ export default function SerchUserScreen() {
     useEffect(() => {
         const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/${id}`,config);
         const promises = axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`);
-        const promisses = axios.get(`https://projeto17-linkrback.herokuapp.com/posts/10000`,config);
+        const promisses = axios.get(`https://projeto17-linkrback.herokuapp.com/posts?queryLimit=1000&userId=${data.id}`,config);
 
         promise.then(response => { 
             setUserPosts(response.data[0]);
