@@ -112,6 +112,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 </MainInfo>
             </PostInfo>
         </Post>
+        {openComments ? (
         <Comments>
             <UsersComentaries>
                 <ul>
@@ -122,6 +123,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                             profilePhoto={commt.profilePhoto}
                             username={commt.username}
                             userId={commt.userId}
+                            ownerUsername={username}
                         />
                     ))}
                 </ul>
@@ -140,6 +142,7 @@ export default function RenderUserPosts({index,likes,url,description,username,pr
                 </form>
             </SendComment>
         </Comments>
+        ) : ""}
         </>
     )
 } 
@@ -151,6 +154,7 @@ const Post = styled.li`
   background-color: rgba(23, 23, 23, 1);
   padding: 19px 23px 20px 20px;
   border-radius: ${props => props.openComments ? ("16px 16px 0px 0px"): "16px"};
+  margin-bottom: ${props => props.openComments ? ("0px") : ("18px")};
 `;
 const PictureAndLike = styled.div`
   width: 10%;
