@@ -37,6 +37,7 @@ const TrendingBox = styled.div`
     border-radius: 16px;
     display: flex;
     flex-direction: column;
+    margin-left: 25px;
 
     > div:nth-child(1) {
         display: flex;
@@ -68,7 +69,7 @@ const TrendingBox = styled.div`
         }
     }
 
-    @media(max-width: 1000px){
+    @media(max-width: 1600px){
         display:none;
     }
 `;

@@ -66,11 +66,7 @@ export default function PostBox({
 function navigateHashtagPage (tag) {
     const newTag = tag?.replace("#", "");
     if (newTag === undefined) {
-<<<<<<< HEAD
       return;
-=======
-      return
->>>>>>> fbefe7a9e2dd9b9f2204c40316a6bf5b00798bc2
     }
     navigate(`/hashtag/${newTag}`)
 }

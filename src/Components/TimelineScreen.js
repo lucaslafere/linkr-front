@@ -166,6 +166,7 @@ export default function FeedScreen() {
           setUpdatePosts={setUpdatePosts}
           updatePosts={updatePosts}
           userId={object.userId}
+          liked={() => postIsLiked(object.usersLiked)}
         />
       );
     }
@@ -390,6 +391,7 @@ const Header = styled.div`
     font-weight: 700;
     letter-spacing: 0.05em;
     text-align: left;
+    cursor: pointer;
   }
 `;
 const Containerr = styled.div`

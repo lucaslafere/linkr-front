@@ -6,9 +6,13 @@ import styled from 'styled-components';
 import PostBox from '../Pages/PostBox';
 import TokenContext from '../Contexts/TokenContext';
 import Trendings from '../Pages/Trending';
+import DeleteBox from '../Pages/DeleteBox';
 
 
 export default function HashtagScreen() {
+  const [deleting, setDeleting] = useState(false);
+  const [updatePosts, setUpdatePosts] = useState(false);
+  const [idDeleting, setIdDeleting] = useState(null);
   const [ trendingPosts, setTrendingPosts ] = useState(null);
   const { token } = useContext(TokenContext);
   const trending = useParams();
@@ -40,6 +44,17 @@ export default function HashtagScreen() {
   }
  
   return(
+      <>
+    {deleting ? (
+        <DeleteBox
+          id={idDeleting}
+          setDeleting={setDeleting}
+          setUpdatePosts={setUpdatePosts}
+          updatePosts={updatePosts}
+        />
+      ) : (
+        <> </>
+      )}
     <Container>
         <Header>
             <span>linkr</span>
@@ -60,19 +75,17 @@ export default function HashtagScreen() {
                     url={object.url}
                     profilePhoto={object.profilePhoto}
                     username={object.username}
-                    description={object.description}
+                    description={object.description ? object.description : ""}
                     urlDescription={object.urlDescription}
                     urlTitle={object.urlTitle}
                     urlImage={object.urlImage}
                     likes={object.likes}
-                    //setIdDeleting={setIdDeleting}
-                    //setDeleting={setDeleting}
-                    //setUpdatePosts={setUpdatePosts}
-                    //updatePosts={updatePosts}
+                    setIdDeleting={setIdDeleting}
+                    setDeleting={setDeleting}
+                    setUpdatePosts={setUpdatePosts}
+                    updatePosts={updatePosts}
                     userId={object.userId}
-                    liked={() => postIsLiked(object.usersLiked)}
-                    //setOpenModal={setOpenModal}
-                    //setRepostId={setRepostId}
+                    //liked={() => postIsLiked(object.usersLiked)}
                     />)
                     }
                 </Posts>
@@ -81,6 +94,7 @@ export default function HashtagScreen() {
             
         </Content>
     </Container>
+    </>
     );
 };
 
