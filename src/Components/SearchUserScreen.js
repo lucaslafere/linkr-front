@@ -35,7 +35,7 @@ export default function SerchUserScreen() {
     useEffect(() => {
         const promise = axios.get(`https://projeto17-linkrback.herokuapp.com/users/${id}`,config);
         const promises = axios.get(`https://projeto17-linkrback.herokuapp.com/ranking`);
-        const promisses = axios.get(`https://projeto17-linkrback.herokuapp.com/posts/10000`,config);
+        const promisses = axios.get(`https://projeto17-linkrback.herokuapp.com/posts?queryLimit=1000&userId=${data.id}`,config);
 
         promise.then(response => { 
             setUserPosts(response.data[0]);
@@ -67,24 +67,6 @@ export default function SerchUserScreen() {
       setFilterPosts(filter);
     } 
 
-    useEffect(() => {
-        const body = {
-          friendId: id
-        };
-        axios
-          .post(
-            `https://projeto17-linkrback.herokuapp.com/check-follow`,
-            body,
-            config
-          )
-          .then((res) => {
-            setIsFollowed(res.data.friendId);
-            console.log("caiu no then")
-          })
-          .catch((err) => {
-            console.log("caiu no erro");
-          });
-      }, [isFollowed]);
 
     async function searchUser(event) { 
         const username = { username: event };
@@ -113,14 +95,14 @@ export default function SerchUserScreen() {
       )
       .then((res) => {
         setIsFollowed(res.data.isFollower);
-        console.log("caiu no then");
+        console.log("caiu no then checando follow");
         console.log(res.data.isFollower);
         setDisabled(false);
       })
       .catch((err) => {
         console.log("caiu no erro");
       });
-  }, []);
+  }, [isFollowed]);
 
   async function searchUser(event) {
     const username = { username: event };
@@ -269,7 +251,7 @@ export default function SerchUserScreen() {
             <a>Logout</a>
         </Logout> ) : ("")}
 
-        <UserContainer isFollowed={isFollowed}>
+        <UserContainer >
         <UserTitle>
           <img src={userPosts.profilePhoto} alt={userPosts.username} />
           <a>{userPosts.username}'s posts</a>
@@ -446,8 +428,6 @@ ul {
   border-radius: 0px 0px 8px 8px;
   padding: 1rem;
 }
->>>>>>> 44a5a91d8b71ae45232d1fead6bbf4a1a4642898
-
 @media (max-width: 1000px) {
   display: none;
 }
