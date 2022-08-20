@@ -120,6 +120,12 @@ function inputKeybord(e) {
     } catch (error) {
         console.log(error);
     }
+} 
+
+function reload(userId) { 
+  console.log(userId);
+  navigate(`/timeline/${userId}`); 
+  window.location.reload();
 }
     
     return(
@@ -127,7 +133,7 @@ function inputKeybord(e) {
         <Post openComments={openComments}>
             <PictureAndLike>
 
-                <img src={profilePhoto} alt="User" onClick={() => navigate(`/timeline/${userId}`)}/>
+                <img src={profilePhoto} alt="User" onClick={() => reload(userId)}/>
                 { isLiked ? 
                   <ion-icon name="heart" id="heart" onClick={() => likeDeslike("dislike")}></ion-icon> 
                 : <ion-icon name="heart-outline" id="heart-outline" onClick={() => likeDeslike("like")}></ion-icon>
@@ -140,7 +146,7 @@ function inputKeybord(e) {
             </PictureAndLike>
             <PostInfo>
                 <div>
-                    <p onClick={() => navigate(`/timeline/${userId}`)}>{username}</p>
+                    <p onClick={() => reload(userId)}>{username}</p>
                      
                       {data.id === userId ? 
                         <div>

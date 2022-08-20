@@ -10,6 +10,7 @@ import axios from "axios";
 import { DebounceInput } from "react-debounce-input";
 import RepostBox from "../Pages/RepostBox";
 import RenderReposts from "../Pages/RenderReposts";
+import Trendings from "../Pages/Trending";
 
 export default function SerchUserScreen() {
     const { id } = useParams();
@@ -39,7 +40,7 @@ export default function SerchUserScreen() {
 
         promise.then(response => { 
             setUserPosts(response.data[0]);
-            console.log(response.data[0].posts);
+            console.log(response.data[1]);
             setPost(response.data[0].posts);
             if(response.data[1].reposts) {
               setUserReposts(response.data[1].reposts); 
@@ -284,8 +285,7 @@ export default function SerchUserScreen() {
                       reposts={rep.reposts}
                       repostedUsername={rep.repostedUsername}
                       repostedUserId={rep.repostedUserId}
-                      loggedUsername={data.username}
-                      filterPosts={filterPosts}
+                      comments={rep.comments}
                       /> 
                     ))}
                     {post.map((post,index) => (
@@ -309,18 +309,7 @@ export default function SerchUserScreen() {
                     ))}
                 </ul>
             </Posts>
-            <Treading>
-                <span>trending</span>
-                <div></div>
-                <ul> 
-                    {hashtags.map((hashtag,index) => (
-                        <RenderHashtags 
-                            index= {index}
-                            name={hashtag.name}
-                        /> 
-                    ))}
-                </ul>
-            </Treading>
+            <Trendings />
         </Main>
 
         </>
