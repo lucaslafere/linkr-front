@@ -1,10 +1,13 @@
 import styled from "styled-components";  
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
+import UserContext from "../Contexts/UserContext";
 
-export default function RenderReposts({index,likes,url,description,ownerUsername,ownerProfilePhoto,urlDescription,urlImage,urlTitle,id,reposts,repostedUsername,repostedUserId,loggedUsername}) { 
+export default function RenderReposts({index,likes,url,description,ownerUsername,ownerProfilePhoto,urlDescription,urlImage,urlTitle,id,reposts,repostedUsername,repostedUserId,comments}) { 
     const [liked,setLiked] = useState(false);
+    const { userData } = useContext(UserContext); 
+    const data =  JSON.parse(userData);
     const navigate = useNavigate();
 
     return( 
@@ -12,7 +15,7 @@ export default function RenderReposts({index,likes,url,description,ownerUsername
         <Post key={index}>
             <RepostMessage>
                 <ion-icon name="repeat-sharp" id="repost"></ion-icon>
-                <a>Re-posted by <strong onClick={() => navigate(`/timeline/${repostedUserId}`)}>{loggedUsername===repostedUsername ? ("you") : (repostedUsername)}</strong></a>
+                <a>Re-posted by <strong onClick={() => navigate(`/timeline/${repostedUserId}`)}>{data.username===repostedUsername ? ("you") : (repostedUsername)}</strong></a>
             </RepostMessage>
             <RepostContainer>
             <PictureAndLike>
@@ -23,15 +26,13 @@ export default function RenderReposts({index,likes,url,description,ownerUsername
                 )}
                 <p>{likes} likes</p>
                 <ion-icon name="chatbubble-ellipses-outline" id="comments"></ion-icon>
-                <p>13 comments</p>
+                <p>{comments} comments</p>
                 <ion-icon name="repeat-sharp" id="repost"></ion-icon>
                 <p>{reposts} re-posts</p>
             </PictureAndLike>
             <PostInfo>
                 <p>{ownerUsername}</p> 
-                <ReactTagify colors={"#ffffff"} tagClicked={(tag) => navigate(`/hashtag/${tag.slice(1)}`)}>
                 <a>{description}</a>
-                </ReactTagify>
                 <MainInfo onClick={() => window.open(url)}>
                     <MainInfoDescription>
                         <h3>{urlTitle}</h3>
